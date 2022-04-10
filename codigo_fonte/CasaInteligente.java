@@ -1,6 +1,8 @@
+import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.HashMap;
 
-
-import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -22,15 +24,15 @@ public class CasaInteligente {
     public CasaInteligente() {
         // initialise instance variables
         this.morada = "";
-        this.devices = new HashMap();
-        this.locations = new HashMap();
+        this.devices = new HashMap<>();
+        this.locations = new HashMap<>();
     }
 
     public CasaInteligente(String morada) {
         // initialise instance variables
         this.morada = morada;
-        this.devices = new HashMap();
-        this.locations = new HashMap();
+        this.devices = new HashMap<>();
+        this.locations = new HashMap<>();
     }
 
     /**
@@ -57,8 +59,7 @@ public class CasaInteligente {
      * (ADDED) Devolve uma lista com os devices duma determinada sala.
      */
     private List<String> getListDevices(String chave){
-        List r = this.locations.get(chave).stream().collect(Collectors.toList());
-        return r;
+        return this.locations.get(chave).stream().collect(Collectors.toList());
     }
 
     /**
