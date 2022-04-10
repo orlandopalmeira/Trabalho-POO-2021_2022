@@ -48,17 +48,22 @@ public class CasaInteligente {
      */
     private Map<String, SmartDevice> getMapDevices() {
         Map<String, SmartDevice> r = new HashMap<>();
-        for (String k : this.devices.keySet()){
+        /*for (String k : this.devices.keySet()){
             r.put(k, this.devices.get(k).clone());
-        }
+        }*/
+        // Alternativa ao ciclo for?
+        this.devices.keySet().forEach(key -> r.put(key,this.devices.get(key).clone()));
         return r;
     }
 
     /**
      * (ADDED) Devolve uma lista com os devices duma determinada sala.
      */
-    public List<String> getListDevices(String reparticao){
-        return this.locations.get(reparticao).stream().collect(Collectors.toList());
+    public List<String> getListDevices(String divisao){
+        if(this.locations.containsKey(divisao)){ // para evitar erros se a divisão não existir
+            return this.locations.get(divisao).stream().collect(Collectors.toList());
+        }
+        else return null; 
     }
 
     /**
@@ -66,9 +71,11 @@ public class CasaInteligente {
      */
     private Map<String, List<String>> getMapLocations() {
         Map<String, List<String>> r = new HashMap<>();
-        for (String k : this.locations.keySet()){
+        /*for (String k : this.locations.keySet()){
             r.put(k, this.locations.get(k).stream().collect(Collectors.toList()));
-        }
+        }*/
+        // Alternativa ao ciclo for?
+        this.locations.keySet().forEach(key -> r.put(key,this.locations.get(key).stream().collect(Collectors.toList())));
         return r;
     }
 
@@ -80,7 +87,9 @@ public class CasaInteligente {
     }
     
     public void setDeviceOn(String devCode) {
-        this.devices.get(devCode).turnOn();
+        if(this.existsDevice(devCode)){ // para evitar erros. O get pode dar null se não existir e o turnOn dá erro nesse caso
+            this.devices.get(devCode).turnOn();
+        }
     }
     
     public boolean existsDevice(String id) {
@@ -88,18 +97,22 @@ public class CasaInteligente {
     }
     
     public void addDevice(SmartDevice s) {
-        this.devices.put(s.getID(), s.clone());
+        if(!this.existsDevice(s.getID())){ // só adiciona se não existir
+            this.devices.put(s.getID(), s.clone());
+        }
     }
 
     public SmartDevice getDevice(String s) {
-        if (this.devices.containsKey(s)) {
+        if (this.devices.containsKey(s)){ // para evitar erros. O get pode dar null se não existir e o clone dá erro
             return this.devices.get(s).clone();
         }
         else return null;
     }
     
     public void setOn(String s, boolean b) {
-        this.devices.get(s).setOn(b);
+        if(this.devices.containsKey(s)){ // para evitar erros. O get pode dar null se não existir e o setOn dá erro
+            this.devices.get(s).setOn(b);
+        }
     }
     
     public void setAllOn(boolean b) {
@@ -107,8 +120,10 @@ public class CasaInteligente {
     }
     
     public void addRoom(String s) {
-        List<String> l = new ArrayList<String>();
-        this.locations.put(s, l);
+        if(!this.hasRoom(s)){ // só adicionamos se a divisão nao existir
+            List<String> l = new ArrayList<String>();
+            this.locations.put(s, l);
+        }
     }
     
     public boolean hasRoom(String s) {
@@ -116,7 +131,9 @@ public class CasaInteligente {
     }
     
     public void addToRoom (String s1, String s2) {
-        this.locations.get(s1).add(s2);
+        if(!this.roomHasDevice(s1, s2)){
+            this.locations.get(s1).add(s2);
+        }
     }
     
     public boolean roomHasDevice (String s1, String s2) {
