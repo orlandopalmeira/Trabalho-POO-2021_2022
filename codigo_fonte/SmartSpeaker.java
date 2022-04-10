@@ -7,17 +7,18 @@
  * @version (a version number or a date)
  */
 public class SmartSpeaker extends SmartDevice {
-    public static final int MAX = 20; //volume máximo
+    public static final int MAX = 20;
     
     private int volume;
     private String channel;
+    private String marca; // added this
 
 
     /**
      * Constructor for objects of class SmartSpeaker
      */
     public SmartSpeaker() {
-        super(); // chama o construtor da superclasse
+        super(); // chama o construtor da superclasse.
         // initialise instance variables
         this.volume = 0;
         this.channel = "";

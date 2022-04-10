@@ -12,6 +12,7 @@ public class SmartBulb extends SmartDevice {
     public static final int COLD = 0;
     
     private int tone;
+    private double dimension; // added this variable
 
     /**
      * Constructor for objects of class SmartBulb
