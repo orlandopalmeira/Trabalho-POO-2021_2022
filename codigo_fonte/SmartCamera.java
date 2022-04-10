@@ -1,5 +1,3 @@
-import java.util.Objects;
-
 public class SmartCamera extends SmartDevice{
     private int resX;
     private int resY;
@@ -69,6 +67,12 @@ public class SmartCamera extends SmartDevice{
         return resX == that.resX && resY == that.resY && this.sizeOfFile == that.sizeOfFile;
     }
 
+    @Override
+    public String toString(){
+        return String.format("{Device: SmartCamera, ID: %s, ON/OFF: %s, Dimensions: %dx%d, FileSize: %f}", this.getID(), this.getOn() ? "ON" : "OFF" ,this.resX,this.resY,this.sizeOfFile);
+    }
+
+    @Override
     public SmartDevice clone() {
         return new SmartCamera(this);
     }

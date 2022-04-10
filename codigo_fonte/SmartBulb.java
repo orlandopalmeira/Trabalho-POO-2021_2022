@@ -41,8 +41,8 @@ public class SmartBulb extends SmartDevice {
     }
 
     public void setTone(int t) {
-        if (t>WARM) this.tone = WARM;
-        else if (t<COLD) this.tone = COLD;
+        if (t > WARM) this.tone = WARM;
+        else if (t < COLD) this.tone = COLD;
         else this.tone = t;
     }
 
@@ -50,6 +50,11 @@ public class SmartBulb extends SmartDevice {
         return this.tone;
     }
 
+    public double getDimension(){
+        return this.dimension;
+    }
+
+    @Override
     public boolean equals (Object o){
         if (this == o) {
             return true;
@@ -59,6 +64,11 @@ public class SmartBulb extends SmartDevice {
         }
         SmartBulb s = (SmartBulb) o;
         return (super.equals(o) && this.tone == s.getTone());
+    }
+
+    @Override
+    public String toString(){
+        return String.format("{Device: SmartBulb, ID: %s, ON/OFF: %s, tone: %d, dimension: %f}", this.getID(), this.getOn() ? "ON" : "OFF" ,this.tone, this.dimension);
     }
 
     @Override

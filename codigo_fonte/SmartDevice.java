@@ -49,7 +49,9 @@ public class SmartDevice {
         this.on = b;
     }
     
-    public String getID() {return this.id;}
+    public String getID() {
+        return this.id;
+    }
 
     @Override
     public boolean equals(Object o) {

@@ -53,23 +53,30 @@ public class SmartSpeaker extends SmartDevice {
 
 
     public void volumeUp() {
-        if (this.volume<MAX) this.volume++;
+        if (this.volume < MAX) this.volume++;
     }
 
     public void volumeDown() {
-        if (this.volume>0) this.volume--;
+        if (this.volume > 0) this.volume--;
     }
 
     public int getVolume() {
         return this.volume;
     }
     
-    public String getChannel() {return this.channel;}
+    public String getChannel() {
+        return this.channel;
+    }
 
     public void setChannel(String c) {
         this.channel = c;
     }
 
+    public String getMarca(){
+        return this.marca;
+    }
+
+    @Override
     public boolean equals (Object o){
         if (this == o) {
             return true;
@@ -79,6 +86,11 @@ public class SmartSpeaker extends SmartDevice {
         }
         SmartSpeaker s = (SmartSpeaker) o;
         return (super.equals(o) && this.volume == s.getVolume() && this.channel == s.getChannel());
+    }
+
+    @Override
+    public String toString(){
+        return String.format("{Device: SmartBulb, ID: %s, ON/OFF: %s, Volume: %d, Channel: %s, Marca: %s}", this.getID(), this.getOn() ? "ON" : "OFF" ,this.volume, this.channel, this.marca);
     }
 
     @Override

@@ -2,7 +2,6 @@ import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
-
 import java.util.stream.Collectors;
 
 /**
@@ -58,8 +57,8 @@ public class CasaInteligente {
     /**
      * (ADDED) Devolve uma lista com os devices duma determinada sala.
      */
-    private List<String> getListDevices(String chave){
-        return this.locations.get(chave).stream().collect(Collectors.toList());
+    public List<String> getListDevices(String reparticao){
+        return this.locations.get(reparticao).stream().collect(Collectors.toList());
     }
 
     /**
@@ -84,7 +83,9 @@ public class CasaInteligente {
         this.devices.get(devCode).turnOn();
     }
     
-    public boolean existsDevice(String id) {return this.devices.containsKey(id);}
+    public boolean existsDevice(String id) {
+        return this.devices.containsKey(id);
+    }
     
     public void addDevice(SmartDevice s) {
         this.devices.put(s.getID(), s.clone());
@@ -102,9 +103,7 @@ public class CasaInteligente {
     }
     
     public void setAllOn(boolean b) {
-        for(String s : this.devices.keySet()){
-            setOn(s, b);
-        }
+        this.devices.values().forEach(device -> device.setOn(b));
     }
     
     public void addRoom(String s) {
@@ -134,6 +133,7 @@ public class CasaInteligente {
     }
 
     // (ADDED)
+    @Override
     public CasaInteligente clone(){
         return new CasaInteligente(this);
     }
