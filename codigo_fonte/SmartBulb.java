@@ -66,8 +66,9 @@ public class SmartBulb extends SmartDevice {
         return this.dimension;
     }
 
+    @Override
     public double dailyConsumption(){
-        return 3.0 + this.tone;
+        return this.getOn() ? ((3.0 + (double)this.tone) * 24.0) / 1000.0 : 0.0;
     }
 
     @Override

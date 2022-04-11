@@ -59,7 +59,7 @@ public class SmartCamera extends SmartDevice{
     }
 
     public double dailyConsumption(){
-        return this.sizeOfFile*resX*resY;
+        return this.getOn() ? (this.sizeOfFile*resX*resY*24.0)/1000.0 : 0.0;
     }
 
     @Override

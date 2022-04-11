@@ -45,17 +45,17 @@ public class SmartSpeakerTest {
         assertTrue(smartSpe1!=null);
         smartSpe1 = new SmartSpeaker("b1");
         assertTrue(smartSpe1!=null);
-        smartSpe1 = new SmartSpeaker("b1", "RUM", 5);
+        smartSpe1 = new SmartSpeaker("b1", "RUM", 5, "Brand");
         assertTrue(smartSpe1!=null);
     }
 
     @Test
     public void testGetVolume() {
-        SmartSpeaker smartSpe1 = new SmartSpeaker("s1", "RUM", 5);
+        SmartSpeaker smartSpe1 = new SmartSpeaker("s1", "RUM", 5,"Brand");
         assertEquals(5, smartSpe1.getVolume());
-        smartSpe1 = new SmartSpeaker("b1", "RUM", SmartSpeaker.MAX);
+        smartSpe1 = new SmartSpeaker("b1", "RUM", SmartSpeaker.MAX,"Brand");
         assertEquals(20, smartSpe1.getVolume());
-        smartSpe1 = new SmartSpeaker("b1", "RUM", -10);
+        smartSpe1 = new SmartSpeaker("b1", "RUM", -10,"Brand");
         assertEquals(0, smartSpe1.getVolume());
         smartSpe1 = new SmartSpeaker();
         assertEquals(0, smartSpe1.getVolume());
@@ -63,7 +63,7 @@ public class SmartSpeakerTest {
 
     @Test
     public void testSetVolume() {
-        SmartSpeaker smartSpe1 = new SmartSpeaker("s1", "RUM", 5);
+        SmartSpeaker smartSpe1 = new SmartSpeaker("s1", "RUM", 5,"Brand");
         smartSpe1.volumeUp();
         smartSpe1.volumeUp();
         assertEquals(7, smartSpe1.getVolume());
@@ -75,9 +75,9 @@ public class SmartSpeakerTest {
 
     @Test
     public void testGetChannel() {
-        SmartSpeaker smartSpe1 = new SmartSpeaker("s1", "RUM", 5);
+        SmartSpeaker smartSpe1 = new SmartSpeaker("s1", "RUM", 5,"Brand");
         assertEquals("RUM", smartSpe1.getChannel());
-        smartSpe1 = new SmartSpeaker("s2", "XPTO", 5);
+        smartSpe1 = new SmartSpeaker("s2", "XPTO", 5,"Brand");
         assertEquals("XPTO", smartSpe1.getChannel());
         smartSpe1 = new SmartSpeaker();
         assertEquals("", smartSpe1.getChannel());

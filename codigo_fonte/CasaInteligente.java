@@ -91,6 +91,12 @@ public class CasaInteligente {
         else return null;
     }
 
+    public List<SmartDevice> getDevices(){
+        List<SmartDevice> result = new ArrayList<>();
+        this.devices.values().forEach(device -> result.add(device.clone()));
+        return result;
+    }
+
     /**
      * Devolve um map com as locations.
      */

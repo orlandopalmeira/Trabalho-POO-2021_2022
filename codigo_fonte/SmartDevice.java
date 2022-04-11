@@ -9,6 +9,7 @@ public abstract class SmartDevice {
 
     private String id;
     private boolean on;
+    private double totalConsumption;
 
     /**
      * Constructor for objects of class SmartDevice
@@ -16,21 +17,25 @@ public abstract class SmartDevice {
     public SmartDevice() {
         this.id = "";
         this.on = false;
+        this.totalConsumption = 0.0;
     }
 
     public SmartDevice(String id) {
         this.id = id;
         this.on = false;
+        this.totalConsumption = 0.0;
     }
 
     public SmartDevice(String id, boolean b) {
         this.id = id;
         this.on = b;
+        this.totalConsumption = 0.0;
     }
 
     public SmartDevice(SmartDevice sd) {
         this.id = sd.getID();
         this.on = sd.getOn();
+        this.totalConsumption = sd.totalConsumption;
     }
 
     public void turnOn() {
@@ -55,6 +60,20 @@ public abstract class SmartDevice {
 
     public abstract double dailyConsumption();
 
+    public double getTotalConsumption(){
+        return this.totalConsumption;
+    }
+
+    public void incrementTotalConsumption(double increment){
+        if(increment >= 0.0){
+            this.totalConsumption += increment;
+        }
+    }
+
+    public void resetTotalConsumption(){
+        this.totalConsumption = 0.0;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -63,7 +82,9 @@ public abstract class SmartDevice {
         return on == that.on && this.id.equals(that.id);
     }
 
+    @Override
     public abstract SmartDevice clone();
 
+    @Override
     public abstract String toString();
 }

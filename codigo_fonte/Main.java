@@ -1,6 +1,9 @@
 public class Main {
     public static void main(String[] args) {
-        System.out.println("teste");
+        if(args[0].equals("-f")){ // recebe um ficheiro como argumento
+            
+        }
+        /*System.out.println("teste");
 
         CasaInteligente casaInte1 = new CasaInteligente("Gualtar");
         SmartBulb smartBul1 = new SmartBulb("b1");
@@ -15,6 +18,6 @@ public class Main {
         casaInte1.addToRoom("sala", "s1");
         casaInte1.addToRoom("quarto", "s2");
 
-        casaInte1.setAllinDivisionOn("sala",true);
+        casaInte1.setAllinDivisionOn("sala",true);*/
     }
 }

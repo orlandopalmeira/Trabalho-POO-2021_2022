@@ -1,3 +1,4 @@
+import java.util.List;
 public class EnergyProvider{
     private String name;
     private float price_kwh;
@@ -5,6 +6,12 @@ public class EnergyProvider{
 
     public EnergyProvider(){
         this.name = "";
+        this.price_kwh = 0.0f;
+        this.tax = 0.0f;
+    }
+
+    public EnergyProvider(String name){
+        this.name = name;
         this.price_kwh = 0.0f;
         this.tax = 0.0f;
     }
@@ -45,9 +52,12 @@ public class EnergyProvider{
         this.tax = tax;
     }
 
-    public float pricePerDay(int num_devices, float consumption){
-        return num_devices > 10 ? (price_kwh * consumption * (1 + tax)) * 0.9f : 
-                                  (price_kwh * consumption * (1 + tax)) * 0.75f; 
+    private double pricePerDayPerDevice(int numDevices, SmartDevice device){
+        return this.price_kwh * device.dailyConsumption() * (1 + this.tax) * (numDevices > 10 ? 0.9f : 0.75f);
+    }
+
+    public double pricePerDay(List<SmartDevice> devices){
+        return devices.stream().mapToDouble(dev -> this.pricePerDayPerDevice(devices.size(), dev)).sum();
     }
 
     @Override
