@@ -12,7 +12,7 @@ public class SmartSpeaker extends SmartDevice {
 
     private int volume;
     private String channel;
-    private String marca; // added this
+    private String marca;
     private double dConsInfo; // informação consumo diário
 
 

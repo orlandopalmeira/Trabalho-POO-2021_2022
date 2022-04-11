@@ -59,7 +59,7 @@ public class CasaInteligente {
     }
 
     /**
-     * (ADDED) Construtor de cópia.
+     * Construtor de cópia.
      */
     public CasaInteligente(CasaInteligente ci){
         this.morada = ci.getMorada();
@@ -68,20 +68,16 @@ public class CasaInteligente {
     }
 
     /**
-     * (ADDED) Devolve um map com os devices.
+     * Devolve um map com os devices.
      */
     private Map<String, SmartDevice> getMapDevices() {
         Map<String, SmartDevice> r = new HashMap<>();
-        /*for (String k : this.devices.keySet()){
-            r.put(k, this.devices.get(k).clone());
-        }*/
-        // Alternativa ao ciclo for?
         this.devices.keySet().forEach(key -> r.put(key,this.devices.get(key).clone()));
         return r;
     }
 
     /**
-     * (ADDED) Devolve uma lista com os devices duma determinada sala.
+     * Devolve uma lista com os devices duma determinada sala.
      */
     public List<String> getListDevices(String divisao){
         if(this.locations.containsKey(divisao)){ // para evitar erros se a divisão não existir
@@ -91,20 +87,16 @@ public class CasaInteligente {
     }
 
     /**
-     * (ADDED) Devolve um map com as locations.
+     * Devolve um map com as locations.
      */
     private Map<String, List<String>> getMapLocations() {
         Map<String, List<String>> r = new HashMap<>();
-        /*for (String k : this.locations.keySet()){
-            r.put(k, this.locations.get(k).stream().collect(Collectors.toList()));
-        }*/
-        // Alternativa ao ciclo for?
         this.locations.keySet().forEach(key -> r.put(key,this.locations.get(key).stream().collect(Collectors.toList())));
         return r;
     }
 
     /**
-     * (ADDED) Devolve a morada da casa.
+     * Devolve a morada da casa.
      */
     public String getMorada(){
         return this.morada;
@@ -172,7 +164,6 @@ public class CasaInteligente {
         this.fornecedor = fornecedor.clone();
     }
 
-    // (ADDED)
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -184,7 +175,6 @@ public class CasaInteligente {
                ci.proprietario.equals(proprietario);
     }
 
-    // (ADDED)
     @Override
     public CasaInteligente clone(){
         return new CasaInteligente(this);

@@ -12,7 +12,7 @@ public class SmartBulb extends SmartDevice {
     public static final int COLD = 0;
 
     private int tone;
-    private double dimension; // added this variable
+    private double dimension;
     private double dConsInfo; // informação consumo diário
     
 
