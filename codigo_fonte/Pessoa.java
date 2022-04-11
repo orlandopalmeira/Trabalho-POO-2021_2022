@@ -49,7 +49,7 @@ public class Pessoa {
 
     @Override
     public String toString(){
-        return String.format("{Pessoa, Nome: %s, NIF: %d", this.nome, this.nif);
+        return String.format("{Pessoa, Nome: %s, NIF: %d}", this.nome, this.nif);
     }
 
     @Override

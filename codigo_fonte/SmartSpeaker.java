@@ -107,7 +107,7 @@ public class SmartSpeaker extends SmartDevice {
             return false;
         }
         SmartSpeaker s = (SmartSpeaker) o;
-        return (super.equals(o) && this.volume == s.getVolume() && this.channel == s.getChannel());
+        return (super.equals(o) && this.volume == s.getVolume() && this.channel == s.getChannel() && this.marca == s.getMarca() && this.dConsInfo == s.getDailyConsumptionInfo());
     }
 
     @Override

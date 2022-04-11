@@ -40,15 +40,6 @@ public class CasaInteligente {
         this.fornecedor = null;
     }
 
-    public CasaInteligente(String morada, Pessoa proprietario){
-        // initialise instance variables
-        this.morada = morada;
-        this.devices = new HashMap<>();
-        this.locations = new HashMap<>();
-        this.proprietario = proprietario.clone();
-        this.fornecedor = null;
-    }
-
     public CasaInteligente(String morada, Pessoa proprietario, EnergyProvider fornecedor){
         // initialise instance variables
         this.morada = morada;
