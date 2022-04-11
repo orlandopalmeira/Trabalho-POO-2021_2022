@@ -161,7 +161,7 @@ public class CasaInteligente {
 
     public void addRoom(String s) {
         if(!this.hasRoom(s)){
-            List<String> l = new ArrayList<String>();
+            List<String> l = new ArrayList<>();
             this.locations.put(s, l);
         }
     }
