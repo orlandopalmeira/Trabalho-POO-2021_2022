@@ -65,6 +65,20 @@ public class CasaInteligente {
         this.morada = ci.getMorada();
         this.devices = ci.getMapDevices();
         this.locations = ci.getMapLocations();
+        this.proprietario = ci.getProprietario();
+        this.fornecedor = ci.getFornecedor();
+    }
+
+
+    /**
+     * Devolve a morada da casa.
+     */
+    public String getMorada(){
+        return this.morada;
+    }
+
+    public void setMorada(String m){
+        this.morada = m;
     }
 
     /**
@@ -83,7 +97,7 @@ public class CasaInteligente {
         if(this.locations.containsKey(divisao)){ // para evitar erros se a divisão não existir
             return this.locations.get(divisao).stream().collect(Collectors.toList());
         }
-        else return null; 
+        else return null;
     }
 
     /**
@@ -95,65 +109,12 @@ public class CasaInteligente {
         return r;
     }
 
-    /**
-     * Devolve a morada da casa.
-     */
-    public String getMorada(){
-        return this.morada;
-    }
-    
-    public void setDeviceOn(String devCode) {
-        if(this.existsDevice(devCode)){ // para evitar erros. O get pode dar null se não existir e o turnOn dá erro nesse caso
-            this.devices.get(devCode).turnOn();
-        }
-    }
-    
-    public boolean existsDevice(String id) {
-        return this.devices.containsKey(id);
-    }
-    
-    public void addDevice(SmartDevice s) {
-        if(!this.existsDevice(s.getID())){ // só adiciona se não existir
-            this.devices.put(s.getID(), s.clone());
-        }
+    public Pessoa getProprietario(){
+        return this.proprietario.clone();
     }
 
-    public SmartDevice getDevice(String s) {
-        if(this.devices.containsKey(s)){ // para evitar erros. O get pode dar null se não existir e o clone dá erro
-            return this.devices.get(s).clone();
-        }
-        else return null;
-    }
-    
-    public void setOn(String s, boolean b) {
-        if(this.devices.containsKey(s)){ // para evitar erros. O get pode dar null se não existir e o setOn dá erro
-            this.devices.get(s).setOn(b);
-        }
-    }
-    
-    public void setAllOn(boolean b) {
-        this.devices.values().forEach(device -> device.setOn(b));
-    }
-    
-    public void addRoom(String s) {
-        if(!this.hasRoom(s)){ // só adicionamos se a divisão nao existir
-            List<String> l = new ArrayList<String>();
-            this.locations.put(s, l);
-        }
-    }
-    
-    public boolean hasRoom(String s) {
-        return this.locations.containsKey(s);
-    }
-    
-    public void addToRoom (String s1, String s2) {
-        if(!this.roomHasDevice(s1, s2)){
-            this.locations.get(s1).add(s2);
-        }
-    }
-    
-    public boolean roomHasDevice (String s1, String s2) {
-        return this.locations.get(s1).contains(s2);
+    public void setProprietario(Pessoa p){
+        this.proprietario = p.clone();
     }
 
     public EnergyProvider getFornecedor(){
@@ -163,6 +124,62 @@ public class CasaInteligente {
     public void setFornecedor(EnergyProvider fornecedor){
         this.fornecedor = fornecedor.clone();
     }
+
+
+    public void setDeviceOn(String devCode) {
+        if(this.existsDevice(devCode)){
+            this.devices.get(devCode).turnOn();
+        }
+    }
+
+    public boolean existsDevice(String id) {
+        return this.devices.containsKey(id);
+    }
+
+    public void addDevice(SmartDevice s) {
+        if(!this.existsDevice(s.getID())){
+            this.devices.put(s.getID(), s.clone());
+        }
+    }
+
+    public SmartDevice getDevice(String s) {
+        if(this.devices.containsKey(s)){
+            return this.devices.get(s).clone();
+        }
+        else return null;
+    }
+
+    public void setOn(String s, boolean b) {
+        if(this.devices.containsKey(s)){
+            this.devices.get(s).setOn(b);
+        }
+    }
+
+    public void setAllOn(boolean b) {
+        this.devices.values().forEach(device -> device.setOn(b));
+    }
+
+    public void addRoom(String s) {
+        if(!this.hasRoom(s)){
+            List<String> l = new ArrayList<String>();
+            this.locations.put(s, l);
+        }
+    }
+
+    public boolean hasRoom(String s) {
+        return this.locations.containsKey(s);
+    }
+
+    public void addToRoom (String s1, String s2) {
+        if(!this.roomHasDevice(s1, s2)){
+            this.locations.get(s1).add(s2);
+        }
+    }
+
+    public boolean roomHasDevice (String s1, String s2) {
+        return this.locations.get(s1).contains(s2);
+    }
+
 
     @Override
     public boolean equals(Object o) {
