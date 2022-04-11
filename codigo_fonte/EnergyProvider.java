@@ -3,19 +3,19 @@ public class EnergyProvider{
     private float price_kwh;
     private float tax;
 
-    EnergyProvider(){
+    public EnergyProvider(){
         this.name = "";
         this.price_kwh = 0.0f;
         this.tax = 0.0f;
     }
 
-    EnergyProvider(String name, float price_kwh, float tax){
+    public EnergyProvider(String name, float price_kwh, float tax){
         this.name = name;
         this.price_kwh = price_kwh;
         this.tax = tax;
     }
 
-    EnergyProvider(EnergyProvider ep){
+    public EnergyProvider(EnergyProvider ep){
         this.name = ep.name;
         this.price_kwh = ep.price_kwh;
         this.tax = ep.tax;

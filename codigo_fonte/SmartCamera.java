@@ -58,6 +58,10 @@ public class SmartCamera extends SmartDevice{
         this.sizeOfFile = sizeOfFile;
     }
 
+    public double energyConsumptionPerDay(){
+        return this.sizeOfFile*resX*resY;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

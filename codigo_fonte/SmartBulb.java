@@ -10,9 +10,11 @@ public class SmartBulb extends SmartDevice {
     public static final int WARM = 2;
     public static final int NEUTRAL = 1;
     public static final int COLD = 0;
-    
+
     private int tone;
     private double dimension; // added this variable
+    private double dConsInfo; // informação consumo diário
+    
 
     /**
      * Constructor for objects of class SmartBulb
@@ -21,23 +23,47 @@ public class SmartBulb extends SmartDevice {
         // initialise instance variables
         super();
         this.tone = NEUTRAL;
-    }
-
-    public SmartBulb(String id, int tone) {
-        // initialise instance variables
-        super(id);
-        this.tone = tone;
+        this.dimension = 0;
+        this.dConsInfo = 0;
     }
 
     public SmartBulb(String id) {
         // initialise instance variables
         super(id);
         this.tone = NEUTRAL;
+        this.dimension = 0;
+        this.dConsInfo = 0;
+    }
+
+    public SmartBulb(String id, int tone) {
+        // initialise instance variables
+        super(id);
+        this.tone = tone;
+        this.dimension = 0;
+        this.dConsInfo = 0;
+    }
+
+    public SmartBulb(String id, int tone, double dimension){
+        // initialise instance variables
+        super(id);
+        this.tone = tone;
+        this.dimension = dimension;
+        this.dConsInfo = 0;
+    }
+
+    public SmartBulb(String id, int tone, double dimension, double dConsInfo){
+        // initialise instance variables
+        super(id);
+        this.tone = tone;
+        this.dimension = dimension;
+        this.dConsInfo = dConsInfo;
     }
 
     public SmartBulb(SmartBulb sb) {
         super(sb);
         this.tone = NEUTRAL;
+        this.dimension = sb.dimension;
+        this.dConsInfo = sb.dConsInfo;
     }
 
     public void setTone(int t) {
@@ -52,6 +78,18 @@ public class SmartBulb extends SmartDevice {
 
     public double getDimension(){
         return this.dimension;
+    }
+
+    public double getDailyConsumptionInfo(){
+        return this.dConsInfo;
+    }
+
+    public void setDailyConsumptionInfo(double dConsInfo){
+        this.dConsInfo = dConsInfo;
+    }
+
+    public double energyConsumptionPerDay(){
+        return this.dConsInfo + this.dConsInfo * (this.tone + 1);
     }
 
     @Override

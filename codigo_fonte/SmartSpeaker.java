@@ -9,9 +9,11 @@
 public class SmartSpeaker extends SmartDevice {
     public static final int MAX = 20;
     
+
     private int volume;
     private String channel;
     private String marca; // added this
+    private double dConsInfo; // informação consumo diário
 
 
     /**
@@ -22,6 +24,8 @@ public class SmartSpeaker extends SmartDevice {
         // initialise instance variables
         this.volume = 0;
         this.channel = "";
+        this.marca = "";
+        this.dConsInfo = 0;
     }
 
     public SmartSpeaker(String s) {
@@ -29,6 +33,8 @@ public class SmartSpeaker extends SmartDevice {
         // initialise instance variables
         this.volume = 10;
         this.channel = "";
+        this.marca = "";
+        this.dConsInfo = 0;
     }
 
 
@@ -42,6 +48,8 @@ public class SmartSpeaker extends SmartDevice {
         else {
             this.volume = 0;
         }
+        this.marca = "";
+        this.dConsInfo = 0;
     }
 
 
@@ -49,6 +57,8 @@ public class SmartSpeaker extends SmartDevice {
         super(ss);
         this.volume = ss.getVolume();
         this.channel = ss.getChannel();
+        this.marca = ss.marca;
+        this.dConsInfo = ss.dConsInfo;
     }
 
 
@@ -74,6 +84,18 @@ public class SmartSpeaker extends SmartDevice {
 
     public String getMarca(){
         return this.marca;
+    }
+
+    public double getDailyConsumptionInfo(){
+        return this.dConsInfo;
+    }
+
+    public void setDailyConsumptionInfo(double dConsInfo){
+        this.dConsInfo = dConsInfo;
+    }
+
+    public double energyConsumptionPerDay(){
+        return this.getDailyConsumptionInfo() + 3 * this.volume;
     }
 
     @Override

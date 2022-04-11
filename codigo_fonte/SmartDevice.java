@@ -5,7 +5,7 @@
  * @author (your name)
  * @version (a version number or a date)
  */
-public class SmartDevice {
+public abstract class SmartDevice {
 
     private String id;
     private boolean on;
@@ -18,13 +18,13 @@ public class SmartDevice {
         this.on = false;
     }
 
-    public SmartDevice(String s) {
-        this.id = s;
+    public SmartDevice(String id) {
+        this.id = id;
         this.on = false;
     }
 
-    public SmartDevice(String s, boolean b) {
-        this.id = s;
+    public SmartDevice(String id, boolean b) {
+        this.id = id;
         this.on = b;
     }
 
@@ -53,6 +53,8 @@ public class SmartDevice {
         return this.id;
     }
 
+    public abstract double energyConsumptionPerDay();
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -61,9 +63,7 @@ public class SmartDevice {
         return on == that.on && this.id.equals(that.id);
     }
 
+    public abstract SmartDevice clone();
 
-    public SmartDevice clone(){
-        return new SmartDevice(this);
-    }
-
+    public abstract String toString();
 }

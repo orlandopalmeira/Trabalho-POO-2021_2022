@@ -16,6 +16,9 @@ public class CasaInteligente {
     private String morada;
     private Map<String, SmartDevice> devices; // identificador -> SmartDevice
     private Map<String, List<String>> locations; // Espaço -> Lista codigo dos devices
+    private String nomeProprietario;
+    private int nifProprietario;
+    private EnergyProvider fornecedor;
 
     /**
      * Constructor for objects of class CasaInteligente
@@ -25,6 +28,9 @@ public class CasaInteligente {
         this.morada = "";
         this.devices = new HashMap<>();
         this.locations = new HashMap<>();
+        this.nomeProprietario = "";
+        this.nifProprietario = 0;
+        this.fornecedor = null;
     }
 
     public CasaInteligente(String morada) {
@@ -32,6 +38,39 @@ public class CasaInteligente {
         this.morada = morada;
         this.devices = new HashMap<>();
         this.locations = new HashMap<>();
+        this.nomeProprietario = "";
+        this.nifProprietario = 0;
+        this.fornecedor = null;
+    }
+
+    public CasaInteligente(String morada, String nomeProprietario){
+        // initialise instance variables
+        this.morada = morada;
+        this.devices = new HashMap<>();
+        this.locations = new HashMap<>();
+        this.nomeProprietario = nomeProprietario;
+        this.nifProprietario = 0;
+        this.fornecedor = null;
+    }
+
+    public CasaInteligente(String morada, String nomeProprietario, int nifProprietario){
+        // initialise instance variables
+        this.morada = morada;
+        this.devices = new HashMap<>();
+        this.locations = new HashMap<>();
+        this.nomeProprietario = nomeProprietario;
+        this.nifProprietario = nifProprietario;
+        this.fornecedor = null;
+    }
+
+    public CasaInteligente(String morada, String nomeProprietario, int nifProprietario, EnergyProvider fornecedor){
+        // initialise instance variables
+        this.morada = morada;
+        this.devices = new HashMap<>();
+        this.locations = new HashMap<>();
+        this.nomeProprietario = nomeProprietario;
+        this.nifProprietario = nifProprietario;
+        this.fornecedor = fornecedor;
     }
 
     /**
@@ -103,7 +142,7 @@ public class CasaInteligente {
     }
 
     public SmartDevice getDevice(String s) {
-        if (this.devices.containsKey(s)){ // para evitar erros. O get pode dar null se não existir e o clone dá erro
+        if(this.devices.containsKey(s)){ // para evitar erros. O get pode dar null se não existir e o clone dá erro
             return this.devices.get(s).clone();
         }
         else return null;
@@ -140,13 +179,25 @@ public class CasaInteligente {
         return this.locations.get(s1).contains(s2);
     }
 
+    public EnergyProvider getFornecedor(){
+        return this.fornecedor.clone();
+    }
+
+    public void setFornecedor(EnergyProvider fornecedor){
+        this.fornecedor = fornecedor.clone();
+    }
+
     // (ADDED)
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CasaInteligente ci = (CasaInteligente) o;
-        return ci.morada.equals(morada) && ci.devices.equals(devices) && ci.locations.equals(locations);
+        return ci.morada.equals(morada) && 
+               ci.devices.equals(devices) && 
+               ci.locations.equals(locations) &&
+               ci.nomeProprietario.equals(nomeProprietario) &&
+               ci.nifProprietario == nifProprietario;
     }
 
     // (ADDED)
