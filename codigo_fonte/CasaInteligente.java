@@ -184,7 +184,8 @@ public class CasaInteligente {
         return ci.morada.equals(morada) && 
                ci.devices.equals(devices) && 
                ci.locations.equals(locations) &&
-               ci.proprietario.equals(proprietario);
+               ci.proprietario.equals(proprietario) &&
+               ci.fornecedor.equals(fornecedor);
     }
 
     @Override
