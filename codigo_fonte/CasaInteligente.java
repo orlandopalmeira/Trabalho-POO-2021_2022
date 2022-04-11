@@ -150,6 +150,10 @@ public class CasaInteligente {
         this.devices.values().forEach(device -> device.setOn(b));
     }
 
+    public void setAllinDivisionOn(String room, boolean b){
+        this.locations.get(room).forEach(s -> setOn(s,b));
+    }
+
     public void addRoom(String s) {
         if(!this.hasRoom(s)){
             List<String> l = new ArrayList<>();
