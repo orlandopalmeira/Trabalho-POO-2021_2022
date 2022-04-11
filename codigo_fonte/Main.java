@@ -16,7 +16,5 @@ public class Main {
         casaInte1.addToRoom("quarto", "s2");
 
         casaInte1.setAllinDivisionOn("sala",true);
-
-        boolean stop = true;
     }
 }
