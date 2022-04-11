@@ -53,7 +53,7 @@ public abstract class SmartDevice {
         return this.id;
     }
 
-    public abstract double energyConsumptionPerDay();
+    public abstract double dailyConsumption();
 
     @Override
     public boolean equals(Object o) {

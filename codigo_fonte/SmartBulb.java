@@ -13,7 +13,6 @@ public class SmartBulb extends SmartDevice {
 
     private int tone;
     private double dimension;
-    private double dConsInfo; // informação consumo diário
     
 
     /**
@@ -24,7 +23,6 @@ public class SmartBulb extends SmartDevice {
         super();
         this.tone = NEUTRAL;
         this.dimension = 0;
-        this.dConsInfo = 0;
     }
 
     public SmartBulb(String id) {
@@ -32,7 +30,6 @@ public class SmartBulb extends SmartDevice {
         super(id);
         this.tone = NEUTRAL;
         this.dimension = 0;
-        this.dConsInfo = 0;
     }
 
     public SmartBulb(String id, int tone) {
@@ -40,7 +37,6 @@ public class SmartBulb extends SmartDevice {
         super(id);
         this.tone = tone;
         this.dimension = 0;
-        this.dConsInfo = 0;
     }
 
     public SmartBulb(String id, int tone, double dimension){
@@ -48,22 +44,12 @@ public class SmartBulb extends SmartDevice {
         super(id);
         this.tone = tone;
         this.dimension = dimension;
-        this.dConsInfo = 0;
-    }
-
-    public SmartBulb(String id, int tone, double dimension, double dConsInfo){
-        // initialise instance variables
-        super(id);
-        this.tone = tone;
-        this.dimension = dimension;
-        this.dConsInfo = dConsInfo;
     }
 
     public SmartBulb(SmartBulb sb) {
         super(sb);
         this.tone = NEUTRAL;
         this.dimension = sb.dimension;
-        this.dConsInfo = sb.dConsInfo;
     }
 
     public void setTone(int t) {
@@ -80,16 +66,8 @@ public class SmartBulb extends SmartDevice {
         return this.dimension;
     }
 
-    public double getDailyConsumptionInfo(){
-        return this.dConsInfo;
-    }
-
-    public void setDailyConsumptionInfo(double dConsInfo){
-        this.dConsInfo = dConsInfo;
-    }
-
-    public double energyConsumptionPerDay(){
-        return this.dConsInfo + this.dConsInfo * (this.tone + 1);
+    public double dailyConsumption(){
+        return 3.0 + this.tone;
     }
 
     @Override

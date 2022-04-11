@@ -58,7 +58,7 @@ public class SmartCamera extends SmartDevice{
         this.sizeOfFile = sizeOfFile;
     }
 
-    public double energyConsumptionPerDay(){
+    public double dailyConsumption(){
         return this.sizeOfFile*resX*resY;
     }
 

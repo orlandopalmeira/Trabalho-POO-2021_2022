@@ -8,13 +8,10 @@
  */
 public class SmartSpeaker extends SmartDevice {
     public static final int MAX = 20;
-    
 
     private int volume;
     private String channel;
     private String marca;
-    private double dConsInfo; // informação consumo diário
-
 
     /**
      * Constructor for objects of class SmartSpeaker
@@ -25,7 +22,6 @@ public class SmartSpeaker extends SmartDevice {
         this.volume = 0;
         this.channel = "";
         this.marca = "";
-        this.dConsInfo = 0;
     }
 
     public SmartSpeaker(String s) {
@@ -34,7 +30,6 @@ public class SmartSpeaker extends SmartDevice {
         this.volume = 10;
         this.channel = "";
         this.marca = "";
-        this.dConsInfo = 0;
     }
 
 
@@ -49,7 +44,6 @@ public class SmartSpeaker extends SmartDevice {
             this.volume = 0;
         }
         this.marca = "";
-        this.dConsInfo = 0;
     }
 
 
@@ -58,7 +52,6 @@ public class SmartSpeaker extends SmartDevice {
         this.volume = ss.getVolume();
         this.channel = ss.getChannel();
         this.marca = ss.marca;
-        this.dConsInfo = ss.dConsInfo;
     }
 
 
@@ -86,16 +79,8 @@ public class SmartSpeaker extends SmartDevice {
         return this.marca;
     }
 
-    public double getDailyConsumptionInfo(){
-        return this.dConsInfo;
-    }
-
-    public void setDailyConsumptionInfo(double dConsInfo){
-        this.dConsInfo = dConsInfo;
-    }
-
-    public double energyConsumptionPerDay(){
-        return this.getDailyConsumptionInfo() + 3 * this.volume;
+    public double dailyConsumption(){
+        return /* fator marca + */ this.volume * 3.0;
     }
 
     @Override
@@ -107,7 +92,7 @@ public class SmartSpeaker extends SmartDevice {
             return false;
         }
         SmartSpeaker s = (SmartSpeaker) o;
-        return (super.equals(o) && this.volume == s.getVolume() && this.channel == s.getChannel() && this.marca == s.getMarca() && this.dConsInfo == s.getDailyConsumptionInfo());
+        return super.equals(o) && this.volume == s.getVolume() && this.channel == s.getChannel() && this.marca == s.getMarca();
     }
 
     @Override
