@@ -121,7 +121,6 @@ public class CasaInteligente implements Comparable<CasaInteligente>{
         this.fornecedor = fornecedor.clone();
     }
 
-
     public void setDeviceOn(String devCode) {
         if(this.existsDevice(devCode)){
             this.devices.get(devCode).turnOn();
@@ -131,7 +130,6 @@ public class CasaInteligente implements Comparable<CasaInteligente>{
     public boolean existsDevice(String id) {
         return this.devices.containsKey(id);
     }
-
     
     public void addDevice(SmartDevice dev) {
         if(!this.existsDevice(dev.getID())){
