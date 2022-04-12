@@ -1,7 +1,12 @@
+import java.io.IOException;
+import java.util.List;
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException  {
         if(args[0].equals("-f")){ // recebe um ficheiro como argumento
-            
+            List<CasaInteligente> casas = Generator.fileToHouses(args[1], args[2], args[3]);
+            for(CasaInteligente casa : casas){
+                System.out.println(casa.getProprietario().toString());
+            }
         }
         /*System.out.println("teste");
 

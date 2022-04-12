@@ -1,5 +1,5 @@
 import java.util.List;
-public class EnergyProvider{
+public class EnergyProvider implements Comparable<EnergyProvider>{
     private String name;
     private float price_kwh;
     private float tax;
@@ -12,8 +12,8 @@ public class EnergyProvider{
 
     public EnergyProvider(String name){
         this.name = name;
-        this.price_kwh = 0.0f;
-        this.tax = 0.0f;
+        this.price_kwh = 0.15f;
+        this.tax = 0.23f;
     }
 
     public EnergyProvider(String name, float price_kwh, float tax){
@@ -58,6 +58,11 @@ public class EnergyProvider{
 
     public double pricePerDay(List<SmartDevice> devices){
         return devices.stream().mapToDouble(dev -> this.pricePerDayPerDevice(devices.size(), dev)).sum();
+    }
+
+    @Override
+    public int compareTo(EnergyProvider ep){
+        return this.name.compareTo(ep.name);
     }
 
     @Override

@@ -5,7 +5,7 @@
  * @author (your name)
  * @version (a version number or a date)
  */
-public abstract class SmartDevice {
+public abstract class SmartDevice implements Comparable<SmartDevice> {
 
     private String id;
     private boolean on;
@@ -72,6 +72,11 @@ public abstract class SmartDevice {
 
     public void resetTotalConsumption(){
         this.totalConsumption = 0.0;
+    }
+
+    @Override
+    public int compareTo(SmartDevice dev){
+        return this.id.compareTo(dev.id);
     }
 
     @Override

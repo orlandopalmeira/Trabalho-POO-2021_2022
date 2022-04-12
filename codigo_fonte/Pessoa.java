@@ -1,4 +1,4 @@
-public class Pessoa {
+public class Pessoa implements Comparable<Pessoa> {
     private String nome;
     private int nif;
 
@@ -34,6 +34,10 @@ public class Pessoa {
         this.nif = nif;
     }
 
+    @Override
+    public int compareTo(Pessoa p){
+        return this.nif - p.nif;
+    }
 
     @Override
     public boolean equals(Object o){

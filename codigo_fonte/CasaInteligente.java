@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
  * @author (your name)
  * @version (a version number or a date)
  */
-public class CasaInteligente {
+public class CasaInteligente implements Comparable<CasaInteligente>{
    
     private String morada;
     private Map<String, SmartDevice> devices; // identificador -> SmartDevice
@@ -59,7 +59,6 @@ public class CasaInteligente {
         this.proprietario = ci.getProprietario();
         this.fornecedor = ci.getFornecedor();
     }
-
 
     /**
      * Devolve a morada da casa.
@@ -133,9 +132,23 @@ public class CasaInteligente {
         return this.devices.containsKey(id);
     }
 
-    public void addDevice(SmartDevice s) {
-        if(!this.existsDevice(s.getID())){
-            this.devices.put(s.getID(), s.clone());
+    
+    public void addDevice(SmartDevice dev) {
+        if(!this.existsDevice(dev.getID())){
+            this.devices.put(dev.getID(), dev.clone());
+        }
+    }
+
+    public void addDevice(SmartDevice dev, String room){
+        if(!this.existsDevice(dev.getID())){
+            if(this.hasRoom(room)){
+                this.devices.put(dev.getID(), dev.clone());
+                this.locations.get(room).add(dev.getID());
+            }else{
+                this.addRoom(room);
+                this.devices.put(dev.getID(), dev.clone());
+                this.locations.get(room).add(dev.getID());
+            }
         }
     }
 
@@ -181,6 +194,10 @@ public class CasaInteligente {
         return this.locations.get(s1).contains(s2);
     }
 
+    @Override
+    public int compareTo(CasaInteligente ci){
+        return this.proprietario.compareTo(ci.proprietario);
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -193,7 +210,7 @@ public class CasaInteligente {
                ci.proprietario.equals(proprietario) &&
                ci.fornecedor.equals(fornecedor);
     }
-
+    
     @Override
     public CasaInteligente clone(){
         return new CasaInteligente(this);
