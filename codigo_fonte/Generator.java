@@ -15,7 +15,6 @@ public class Generator {
         if(data[0].equals("SmartBulb")){
             result = new SmartBulb(data[1],Integer.parseInt(data[2]),Double.parseDouble(data[3]));
         }else if(data[0].equals("SmartSpeaker")){
-            //SmartSpeaker(String cod, String channel, int volume, String marca)
             result = new SmartSpeaker(data[1],data[2],10,data[3]);
         }else if(data[0].equals("SmartCamera")){
             result = new SmartCamera(data[1],Integer.parseInt(data[2]),Integer.parseInt(data[3]),Integer.parseInt(data[4]));
