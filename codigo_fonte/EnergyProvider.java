@@ -1,31 +1,36 @@
-import java.util.List;
+import java.util.Collection;
 public class EnergyProvider implements Comparable<EnergyProvider>{
     private String name;
     private float price_kwh;
     private float tax;
+    private double volumeFaturacao;
 
     public EnergyProvider(){
         this.name = "";
         this.price_kwh = 0.0f;
         this.tax = 0.0f;
+        this.volumeFaturacao = 0.0f;
     }
 
     public EnergyProvider(String name){
         this.name = name;
         this.price_kwh = 0.15f;
         this.tax = 0.23f;
+        this.volumeFaturacao = 0.0f;
     }
 
     public EnergyProvider(String name, float price_kwh, float tax){
         this.name = name;
         this.price_kwh = price_kwh;
         this.tax = tax;
+        this.volumeFaturacao = 0.0f;
     }
 
     public EnergyProvider(EnergyProvider ep){
         this.name = ep.name;
         this.price_kwh = ep.price_kwh;
         this.tax = ep.tax;
+        this.volumeFaturacao = 0.0f;
     }
 
     public String getName() {
@@ -56,8 +61,25 @@ public class EnergyProvider implements Comparable<EnergyProvider>{
         return this.price_kwh * device.dailyConsumption() * (1 + this.tax) * (numDevices > 10 ? 0.9f : 0.75f);
     }
 
-    public double pricePerDay(List<SmartDevice> devices){
-        return devices.stream().mapToDouble(dev -> this.pricePerDayPerDevice(devices.size(), dev)).sum();
+    public double pricePerDay(Collection<SmartDevice> devices){
+        return devices.stream()
+                      .mapToDouble(dev -> this.pricePerDayPerDevice(devices.size(), dev))
+                      .sum();
+    }
+
+    public double getVolumeFaturacao(){
+        return this.volumeFaturacao;
+    }
+
+    public void updateVolumeFaturacao(Collection<CasaInteligente> casas){
+        this.volumeFaturacao = casas.stream()
+                                    .filter(casa -> casa.getFornecedor().equals(this))
+                                    .mapToDouble(casa -> casa.getTotalCost())
+                                    .sum();
+    }
+
+    public void resetVolumeFaturacao(){
+        this.volumeFaturacao = 0.0f;
     }
 
     @Override

@@ -18,6 +18,8 @@ public class CasaInteligente implements Comparable<CasaInteligente>{
     private Map<String, List<String>> locations; // Espaço -> Lista codigo dos devices
     private Pessoa proprietario;
     private EnergyProvider fornecedor;
+    private double totalConsumption;
+    private double totalCost;
 
     /**
      * Constructor for objects of class CasaInteligente
@@ -29,6 +31,8 @@ public class CasaInteligente implements Comparable<CasaInteligente>{
         this.locations = new HashMap<>();
         this.proprietario = null;
         this.fornecedor = null;
+        this.totalConsumption = 0.0f;
+        this.totalCost = 0.0f;
     }
 
     public CasaInteligente(String morada) {
@@ -38,6 +42,8 @@ public class CasaInteligente implements Comparable<CasaInteligente>{
         this.locations = new HashMap<>();
         this.proprietario = null;
         this.fornecedor = null;
+        this.totalConsumption = 0.0f;
+        this.totalCost = 0.0f;
     }
 
     public CasaInteligente(String morada, Pessoa proprietario, EnergyProvider fornecedor){
@@ -47,6 +53,8 @@ public class CasaInteligente implements Comparable<CasaInteligente>{
         this.locations = new HashMap<>();
         this.proprietario = proprietario.clone();
         this.fornecedor = fornecedor.clone();
+        this.totalConsumption = 0.0f;
+        this.totalCost = 0.0f;
     }
 
     /**
@@ -58,6 +66,8 @@ public class CasaInteligente implements Comparable<CasaInteligente>{
         this.locations = ci.getMapLocations();
         this.proprietario = ci.getProprietario();
         this.fornecedor = ci.getFornecedor();
+        this.totalConsumption = 0.0f;
+        this.totalCost = 0.0f;
     }
 
     /**
@@ -190,6 +200,30 @@ public class CasaInteligente implements Comparable<CasaInteligente>{
 
     public boolean roomHasDevice (String s1, String s2) {
         return this.locations.get(s1).contains(s2);
+    }
+
+    public double getTotalConsumption(){
+        return this.totalConsumption;
+    }
+
+    public double getTotalCost(){
+        return this.totalCost;
+    }
+
+    public void resetConsumptionAndCost(){
+        this.totalCost = 0.0f;
+        this.totalConsumption = 0.0f;
+        this.devices.values().forEach(device -> device.resetTotalConsumption());
+    }
+
+    public void passTime(int numberOfDays){
+        while (numberOfDays-- > 0) {
+            this.devices.values().forEach(device -> device.updateTotalConsumption());
+            this.totalConsumption += this.devices.values().stream()
+                                                          .mapToDouble(device -> device.getTotalConsumption())
+                                                          .sum();
+            this.totalCost += this.fornecedor.pricePerDay(this.devices.values());
+        }
     }
 
     @Override

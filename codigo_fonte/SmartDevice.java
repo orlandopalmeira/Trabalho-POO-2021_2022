@@ -64,10 +64,8 @@ public abstract class SmartDevice implements Comparable<SmartDevice> {
         return this.totalConsumption;
     }
 
-    public void incrementTotalConsumption(double increment){
-        if(increment >= 0.0){
-            this.totalConsumption += increment;
-        }
+    public void updateTotalConsumption(){
+        this.totalConsumption += this.dailyConsumption();
     }
 
     public void resetTotalConsumption(){
