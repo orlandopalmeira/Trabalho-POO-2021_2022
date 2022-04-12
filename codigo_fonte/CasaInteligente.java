@@ -160,16 +160,16 @@ public class CasaInteligente implements Comparable<CasaInteligente>{
         }
     }
 
-    public SmartDevice getDevice(String s) {
-        if(this.devices.containsKey(s)){
-            return this.devices.get(s).clone();
+    public SmartDevice getDevice(String idDev) {
+        if(this.devices.containsKey(idDev)){
+            return this.devices.get(idDev).clone();
         }
         else return null;
     }
 
-    public void setOn(String s, boolean b) {
-        if(this.devices.containsKey(s)){
-            this.devices.get(s).setOn(b);
+    public void setOn(String idDev, boolean b) {
+        if(this.devices.containsKey(idDev)){
+            this.devices.get(idDev).setOn(b);
         }
     }
 
@@ -181,15 +181,15 @@ public class CasaInteligente implements Comparable<CasaInteligente>{
         this.locations.get(room).forEach(s -> setOn(s,b));
     }
 
-    public void addRoom(String s) {
-        if(!this.hasRoom(s)){
+    public void addRoom(String room) {
+        if(!this.hasRoom(room)){
             List<String> l = new ArrayList<>();
-            this.locations.put(s, l);
+            this.locations.put(room, l);
         }
     }
 
-    public boolean hasRoom(String s) {
-        return this.locations.containsKey(s);
+    public boolean hasRoom(String room) {
+        return this.locations.containsKey(room);
     }
 
     public void addToRoom (String s1, String s2) {
@@ -216,14 +216,13 @@ public class CasaInteligente implements Comparable<CasaInteligente>{
         this.devices.values().forEach(device -> device.resetTotalConsumption());
     }
 
-    public void passTime(int numberOfDays){
-        while (numberOfDays-- > 0) {
-            this.devices.values().forEach(device -> device.updateTotalConsumption());
-            this.totalConsumption += this.devices.values().stream()
-                                                          .mapToDouble(device -> device.getTotalConsumption())
-                                                          .sum();
-            this.totalCost += this.fornecedor.pricePerDay(this.devices.values());
-        }
+    public void passTime(){
+        this.devices.values().forEach(device -> device.updateTotalConsumption());
+        this.totalConsumption = this.devices.values().stream()
+                                                     .mapToDouble(device -> device.getTotalConsumption())
+                                                     .sum();
+        this.totalCost += this.fornecedor.pricePerDay(this.devices.values());
+        
     }
 
     @Override

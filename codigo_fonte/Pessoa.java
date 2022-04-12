@@ -17,7 +17,6 @@ public class Pessoa implements Comparable<Pessoa> {
         this.nif = pessoa.nif;
     }
 
-
     public String getNome() {
         return this.nome;
     }
