@@ -7,21 +7,7 @@ import java.util.Scanner;
 import java.util.HashMap;
 
 public class Generator {
-    /*
-    Devices Sim 
-    SmartBulb;ID(string);ON/OFF(bool);TONE(int);DIMENSION(double)
-    SmartSpeaker;ID(string);ON/OFF(bool);Volume(int);Channel(string);Marca(string)
-    SmartCamera;ID(string);ON/OFF(bool);resx(int);resy(int);sizeoffile(float)
-
-    Houses
-    Morada(string);[(Room:[d1.d2.d2])];NIF(int);Fornecedor(string)
-
-    Providers Sim
-    Name(string);price_kWh(float);tax(float)
-
-    People Sim
-    Name(string);NIF(int)
-    */
+    
     private static SmartDevice lineToDevice(String line){
         String[] data = line.split(";");
         SmartDevice result = null;

@@ -6,10 +6,8 @@ public class Main {
         if(args[0].equals("-f")){ // recebe um ficheiro como argumento
             List<CasaInteligente> casas = Generator.fileToHouses(args[1], args[2], args[3], args[4]);
             List<EnergyProvider> providers = Generator.fileToProviders(args[2]).values().stream().collect(Collectors.toList());
-            for(CasaInteligente casa : casas){
-                System.out.print(casa.toLineFile());
-                
-            }
+            Simulator simulador = new Simulator(casas, providers);
+            System.out.println("test");
         }else{
             System.out.println("teste");
 
