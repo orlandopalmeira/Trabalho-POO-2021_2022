@@ -27,6 +27,13 @@ public class SmartCamera extends SmartDevice{
         this.sizeOfFile = size;
     }
 
+    public SmartCamera(String id, boolean state, int resX, int resY, float sizeOfFile){
+        super(id,state);
+        this.resX = resX;
+        this.resY = resY;
+        this.sizeOfFile = sizeOfFile;
+    }
+
     public SmartCamera(SmartCamera sc) {
         super(sc);
         this.resX = sc.getResX();

@@ -45,6 +45,12 @@ public class SmartBulb extends SmartDevice {
         this.tone = tone;
         this.dimension = dimension;
     }
+    
+    public SmartBulb(String id, boolean state, int tone, double dimension){
+        super(id,state);
+        this.tone = tone;
+        this.dimension = dimension;
+    }
 
     public SmartBulb(SmartBulb sb) {
         super(sb);

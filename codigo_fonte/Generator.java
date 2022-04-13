@@ -1,46 +1,57 @@
 import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.HashMap;
 
 public class Generator {
-    
+    /*
+    Devices Sim 
+    SmartBulb;ID(string);ON/OFF(bool);TONE(int);DIMENSION(double)
+    SmartSpeaker;ID(string);ON/OFF(bool);Volume(int);Channel(string);Marca(string)
+    SmartCamera;ID(string);ON/OFF(bool);resx(int);resy(int);sizeoffile(float)
+
+    Houses
+    Morada(string);[(Room:[d1.d2.d2])];NIF(int);Fornecedor(string)
+
+    Providers Sim
+    Name(string);price_kWh(float);tax(float)
+
+    People Sim
+    Name(string);NIF(int)
+    */
     private static SmartDevice lineToDevice(String line){
         String[] data = line.split(";");
         SmartDevice result = null;
         if(data[0].equals("SmartBulb")){
-            result = new SmartBulb(data[1],Integer.parseInt(data[2]),Double.parseDouble(data[3]));
+            result = new SmartBulb(data[1],Boolean.parseBoolean(data[2]),Integer.parseInt(data[3]),Double.parseDouble(data[4]));
         }else if(data[0].equals("SmartSpeaker")){
-            result = new SmartSpeaker(data[1],data[2],10,data[3]);
+            result = new SmartSpeaker(data[1],Boolean.parseBoolean(data[2]),Integer.parseInt(data[3]),data[4],data[5]);
         }else if(data[0].equals("SmartCamera")){
-            result = new SmartCamera(data[1],Integer.parseInt(data[2]),Integer.parseInt(data[3]),Integer.parseInt(data[4]));
+            result = new SmartCamera(data[1],Boolean.parseBoolean(data[2]),Integer.parseInt(data[3]),Integer.parseInt(data[4]),Float.parseFloat(data[5]));
         }
         return result;
     }
 
-    private static Map<String,SmartDevice> fileToDevices(String path) throws IOException{
+    private static Map<String,SmartDevice> fileToDevices(String path) throws FileNotFoundException{
         Map<String,SmartDevice> result = new HashMap<>();
-        BufferedReader reader = new BufferedReader(new FileReader(new File(path)));
-        String line;
-        while((line = reader.readLine()) != null){
-            SmartDevice aux = lineToDevice(line);
+        Scanner reader = new Scanner(new File(path));
+        while(reader.hasNextLine()){
+            SmartDevice aux = lineToDevice(reader.nextLine());
             result.put(aux.getID(), aux);
         }
         reader.close();
         return result;
     }
 
-    private static Map<String,Pessoa> fileToPeople(String path) throws IOException{
-        Map<String,Pessoa> result = new HashMap<>();
-        BufferedReader reader = new BufferedReader(new FileReader(new File(path)));
-        String line;
-        while((line = reader.readLine()) != null){
-            String[] data = line.split(";");
-            result.put(data[0],new Pessoa(data[0],Integer.parseInt(data[1])));
+    private static Map<Integer,Pessoa> fileToPeople(String path) throws FileNotFoundException {
+        Map<Integer,Pessoa> result = new HashMap<>();
+        Scanner reader = new Scanner(new File(path));
+        while(reader.hasNextLine()){
+            String[] data = reader.nextLine().split(";");
+            result.put(Integer.parseInt(data[1]),new Pessoa(data[0],Integer.parseInt(data[1])));
         }
         reader.close();
         return result;
@@ -63,10 +74,22 @@ public class Generator {
         return result; 
     }
 
-    private static CasaInteligente lineToHouse(Map<String,SmartDevice> allDevices, Map<String,Pessoa> allPeople, String line){
+    public static Map<String,EnergyProvider> fileToProviders(String path) throws FileNotFoundException{
+        Map<String, EnergyProvider> result = new HashMap<>();
+        Scanner reader = new Scanner(new File(path));
+        while(reader.hasNextLine()){
+            String[] data = reader.nextLine().split(";");
+            result.put(data[0], new EnergyProvider(data[0],Float.parseFloat(data[1]),Float.parseFloat(data[2])));
+        }
+        reader.close();
+        return result;
+    }
+    //  data[0]         data[1]          data[2]    data[3] 
+    //Morada(string);[(Room:[d1.d2.d2])];NIF(int);Fornecedor(string)
+    private static CasaInteligente lineToHouse(Map<String,SmartDevice> allDevices, Map<Integer,Pessoa> allPeople, Map<String,EnergyProvider> allProviders, String line){
         String[] data = line.split(";");
-        CasaInteligente result = new CasaInteligente(data[0],allPeople.get(data[1]),new EnergyProvider(data[2]));
-        Map<String,List<String>> devsPerRoom = tuplesRoomDevicesToLocations(data[3]);
+        CasaInteligente result = new CasaInteligente(data[0],allPeople.get(Integer.parseInt(data[2])),allProviders.get(data[3]));
+        Map<String,List<String>> devsPerRoom = tuplesRoomDevicesToLocations(data[1]);
         for(String room: devsPerRoom.keySet()){
             for(String devID: devsPerRoom.get(room)){
                 result.addDevice(allDevices.get(devID), room);
@@ -75,14 +98,14 @@ public class Generator {
         return result;
     }
     
-    public static List<CasaInteligente> fileToHouses(String devicesF, String peopleF, String housesF) throws IOException {
+    public static List<CasaInteligente> fileToHouses(String devicesF, String providersF,String peopleF, String housesF) throws FileNotFoundException{
         Map<String,SmartDevice> devices = fileToDevices(devicesF);
-        Map<String,Pessoa> people = fileToPeople(peopleF);
+        Map<Integer,Pessoa> people = fileToPeople(peopleF);
+        Map<String,EnergyProvider> providers = fileToProviders(providersF);
         List<CasaInteligente> houses = new ArrayList<>();
-        BufferedReader reader = new BufferedReader(new FileReader(new File(housesF)));
-        String line;
-        while((line = reader.readLine()) != null){
-            houses.add(lineToHouse(devices,people,line));
+        Scanner reader = new Scanner(new File(housesF));
+        while(reader.hasNext()){
+            houses.add(lineToHouse(devices,people,providers,reader.nextLine()));
         }
         reader.close();
         return houses;

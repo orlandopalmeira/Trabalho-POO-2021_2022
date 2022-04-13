@@ -46,6 +46,12 @@ public class SmartSpeaker extends SmartDevice {
         this.marca = marca;
     }
 
+    public SmartSpeaker(String id, boolean state, int volume, String channel, String marca){
+        super(id,state);
+        this.volume = volume;
+        this.channel = channel;
+        this.marca = marca;
+    }
 
     public SmartSpeaker(SmartSpeaker ss){
         super(ss);
