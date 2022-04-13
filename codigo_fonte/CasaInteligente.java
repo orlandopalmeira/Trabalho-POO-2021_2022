@@ -289,6 +289,31 @@ public class CasaInteligente implements Comparable<CasaInteligente>{
         
     }
 
+    /**
+     * Retorna uma string com os dados da casa para serem guardados em ficheiro.
+     * private String morada;
+    private Map<String, SmartDevice> devices; // identificador -> SmartDevice
+    private Map<String, List<String>> locations; // Espaço -> Lista codigo dos devices
+    private Pessoa proprietario;
+    private EnergyProvider fornecedor;
+    private double totalConsumption;
+    private double totalCost;
+     */
+    public String toLineFile(){
+        StringBuilder sb = new StringBuilder();
+        sb.append(String.format("%s;",this.morada));
+        sb.append("[");
+        for(String room : this.locations.keySet()){
+            sb.append(String.format("(%s:[",room));
+            for(String devID: this.locations.get(room)){
+                sb.append(String.format("%s.",devID));
+            }
+            sb.append("]),");
+        }
+        sb.append("];");
+        return sb.toString();
+    }
+
 
     @Override
     /**

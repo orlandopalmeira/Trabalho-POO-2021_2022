@@ -76,8 +76,15 @@ public class SmartCamera extends SmartDevice{
         this.sizeOfFile = sizeOfFile;
     }
 
+    @Override
     public double dailyConsumption(){
         return this.getOn() ? (this.sizeOfFile*resX*resY*24.0)/1000.0 : 0.0;
+    }
+
+    @Override
+    public String toLineFile() {
+        // TYPE;ID(string);ON/OFF(bool);resx(int);resy(int);sizeoffile(float)
+        return String.format("SmartCamera;%s;%b;%d;%d;%f\n",this.getID(),this.getOn(),this.resX,this.resY,this.sizeOfFile);
     }
 
     @Override
@@ -98,6 +105,7 @@ public class SmartCamera extends SmartDevice{
     public SmartDevice clone() {
         return new SmartCamera(this);
     }
+
 }
 
 

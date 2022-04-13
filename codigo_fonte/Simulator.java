@@ -10,11 +10,10 @@ import java.util.TreeSet;
 public class Simulator {
     private Map<Integer, CasaInteligente> houses;
     private Map<String,EnergyProvider> energyProviders;
+    
     private Map<String, List<Fatura>> billsPerProvider; // faturas de cada fornecedores
     private Map<String, Double> profitPerProvider; // volumes de faturação por fornecedor
     private TreeSet<CasaInteligente> consumptionOrder; // árvore de casas ordenada segundo o seu consumo total no fim da simulação
-    private LocalDate start; // data de início da simulação
-    private LocalDate end; // data de fim da simulação
 
     public Simulator(Collection<CasaInteligente> houses, Collection<EnergyProvider> providers, LocalDate start, LocalDate end) {
         this.houses = new HashMap<>();
@@ -29,7 +28,7 @@ public class Simulator {
         this.billsPerProvider = new HashMap<>();
         this.profitPerProvider = new HashMap<>();
         for(CasaInteligente house : houses){
-            this.billsPerProvider.put(house.getFornecedor().getName(), new ArrayList<Fatura>());
+            this.billsPerProvider.putIfAbsent(house.getFornecedor().getName(), new ArrayList<Fatura>());
             this.profitPerProvider.put(house.getFornecedor().getName(),0.0);
         }
 
@@ -37,15 +36,12 @@ public class Simulator {
             double aux = c2.getTotalConsumption() - c1.getTotalConsumption();
             return aux < 0 ? -1 : aux == 0 ? 0 : 1;
         });
-
-        this.start = start; // LocalDate é imutável/sem necessidade de clone
-        this.end = end;
     }
 
     /**
      * Inicia a simulacao.
      */
-    public void startSimulation(){
+    public void startSimulation(LocalDate start,LocalDate end){
         LocalDate aux = start;
         while(aux.compareTo(end) < 0){
             this.houses.values().forEach(house -> house.passTime());
@@ -64,57 +60,11 @@ public class Simulator {
     }
 
     /**
-     * Altera a data de inicio da simulacao.
-     */
-    public void setStartDate(LocalDate start){
-        this.start = start;
-    }
-
-    /**
-     * Altera a data de fim da simulacao.
-     */
-    public void setEndDate(LocalDate end){
-        this.end = end;
-    }
-
-    /**
-     * Devolve a data de inicio da simulacao.
-     */
-    public LocalDate getStartDate(){
-        return this.start;
-    }
-
-    /**
-     * Devolve a data de fim da simulacao.
-     */
-    public LocalDate getEndDate(){
-        return this.end;
-    }
-
-    /**
-     * Devolve as faturas emitidas por um certo fornecedor.
-     */
-    public List<Fatura> getBillsFromProvider(EnergyProvider provider){
-        List<Fatura> result = new ArrayList<>();
-        this.billsPerProvider.get(provider.getName()).forEach(fatura -> result.add(fatura.clone()));
-        return result;
-    }
-
-    /**
-     * Devolve as faturas emitidas por um certo fornecedor.
-     */
-    public List<Fatura> getBillsFromProvider(String providerName){
-        List<Fatura> result = new ArrayList<>();
-        this.billsPerProvider.get(providerName).forEach(fatura -> result.add(fatura.clone()));
-        return result;
-    }
-
-    /**
      * Retorna a casa que mais energia consumiu na simulacao.
      */
     public CasaInteligente getBiggestConsumer(){
         CasaInteligente aux = this.consumptionOrder.first(); // a árvore está por ordem decrescente
-        return aux != null ? aux.clone() : null;
+        return aux.clone(); 
     }
 
     /**
@@ -128,6 +78,24 @@ public class Simulator {
                                                  return aux < 0 ? -1 : aux == 0 ? 0 : 1;
                                              }).orElse(null);
         return providerName != null ? this.energyProviders.get(providerName).clone() : null;
+    }
+
+    /**
+     * Devolve as faturas emitidas por um certo fornecedor.
+     */
+    public List<Fatura> getBillsFromProvider(EnergyProvider provider){
+        List<Fatura> result = new ArrayList<>();
+        this.billsPerProvider.get(provider.getName()).forEach(fatura -> result.add(fatura.clone()));
+        return result;
+    }
+
+    /**
+     * Devolve as faturas emitidas por um certo fornecedor dado o seu nome.
+     */
+    public List<Fatura> getBillsFromProvider(String providerName){
+        List<Fatura> result = new ArrayList<>();
+        this.billsPerProvider.get(providerName).forEach(fatura -> result.add(fatura.clone()));
+        return result;
     }
 
 }

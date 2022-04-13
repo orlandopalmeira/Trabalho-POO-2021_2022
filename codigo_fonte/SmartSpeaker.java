@@ -33,12 +33,12 @@ public class SmartSpeaker extends SmartDevice {
     }
 
 
-    public SmartSpeaker(String cod, String channel, int i, String marca) {
+    public SmartSpeaker(String cod, String channel, int volume, String marca) {
         // initialise instance variables
         super(cod); // chama o construtor da superclasse com o determinado parametro.
         this.channel = channel;
-        if (i >= 0 && i <= MAX){
-            this.volume = i;
+        if (volume >= 0 && volume <= MAX){
+            this.volume = volume;
         }
         else {
             this.volume = 0;
@@ -96,6 +96,13 @@ public class SmartSpeaker extends SmartDevice {
         return this.marca;
     }
 
+    @Override
+    public String toLineFile() {
+        // TYPE;ID(string);ON/OFF(bool);Volume(int);Channel(string);Marca(string)
+        return String.format("SmartSpeaker;%s;%b;%d;%s;%s\n",this.getID(),this.getOn(),this.volume,this.channel,this.marca);
+    }
+
+    @Override
     public double dailyConsumption(){
         return this.getOn() ? /* fator marca + */ ((this.volume * 3.0)*24.0)/1000.0 : 0.0;
     }
@@ -121,4 +128,5 @@ public class SmartSpeaker extends SmartDevice {
     public SmartDevice clone() {
         return new SmartSpeaker(this);
     }
+
 }

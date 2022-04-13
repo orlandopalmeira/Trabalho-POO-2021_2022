@@ -92,8 +92,8 @@ public class EnergyProvider implements Comparable<EnergyProvider>{
      * Emite a fatura para uma certa casa.
      */
     public Fatura emitirFatura(CasaInteligente casa, LocalDate start, LocalDate end){
-        if(this.equals(casa.getFornecedor())){
-            EnergyProvider ep = casa.getFornecedor();
+        EnergyProvider ep = casa.getFornecedor();
+        if(this.equals(ep)){
             return new Fatura(ep.name,casa,start,end);
         }else return null;
     }

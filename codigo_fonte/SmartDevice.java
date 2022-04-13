@@ -82,7 +82,7 @@ public abstract class SmartDevice implements Comparable<SmartDevice> {
      * Retorna o consumo total de um dispositivo desde o inicio da contagem.
      */
     public double getTotalConsumption(){
-        return this.totalConsumption;
+        return Math.round(this.totalConsumption*1000.0)/1000.0; // arredonda para tres casas decimais
     }
 
     /**
@@ -106,6 +106,12 @@ public abstract class SmartDevice implements Comparable<SmartDevice> {
     public int compareTo(SmartDevice dev){
         return this.id.compareTo(dev.id);
     }
+
+    /**
+     * Retorna uma string com os dados do dispositivos para ser guardada
+     * em ficheiro.
+     */
+    public abstract String toLineFile();
 
     @Override
     /**

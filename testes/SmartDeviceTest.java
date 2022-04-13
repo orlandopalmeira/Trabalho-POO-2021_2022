@@ -122,4 +122,41 @@ public class SmartDeviceTest {
         assertTrue(smartCam1.getOn());
     }
 
+    @Test
+    public void testTotalConsumption(){
+        SmartBulb bulb = new SmartBulb("b1", SmartBulb.NEUTRAL, 10);
+        SmartSpeaker speaker = new SmartSpeaker("s1", "RUM", 10, "SAMSUNG");
+        SmartCamera camera = new SmartCamera("c1", 1920, 1080, 100);
+        // Ligados
+        bulb.turnOn();
+        speaker.turnOn();
+        camera.turnOn();
+        for (int i = 0; i < 100; i++) {
+            bulb.updateTotalConsumption();
+            speaker.updateTotalConsumption();
+            camera.updateTotalConsumption();
+        }
+        assertEquals(9.6,bulb.getTotalConsumption());
+        assertEquals(72.0,speaker.getTotalConsumption());
+        assertEquals(497664000.0,camera.getTotalConsumption());
+        // Desligados
+        bulb.resetTotalConsumption();
+        speaker.resetTotalConsumption();
+        camera.resetTotalConsumption();
+        bulb.turnOff();
+        speaker.turnOff();
+        camera.turnOff();
+        assertEquals(0.0,bulb.getTotalConsumption());
+        assertEquals(0.0,speaker.getTotalConsumption());
+        assertEquals(0.0,camera.getTotalConsumption());
+        for (int i = 0; i < 100; i++) {
+            bulb.updateTotalConsumption();
+            speaker.updateTotalConsumption();
+            camera.updateTotalConsumption();
+        }
+        assertEquals(0.0,bulb.getTotalConsumption());
+        assertEquals(0.0,speaker.getTotalConsumption());
+        assertEquals(0.0,camera.getTotalConsumption());
+    }
+
 }
