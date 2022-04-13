@@ -76,7 +76,9 @@ public class CasaInteligente implements Comparable<CasaInteligente>{
     public String getMorada(){
         return this.morada;
     }
-
+     /**
+      * Altera a morada da casa.
+      */
     public void setMorada(String m){
         this.morada = m;
     }
@@ -100,6 +102,9 @@ public class CasaInteligente implements Comparable<CasaInteligente>{
         else return null;
     }
 
+    /**
+     * Devolve uma lista com os devices.
+     */
     public List<SmartDevice> getDevices(){
         List<SmartDevice> result = new ArrayList<>();
         this.devices.values().forEach(device -> result.add(device.clone()));
@@ -115,38 +120,61 @@ public class CasaInteligente implements Comparable<CasaInteligente>{
         return r;
     }
 
+    /**
+     * Devolve o proprietario da casa.
+     */
     public Pessoa getProprietario(){
         return this.proprietario.clone();
     }
 
+    /**
+     * Altera o proprietario da casa.
+     */
     public void setProprietario(Pessoa p){
         this.proprietario = p.clone();
     }
 
+    /**
+     * Devolve o fornecedor de energia.
+     */
     public EnergyProvider getFornecedor(){
         return this.fornecedor.clone();
     }
-
+    /**
+     * Altera o fornecedor de energia.
+     */
     public void setFornecedor(EnergyProvider fornecedor){
         this.fornecedor = fornecedor.clone();
     }
 
+    /**
+     * Liga um dispositivo.
+     */
     public void setDeviceOn(String devCode) {
         if(this.existsDevice(devCode)){
             this.devices.get(devCode).turnOn();
         }
     }
 
+    /**
+     * Verifica a existencia de um dispositivo.
+     */
     public boolean existsDevice(String id) {
         return this.devices.containsKey(id);
     }
     
+    /**
+     * Adiciona um dispositivo.
+     */
     public void addDevice(SmartDevice dev) {
         if(!this.existsDevice(dev.getID())){
             this.devices.put(dev.getID(), dev.clone());
         }
     }
 
+    /**
+     * Adiciona um dispositivo numa reparticao.
+     */
     public void addDevice(SmartDevice dev, String room){
         if(!this.existsDevice(dev.getID())){
             if(this.hasRoom(room)){
@@ -160,6 +188,9 @@ public class CasaInteligente implements Comparable<CasaInteligente>{
         }
     }
 
+    /**
+     * Devolve o dispositivo solicitado.
+     */
     public SmartDevice getDevice(String idDev) {
         if(this.devices.containsKey(idDev)){
             return this.devices.get(idDev).clone();
@@ -167,20 +198,32 @@ public class CasaInteligente implements Comparable<CasaInteligente>{
         else return null;
     }
 
+    /**
+     * Altera o estado do dispositivo solicitado.
+     */
     public void setOn(String idDev, boolean b) {
         if(this.devices.containsKey(idDev)){
             this.devices.get(idDev).setOn(b);
         }
     }
 
+    /**
+     * Liga todos os dispositivos.
+     */
     public void setAllOn(boolean b) {
         this.devices.values().forEach(device -> device.setOn(b));
     }
 
+    /**
+     * Altera o estado de todos os dispositivos.
+     */
     public void setAllinDivisionOn(String room, boolean b){
         this.locations.get(room).forEach(s -> setOn(s,b));
     }
 
+    /**
+     * Adiciona uma reparticao a casa.
+     */
     public void addRoom(String room) {
         if(!this.hasRoom(room)){
             List<String> l = new ArrayList<>();
@@ -188,34 +231,55 @@ public class CasaInteligente implements Comparable<CasaInteligente>{
         }
     }
 
+    /**
+     * Verifica a existencia de uma reparticao.
+     */
     public boolean hasRoom(String room) {
         return this.locations.containsKey(room);
     }
 
+    /**
+     * Adiciona um dispositivo numa reparticao.
+    */
     public void addToRoom (String s1, String s2) {
         if(!this.roomHasDevice(s1, s2)){
             this.locations.get(s1).add(s2);
         }
     }
 
+    /**
+     * Verifica a existencia de um dispositivo numa reparticao.
+    */
     public boolean roomHasDevice (String s1, String s2) {
         return this.locations.get(s1).contains(s2);
     }
 
+    /**
+     * Retorna o consumo total desta casa.
+     */
     public double getTotalConsumption(){
         return this.totalConsumption;
     }
 
+    /**
+     * Retorna o custo total associado ao consumo desta casa.
+     */
     public double getTotalCost(){
         return this.totalCost;
     }
 
+    /**
+     * Reinicia os contadores de consumo e custo desta casa bem como os contadores dos seus dispositivos.
+     */
     public void resetConsumptionAndCost(){
         this.totalCost = 0.0f;
         this.totalConsumption = 0.0f;
         this.devices.values().forEach(device -> device.resetTotalConsumption());
     }
 
+    /**
+     * Atualiza os contadores de consumo e custo associado a passagem de um dia.
+     */
     public void passTime(){
         this.devices.values().forEach(device -> device.updateTotalConsumption());
         this.totalConsumption = this.devices.values().stream()
@@ -225,12 +289,19 @@ public class CasaInteligente implements Comparable<CasaInteligente>{
         
     }
 
+
     @Override
+    /**
+     * Compara uma casa com a outra.
+     */
     public int compareTo(CasaInteligente ci){
         return this.proprietario.compareTo(ci.proprietario);
     }
 
     @Override
+    /**
+     * Verifica a igualdade entre duas casas.
+     */
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -243,6 +314,9 @@ public class CasaInteligente implements Comparable<CasaInteligente>{
     }
     
     @Override
+    /**
+     * Copia esta casa.
+     */
     public CasaInteligente clone(){
         return new CasaInteligente(this);
     }

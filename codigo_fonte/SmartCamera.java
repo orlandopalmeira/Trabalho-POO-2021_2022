@@ -34,26 +34,44 @@ public class SmartCamera extends SmartDevice{
         this.sizeOfFile = sc.getSizeOfFile();
     }
 
+    /**
+     * Devolve a resolução desta câmara (X)
+     */
     public int getResX() {
         return resX;
     }
 
+    /**
+     * Devolve a resolução desta câmara (Y)
+     */
     public int getResY() {
         return resY;
     }
 
+    /**
+     * Devolve o tamanho do ficheiro gerado por esta câmara.
+     */
     public float getSizeOfFile() {
         return sizeOfFile;
     }
 
+    /**
+     * Altera a resolução desta câmara (X)
+     */
     public void setResX(int resX) {
         this.resX = resX;
     }
 
+    /**
+     * Altera a resolução desta câmara (Y)
+     */
     public void setResY(int resY) {
         this.resY = resY;
     }
 
+    /**
+     * Altera o tamanho do ficheiro gerado por esta câmara.
+     */
     public void setSizeOfFile(float sizeOfFile) {
         this.sizeOfFile = sizeOfFile;
     }

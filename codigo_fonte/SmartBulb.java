@@ -52,16 +52,25 @@ public class SmartBulb extends SmartDevice {
         this.dimension = sb.dimension;
     }
 
+    /**
+     * Altera a tonalidade desta lâmpada.
+     */
     public void setTone(int t) {
         if (t > WARM) this.tone = WARM;
         else if (t < COLD) this.tone = COLD;
         else this.tone = t;
     }
 
+    /**
+     * Devolve a tonalidade desta lâmpada.
+     */
     public int getTone() {
         return this.tone;
     }
 
+    /**
+     * Devolve a dimensão desta lâmpada.
+     */
     public double getDimension(){
         return this.dimension;
     }

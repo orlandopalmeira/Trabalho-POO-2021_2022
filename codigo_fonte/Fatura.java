@@ -31,11 +31,15 @@ public class Fatura {
         this.end = f.end;
     }
 
+    /**
+     * Imprime a fatura.
+     */
     public String printFatura(){
         StringBuilder sb = new StringBuilder();
         
         sb.append("----------------------------<<Fatura>>---------------------------\n");
         sb.append(String.format("%s\n\n",this.provider_name));
+        sb.append(String.format("Fatura: F%d",this.id));
         sb.append(String.format("Cliente: %s\nNIF: %d\n",this.cliente.getNome(),this.cliente.getNif()));
         sb.append(String.format("Morada: %s\n",this.casa.getMorada()));
         sb.append("Período de faturação: ");
@@ -52,11 +56,17 @@ public class Fatura {
     }
 
     @Override
+    /**
+     * Copia uma fatura.
+     */
     public Fatura clone(){
         return new Fatura(this);
     }
 
     @Override
+    /**
+     * Devolve uma string com informação relevante sobre esta fatura.
+     */
     public String toString(){
         return String.format("{Fatura: F%d, Provider: %s, Cliente: %s, NIF: %s, Morada: %s, Montante: %f€}",
                              this.id,this.provider_name,this.cliente.getNome(),this.cliente.getNif(),this.casa.getMorada(),this.montante);

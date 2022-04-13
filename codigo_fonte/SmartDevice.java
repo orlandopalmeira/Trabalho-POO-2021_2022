@@ -38,46 +38,79 @@ public abstract class SmartDevice implements Comparable<SmartDevice> {
         this.totalConsumption = sd.totalConsumption;
     }
 
+    /**
+     * Liga o dispositivo.
+     */
     public void turnOn() {
         this.on = true;
     }
     
+    /**
+     * Desliga o dispositivo.
+     */
     public void turnOff() {
         this.on = false;
     }
     
+    /**
+     * Devolve o estado do dispositivo.
+     */
     public boolean getOn() {
         return this.on;
     }
     
+    /**
+     * Altera o estado do dispositivo.
+     */
     public void setOn(boolean b) {
         this.on = b;
     }
     
+    /**
+     * Devolve o ID do dispositivo.
+     */
     public String getID() {
         return this.id;
     }
 
+    /**
+     * Retorna o consumo diario de um dispositivo.
+     */
     public abstract double dailyConsumption();
 
+    /**
+     * Retorna o consumo total de um dispositivo desde o inicio da contagem.
+     */
     public double getTotalConsumption(){
         return this.totalConsumption;
     }
 
+    /**
+     * Atualiza o consumo de um dispositivo.
+     */
     public void updateTotalConsumption(){
         this.totalConsumption += this.dailyConsumption();
     }
 
+    /**
+     * Reinicia a contagem de consumo do dispositivo.
+     */
     public void resetTotalConsumption(){
         this.totalConsumption = 0.0;
     }
 
     @Override
+    /**
+     * Compara dois dispositivos
+     */
     public int compareTo(SmartDevice dev){
         return this.id.compareTo(dev.id);
     }
 
     @Override
+    /**
+     * Verifica a igualdade entre dois dispositivos.
+     */
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -86,8 +119,14 @@ public abstract class SmartDevice implements Comparable<SmartDevice> {
     }
 
     @Override
+    /**
+     * Copia um dispositivo.
+     */
     public abstract SmartDevice clone();
 
     @Override
+    /**
+     * Devolve uma string com informação relevante sobre este dispositivo.
+     */
     public abstract String toString();
 }

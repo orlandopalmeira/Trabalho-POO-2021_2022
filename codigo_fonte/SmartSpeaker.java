@@ -54,26 +54,44 @@ public class SmartSpeaker extends SmartDevice {
         this.marca = ss.marca;
     }
 
+    /**
+     * Aumenta o volume desta coluna.
+     */
     public void volumeUp() {
         if (this.volume < MAX) this.volume++;
     }
 
+    /**
+     * Diminui o volume desta coluna.
+     */
     public void volumeDown() {
         if (this.volume > 0) this.volume--;
     }
 
+    /**
+     * Devolve o volume desta coluna.
+     */
     public int getVolume() {
         return this.volume;
     }
     
+    /**
+     * Devolve o canal desta coluna.
+     */
     public String getChannel() {
         return this.channel;
     }
 
+    /**
+     * Altera o canal desta coluna.
+     */
     public void setChannel(String c) {
         this.channel = c;
     }
 
+    /**
+     * Devolve a marca desta coluna.
+     */
     public String getMarca(){
         return this.marca;
     }
