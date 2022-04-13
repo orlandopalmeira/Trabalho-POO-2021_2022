@@ -31,8 +31,8 @@ public class CasaInteligente implements Comparable<CasaInteligente>{
         this.locations = new HashMap<>();
         this.proprietario = null;
         this.fornecedor = null;
-        this.totalConsumption = 0.0f;
-        this.totalCost = 0.0f;
+        this.totalConsumption = 0.0;
+        this.totalCost = 0.0;
     }
 
     public CasaInteligente(String morada) {
@@ -42,8 +42,8 @@ public class CasaInteligente implements Comparable<CasaInteligente>{
         this.locations = new HashMap<>();
         this.proprietario = null;
         this.fornecedor = null;
-        this.totalConsumption = 0.0f;
-        this.totalCost = 0.0f;
+        this.totalConsumption = 0.0;
+        this.totalCost = 0.0;
     }
 
     public CasaInteligente(String morada, Pessoa proprietario, EnergyProvider fornecedor){
@@ -53,8 +53,8 @@ public class CasaInteligente implements Comparable<CasaInteligente>{
         this.locations = new HashMap<>();
         this.proprietario = proprietario.clone();
         this.fornecedor = fornecedor.clone();
-        this.totalConsumption = 0.0f;
-        this.totalCost = 0.0f;
+        this.totalConsumption = 0.0;
+        this.totalCost = 0.0;
     }
 
     /**
@@ -138,8 +138,9 @@ public class CasaInteligente implements Comparable<CasaInteligente>{
      * Devolve o fornecedor de energia.
      */
     public EnergyProvider getFornecedor(){
-        return this.fornecedor.clone();
+        return this.fornecedor;
     }
+    
     /**
      * Altera o fornecedor de energia.
      */
@@ -289,28 +290,26 @@ public class CasaInteligente implements Comparable<CasaInteligente>{
         
     }
 
-    /**
-     * Retorna uma string com os dados da casa para serem guardados em ficheiro.
-     * private String morada;
-    private Map<String, SmartDevice> devices; // identificador -> SmartDevice
-    private Map<String, List<String>> locations; // Espaço -> Lista codigo dos devices
-    private Pessoa proprietario;
-    private EnergyProvider fornecedor;
-    private double totalConsumption;
-    private double totalCost;
-     */
     public String toLineFile(){
         StringBuilder sb = new StringBuilder();
+        // Morada
         sb.append(String.format("%s;",this.morada));
+        // Devices por sala
         sb.append("[");
         for(String room : this.locations.keySet()){
             sb.append(String.format("(%s:[",room));
             for(String devID: this.locations.get(room)){
                 sb.append(String.format("%s.",devID));
             }
+            sb.deleteCharAt(sb.length()-1);
             sb.append("]),");
         }
+        sb.deleteCharAt(sb.length()-1);
         sb.append("];");
+        // NIF proprietario 
+        sb.append(String.format("%d;",this.proprietario.getNif()));
+        // Fornecedor
+        sb.append(String.format("%s\n",this.fornecedor.getName()));
         return sb.toString();
     }
 

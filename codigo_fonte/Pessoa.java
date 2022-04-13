@@ -45,6 +45,10 @@ public class Pessoa implements Comparable<Pessoa> {
         this.nif = nif;
     }
 
+    public String toLineFile(){
+        return String.format("%s;%d\n",this.nome,this.nif);
+    }
+
     @Override
     /**
      * Compara duas pessoas.

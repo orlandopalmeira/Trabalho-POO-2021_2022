@@ -1,10 +1,11 @@
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.TreeSet;
 
 public class Simulator {
@@ -12,14 +13,17 @@ public class Simulator {
     private Map<String,EnergyProvider> energyProviders;
     
     private Map<String, List<Fatura>> billsPerProvider; // faturas de cada fornecedores
-    private Map<String, Double> profitPerProvider; // volumes de faturação por fornecedor
+    private Map<String, Double> profitPerProvider; // volumes de faturação por fornecedor ordenados por ordem decrescente
     private TreeSet<CasaInteligente> consumptionOrder; // árvore de casas ordenada segundo o seu consumo total no fim da simulação
 
-    public Simulator(Collection<CasaInteligente> houses, Collection<EnergyProvider> providers, LocalDate start, LocalDate end) {
+    private int lastHouseID; // último id atribuído a uma casa.
+
+    public Simulator(Collection<CasaInteligente> houses, Collection<EnergyProvider> providers) {
         this.houses = new HashMap<>();
         Iterator<CasaInteligente> ith = houses.iterator();
-        for (int i = 0; ith.hasNext(); i++) {
+        for (int i = 1; ith.hasNext(); i++) {
             this.houses.put(i,ith.next().clone());
+            this.lastHouseID = i;
         }
 
         this.energyProviders = new HashMap<>();
@@ -42,10 +46,15 @@ public class Simulator {
      * Inicia a simulacao.
      */
     public void startSimulation(LocalDate start,LocalDate end){
-        LocalDate aux = start;
-        while(aux.compareTo(end) < 0){
+        this.resetAll();
+        for(LocalDate aux = start; aux.compareTo(end) < 0; aux = aux.plusDays(1)){
             this.houses.values().forEach(house -> house.passTime());
-            aux = aux.plusDays(1);
+        }
+        for(CasaInteligente house : this.houses.values()){
+            this.consumptionOrder.add(house); // árvore ordenada pelo consumo
+            EnergyProvider ep = house.getFornecedor(); // fornecedor da casa.
+            this.profitPerProvider.replace(ep.getName(), this.profitPerProvider.get(ep.getName()) + house.getTotalConsumption()); // atualiza o volume de faturaçao do fornecedor desta casa
+            this.billsPerProvider.get(ep.getName()).add(ep.emitirFatura(house,start,end)); // adiciona uma fatura no fornecedor 
         }
     }
 
@@ -57,6 +66,13 @@ public class Simulator {
         this.billsPerProvider.values().forEach(list -> list.clear());
         this.profitPerProvider.keySet().forEach(key -> this.profitPerProvider.put(key,0.0));
         this.consumptionOrder.clear();
+    }
+
+    /**
+     * Adiciona uma casa e esta simulacao.
+     */
+    public void addHouse(CasaInteligente house){
+        this.houses.put(++this.lastHouseID,house.clone());
     }
 
     /**
@@ -95,6 +111,15 @@ public class Simulator {
     public List<Fatura> getBillsFromProvider(String providerName){
         List<Fatura> result = new ArrayList<>();
         this.billsPerProvider.get(providerName).forEach(fatura -> result.add(fatura.clone()));
+        return result;
+    }
+
+    /**
+     * Devolve uma ordenação dos consumidores pelo consumo total.
+     */
+    public Set<CasaInteligente> getConsumptionOrder(){
+        TreeSet<CasaInteligente> result = new TreeSet<>(this.consumptionOrder.comparator());
+        this.consumptionOrder.forEach(house -> result.add(house.clone()));
         return result;
     }
 

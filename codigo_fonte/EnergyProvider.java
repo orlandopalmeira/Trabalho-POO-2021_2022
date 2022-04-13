@@ -98,6 +98,10 @@ public class EnergyProvider implements Comparable<EnergyProvider>{
         }else return null;
     }
 
+    public String toLineFile(){
+        return String.format("%s;%f;%f\n",this.name,this.price_kwh,this.tax);
+    }
+
     @Override
     /**
      * Compara dois fornecedores.
