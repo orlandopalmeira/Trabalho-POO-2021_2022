@@ -79,7 +79,7 @@ public class Simulator {
         this.houses.values().forEach(house -> house.resetConsumptionAndCost());
         this.billsPerProvider.values().forEach(list -> list.clear());
         this.profitPerProvider.keySet().forEach(key -> this.profitPerProvider.put(key,0.0));
-        if(this.consumptionOrder != null) this.consumptionOrder.clear();
+        this.consumptionOrder = null;
     }
 
     /**

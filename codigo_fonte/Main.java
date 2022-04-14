@@ -36,7 +36,5 @@ public class Main {
 
             casaInte1.setAllinDivisionOn("sala",true);
         }
-        
-        
     }
 }
