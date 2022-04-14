@@ -52,7 +52,7 @@ public class CasaInteligente{
         this.devices = new HashMap<>();
         this.locations = new HashMap<>();
         this.proprietario = proprietario.clone();
-        this.fornecedor = fornecedor; // !! AGREGAÇÃO para melhor desempenho 
+        this.fornecedor = fornecedor;
         this.totalConsumption = 0.0;
         this.totalCost = 0.0;
     }
@@ -142,7 +142,7 @@ public class CasaInteligente{
     }
 
     /**
-     * Devolve o fornecedor de energia.
+     * Devolve o nome do seu fornecedor de energia.
      */
     public String getFornecedor(){
         return this.fornecedor;
@@ -235,8 +235,7 @@ public class CasaInteligente{
      */
     public void addRoom(String room) {
         if(!this.hasRoom(room)){
-            List<String> l = new ArrayList<>();
-            this.locations.put(room, l);
+            this.locations.put(room, new ArrayList<>());
         }
     }
 
