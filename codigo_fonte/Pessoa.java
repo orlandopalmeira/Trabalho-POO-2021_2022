@@ -1,4 +1,4 @@
-public class Pessoa implements Comparable<Pessoa> {
+public class Pessoa {
     private String nome;
     private int nif;
 
@@ -47,14 +47,6 @@ public class Pessoa implements Comparable<Pessoa> {
 
     public String toLineFile(){
         return String.format("%s;%d\n",this.nome,this.nif);
-    }
-
-    @Override
-    /**
-     * Compara duas pessoas.
-     */
-    public int compareTo(Pessoa p){
-        return this.nif - p.nif;
     }
 
     @Override

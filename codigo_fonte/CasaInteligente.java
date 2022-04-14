@@ -11,13 +11,13 @@ import java.util.stream.Collectors;
  * @author (your name)
  * @version (a version number or a date)
  */
-public class CasaInteligente implements Comparable<CasaInteligente>{
+public class CasaInteligente{
    
     private String morada;
     private Map<String, SmartDevice> devices; // identificador -> SmartDevice
     private Map<String, List<String>> locations; // Espaço -> Lista codigo dos devices
     private Pessoa proprietario;
-    private EnergyProvider fornecedor;
+    private String fornecedor;
     private double totalConsumption;
     private double totalCost;
 
@@ -46,13 +46,13 @@ public class CasaInteligente implements Comparable<CasaInteligente>{
         this.totalCost = 0.0;
     }
 
-    public CasaInteligente(String morada, Pessoa proprietario, EnergyProvider fornecedor){
+    public CasaInteligente(String morada, Pessoa proprietario, String fornecedor){
         // initialise instance variables
         this.morada = morada;
         this.devices = new HashMap<>();
         this.locations = new HashMap<>();
         this.proprietario = proprietario.clone();
-        this.fornecedor = fornecedor.clone();
+        this.fornecedor = fornecedor; // !! AGREGAÇÃO para melhor desempenho 
         this.totalConsumption = 0.0;
         this.totalCost = 0.0;
     }
@@ -144,16 +144,17 @@ public class CasaInteligente implements Comparable<CasaInteligente>{
     /**
      * Devolve o fornecedor de energia.
      */
-    public EnergyProvider getFornecedor(){
+    public String getFornecedor(){
         return this.fornecedor;
     }
     
     /**
      * Altera o fornecedor de energia.
      */
-    public void setFornecedor(EnergyProvider fornecedor){
-        this.fornecedor = fornecedor.clone();
+    public void setFornecedor(String fornecedor){
+        this.fornecedor = fornecedor;
     }
+
 
     /**
      * Liga um dispositivo.
@@ -288,13 +289,14 @@ public class CasaInteligente implements Comparable<CasaInteligente>{
     /**
      * Atualiza os contadores de consumo e custo associado a passagem de um dia.
      */
-    public void passTime(){
-        this.devices.values().forEach(device -> device.updateTotalConsumption());
-        this.totalConsumption = this.devices.values().stream()
-                                                     .mapToDouble(device -> device.getTotalConsumption())
-                                                     .sum();
-        this.totalCost += this.fornecedor.pricePerDay(this.devices.values());
-        
+    public void passTime(EnergyProvider fornecedor){
+        if(this.fornecedor.equals(fornecedor.getName())){
+            this.devices.values().forEach(device -> device.updateTotalConsumption());
+            this.totalConsumption = this.devices.values().stream()
+                                                        .mapToDouble(device -> device.getTotalConsumption())
+                                                        .sum();
+            this.totalCost += fornecedor.pricePerDay(this.devices.values());
+        }
     }
 
     public String toLineFile(){
@@ -316,17 +318,8 @@ public class CasaInteligente implements Comparable<CasaInteligente>{
         // NIF proprietario 
         sb.append(String.format("%d;",this.proprietario.getNif()));
         // Fornecedor
-        sb.append(String.format("%s\n",this.fornecedor.getName()));
+        sb.append(String.format("%s\n",this.fornecedor));
         return sb.toString();
-    }
-
-
-    @Override
-    /**
-     * Compara uma casa com a outra.
-     */
-    public int compareTo(CasaInteligente ci){
-        return this.proprietario.compareTo(ci.proprietario);
     }
 
     @Override
@@ -337,11 +330,11 @@ public class CasaInteligente implements Comparable<CasaInteligente>{
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CasaInteligente ci = (CasaInteligente) o;
-        return ci.morada.equals(morada) && 
-               ci.devices.equals(devices) && 
-               ci.locations.equals(locations) &&
-               ci.proprietario.equals(proprietario) &&
-               ci.fornecedor.equals(fornecedor);
+        return this.morada.equals(ci.morada) && 
+               this.devices.equals(ci.devices) && 
+               this.locations.equals(ci.locations) &&
+               this.proprietario.equals(ci.proprietario) &&
+               this.fornecedor.equals(ci.fornecedor);
     }
     
     @Override

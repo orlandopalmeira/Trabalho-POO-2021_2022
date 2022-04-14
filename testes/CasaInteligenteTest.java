@@ -128,7 +128,8 @@ public class CasaInteligenteTest {
 
     @Test
     public void testTotalConsumptionAndCost(){
-        CasaInteligente casaInte1 = new CasaInteligente("Street",new Pessoa("Person",111222333),new EnergyProvider("EDP",0.15f,0.23f));
+        CasaInteligente casaInte1 = new CasaInteligente("Street",new Pessoa("Person",111222333),"EDP");
+        EnergyProvider provider = new EnergyProvider("EDP",0.15,0.23);
         LocalDate start = LocalDate.of(2022,4,1), end = LocalDate.of(2022,4,3);
         int i = 1;
         for(LocalDate aux = start; aux.compareTo(end) <= 0; aux = aux.plusDays(1),i++){
@@ -138,17 +139,17 @@ public class CasaInteligenteTest {
         }
         i = 1;
         for(LocalDate aux = start; aux.compareTo(end) <= 0; aux = aux.plusDays(1),i++){
-            casaInte1.passTime();
+            casaInte1.passTime(provider);
         }
         double consumo = casaInte1.getTotalConsumption();
         double custo = casaInte1.getTotalCost();
         assertTrue(44789767.00 <= consumo && consumo <= 44789767.99);
         assertTrue(6197784.00 <=  custo && custo <= 6197784.99);
-        Fatura f = casaInte1.getFornecedor().emitirFatura(casaInte1, start, end);
+        Fatura f = provider.emitirFatura(casaInte1, start, end);
         assertEquals(custo,f.getMontante());
         assertTrue(casaInte1.getProprietario().equals(f.getCliente()));
         assertTrue(casaInte1.equals(f.getCasa()));
-        assertTrue(f.getProviderName().equals(casaInte1.getFornecedor().getName()));
+        assertTrue(f.getProviderName().equals(casaInte1.getFornecedor()));
 
         casaInte1.resetConsumptionAndCost();
         consumo = casaInte1.getTotalConsumption();

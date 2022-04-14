@@ -44,8 +44,8 @@ public class Simulator {
         this.billsPerProvider = new HashMap<>();
         this.profitPerProvider = new HashMap<>();
         for(CasaInteligente house : houses){
-            this.billsPerProvider.putIfAbsent(house.getFornecedor().getName(), new ArrayList<Fatura>());
-            this.profitPerProvider.putIfAbsent(house.getFornecedor().getName(),0.0);
+            this.billsPerProvider.putIfAbsent(house.getFornecedor(), new ArrayList<Fatura>());
+            this.profitPerProvider.putIfAbsent(house.getFornecedor(),0.0);
         }
 
         this.consumptionOrder = null; // só lhe é atribuído o resultado após terminar a simulação
@@ -57,7 +57,7 @@ public class Simulator {
     public void startSimulation(LocalDate start,LocalDate end){
         this.resetAll();
         for(LocalDate aux = start; aux.compareTo(end) < 0; aux = aux.plusDays(1)){
-            this.houses.values().forEach(house -> house.passTime());
+            this.houses.values().forEach(house -> house.passTime(this.energyProviders.get(house.getFornecedor())));
         }
 
         this.consumptionOrder = this.houses.values().stream().sorted((h1,h2) -> {
@@ -66,7 +66,7 @@ public class Simulator {
         }).collect(Collectors.toList());
 
         for(CasaInteligente house : this.houses.values()){
-            EnergyProvider ep = house.getFornecedor(); // fornecedor da casa.
+            EnergyProvider ep = this.energyProviders.get(house.getFornecedor()); // fornecedor da casa.
             this.profitPerProvider.merge(ep.getName(),house.getTotalCost(),Double::sum); // atualiza o volume de faturaçao do fornecedor desta casa
             this.billsPerProvider.get(ep.getName()).add(ep.emitirFatura(house,start,end)); // adiciona uma fatura no fornecedor 
         }

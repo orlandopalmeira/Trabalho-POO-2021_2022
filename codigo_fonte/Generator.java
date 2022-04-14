@@ -107,7 +107,7 @@ public class Generator {
     //Morada(string);[(Room:[d1.d2.d2])];NIF(int);Fornecedor(string)
     private static CasaInteligente lineToHouse(Map<String,SmartDevice> allDevices, Map<Integer,Pessoa> allPeople, Map<String,EnergyProvider> allProviders, String line){
         String[] data = line.split(";");
-        CasaInteligente result = new CasaInteligente(data[0],allPeople.get(Integer.parseInt(data[2])),allProviders.get(data[3]));
+        CasaInteligente result = new CasaInteligente(data[0],allPeople.get(Integer.parseInt(data[2])),data[3]);
         Map<String,List<String>> devsPerRoom = tuplesRoomDevicesToLocations(data[1]);
         for(String room: devsPerRoom.keySet()){
             for(String devID: devsPerRoom.get(room)){
@@ -117,10 +117,9 @@ public class Generator {
         return result;
     }
     
-    public static List<CasaInteligente> fileToHouses(String devicesF, String providersF,String peopleF, String housesF) throws FileNotFoundException{
+    public static List<CasaInteligente> fileToHouses(String devicesF,Map<String,EnergyProvider> providers,String peopleF, String housesF) throws FileNotFoundException{
         Map<String,SmartDevice> devices = fileToDevices(devicesF);
         Map<Integer,Pessoa> people = fileToPeople(peopleF);
-        Map<String,EnergyProvider> providers = fileToProviders(providersF);
         List<CasaInteligente> houses = new ArrayList<>();
         Scanner reader = new Scanner(new File(housesF));
         while(reader.hasNext()){
@@ -130,10 +129,9 @@ public class Generator {
         return houses;
     }
 
-    public static List<CasaInteligente> fileToHouses(File devicesF, File providersF,File peopleF, File housesF) throws FileNotFoundException{
+    public static List<CasaInteligente> fileToHouses(File devicesF,Map<String,EnergyProvider> providers,File peopleF, File housesF) throws FileNotFoundException{
         Map<String,SmartDevice> devices = fileToDevices(devicesF);
         Map<Integer,Pessoa> people = fileToPeople(peopleF);
-        Map<String,EnergyProvider> providers = fileToProviders(providersF);
         List<CasaInteligente> houses = new ArrayList<>();
         Scanner reader = new Scanner(housesF);
         while(reader.hasNext()){

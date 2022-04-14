@@ -18,8 +18,8 @@ public class SimulatorTest {
         File providers_f = new File("/home/orlando/Desktop/Trabalho-POO-2021_2022/files/providers_test.txt");
         File people_f = new File("/home/orlando/Desktop/Trabalho-POO-2021_2022/files/people_test.txt");
         File houses_f = new File("/home/orlando/Desktop/Trabalho-POO-2021_2022/files/houses_test.txt");
-        List<CasaInteligente> houses = Generator.fileToHouses(devices_f,providers_f,people_f,houses_f);
         Map<String, EnergyProvider> providers = Generator.fileToProviders(providers_f);
+        List<CasaInteligente> houses = Generator.fileToHouses(devices_f,providers,people_f,houses_f);
         Simulator sim = new Simulator(houses,providers.values().stream().collect(Collectors.toList()));
         sim.startSimulation(LocalDate.parse("2022-04-14"),LocalDate.parse("2022-04-15"));
         boolean test = true;
@@ -66,8 +66,8 @@ public class SimulatorTest {
         File providers_f = new File("/home/orlando/Desktop/Trabalho-POO-2021_2022/files/providers_test.txt");
         File people_f = new File("/home/orlando/Desktop/Trabalho-POO-2021_2022/files/people_test.txt");
         File houses_f = new File("/home/orlando/Desktop/Trabalho-POO-2021_2022/files/houses_test.txt");
-        List<CasaInteligente> houses = Generator.fileToHouses(devices_f,providers_f,people_f,houses_f);
         Map<String, EnergyProvider> providers = Generator.fileToProviders(providers_f);
+        List<CasaInteligente> houses = Generator.fileToHouses(devices_f,providers,people_f,houses_f);
         Simulator sim = new Simulator(houses,providers.values().stream().collect(Collectors.toList()));
         sim.startSimulation(LocalDate.parse("2022-04-14"),LocalDate.parse("2022-04-15"));
         List<CasaInteligente> consumptionOrder = sim.getConsumptionOrder();
@@ -88,8 +88,8 @@ public class SimulatorTest {
         File providers_f = new File("/home/orlando/Desktop/Trabalho-POO-2021_2022/files/providers_test.txt");
         File people_f = new File("/home/orlando/Desktop/Trabalho-POO-2021_2022/files/people_test.txt");
         File houses_f = new File("/home/orlando/Desktop/Trabalho-POO-2021_2022/files/houses_test.txt");
-        List<CasaInteligente> houses = Generator.fileToHouses(devices_f,providers_f,people_f,houses_f);
         Map<String, EnergyProvider> providers = Generator.fileToProviders(providers_f);
+        List<CasaInteligente> houses = Generator.fileToHouses(devices_f,providers,people_f,houses_f);
         Simulator sim = new Simulator(houses,providers.values().stream().collect(Collectors.toList()));
         sim.startSimulation(LocalDate.parse("2022-04-14"),LocalDate.parse("2022-04-15"));
         EnergyProvider ep = sim.getBiggestProvider();

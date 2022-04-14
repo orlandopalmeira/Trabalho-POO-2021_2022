@@ -1,6 +1,6 @@
 import java.time.LocalDate;
 import java.util.Collection;
-public class EnergyProvider implements Comparable<EnergyProvider>{
+public class EnergyProvider {
     private String name;
     private double price_kwh;
     private double tax;
@@ -92,22 +92,14 @@ public class EnergyProvider implements Comparable<EnergyProvider>{
      * Emite a fatura para uma certa casa.
      */
     public Fatura emitirFatura(CasaInteligente casa, LocalDate start, LocalDate end){
-        EnergyProvider ep = casa.getFornecedor();
-        if(this.equals(ep)){
-            return new Fatura(ep.name,casa,start,end);
+        String ep = casa.getFornecedor();
+        if(this.name.equals(ep)){
+            return new Fatura(ep,casa,start,end);
         }else return null;
     }
 
     public String toLineFile(){
         return String.format("%s;%f;%f\n",this.name,this.price_kwh,this.tax);
-    }
-
-    @Override
-    /**
-     * Compara dois fornecedores.
-     */
-    public int compareTo(EnergyProvider ep){
-        return this.name.compareTo(ep.name);
     }
 
     @Override

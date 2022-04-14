@@ -137,7 +137,7 @@ public class SmartDeviceTest {
             camera.updateTotalConsumption();
         }
         assertEquals(9.6,bulb.getTotalConsumption());
-        assertEquals(72.0,speaker.getTotalConsumption());
+        assertEquals(72.7,speaker.getTotalConsumption());
         assertEquals(497664000.0,camera.getTotalConsumption());
         // Desligados
         bulb.resetTotalConsumption();
