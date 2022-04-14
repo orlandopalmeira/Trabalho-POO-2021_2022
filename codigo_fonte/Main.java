@@ -1,9 +1,10 @@
 import java.io.IOException;
 import java.util.List;
+import java.util.PriorityQueue;
 import java.util.stream.Collectors;
 public class Main {
     public static void main(String[] args) throws IOException  {
-        if(args[0].equals("-f")){ // recebe um ficheiro como argumento
+         if(args[0].equals("-f")){ // recebe um ficheiro como argumento
             List<CasaInteligente> casas = Generator.fileToHouses(args[1], args[2], args[3], args[4]);
             List<EnergyProvider> providers = Generator.fileToProviders(args[2]).values().stream().collect(Collectors.toList());
             Simulator simulador = new Simulator(casas, providers);

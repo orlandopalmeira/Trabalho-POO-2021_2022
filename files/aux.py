@@ -1,6 +1,6 @@
-devices = open("./files/devices.txt","w")
-people = open("./files/people.txt","w")
-houses = open("./files/houses.txt","w")
+devices = open("./files/devices_test.txt","w")
+people = open("./files/people_test.txt","w")
+houses = open("./files/houses_test.txt","w")
 
 
 # Houses

@@ -32,9 +32,31 @@ public class Generator {
         return result;
     }
 
+    private static Map<String,SmartDevice> fileToDevices(File f) throws FileNotFoundException{
+        Map<String,SmartDevice> result = new HashMap<>();
+        Scanner reader = new Scanner(f);
+        while(reader.hasNextLine()){
+            SmartDevice aux = lineToDevice(reader.nextLine());
+            result.put(aux.getID(), aux);
+        }
+        reader.close();
+        return result;
+    }
+
     private static Map<Integer,Pessoa> fileToPeople(String path) throws FileNotFoundException {
         Map<Integer,Pessoa> result = new HashMap<>();
         Scanner reader = new Scanner(new File(path));
+        while(reader.hasNextLine()){
+            String[] data = reader.nextLine().split(";");
+            result.put(Integer.parseInt(data[1]),new Pessoa(data[0],Integer.parseInt(data[1])));
+        }
+        reader.close();
+        return result;
+    }
+
+    private static Map<Integer,Pessoa> fileToPeople(File f) throws FileNotFoundException {
+        Map<Integer,Pessoa> result = new HashMap<>();
+        Scanner reader = new Scanner(f);
         while(reader.hasNextLine()){
             String[] data = reader.nextLine().split(";");
             result.put(Integer.parseInt(data[1]),new Pessoa(data[0],Integer.parseInt(data[1])));
@@ -70,6 +92,17 @@ public class Generator {
         reader.close();
         return result;
     }
+
+    public static Map<String,EnergyProvider> fileToProviders(File f) throws FileNotFoundException{
+        Map<String, EnergyProvider> result = new HashMap<>();
+        Scanner reader = new Scanner(f);
+        while(reader.hasNextLine()){
+            String[] data = reader.nextLine().split(";");
+            result.put(data[0], new EnergyProvider(data[0],Float.parseFloat(data[1]),Float.parseFloat(data[2])));
+        }
+        reader.close();
+        return result;
+    }
     //  data[0]         data[1]          data[2]    data[3] 
     //Morada(string);[(Room:[d1.d2.d2])];NIF(int);Fornecedor(string)
     private static CasaInteligente lineToHouse(Map<String,SmartDevice> allDevices, Map<Integer,Pessoa> allPeople, Map<String,EnergyProvider> allProviders, String line){
@@ -90,6 +123,19 @@ public class Generator {
         Map<String,EnergyProvider> providers = fileToProviders(providersF);
         List<CasaInteligente> houses = new ArrayList<>();
         Scanner reader = new Scanner(new File(housesF));
+        while(reader.hasNext()){
+            houses.add(lineToHouse(devices,people,providers,reader.nextLine()));
+        }
+        reader.close();
+        return houses;
+    }
+
+    public static List<CasaInteligente> fileToHouses(File devicesF, File providersF,File peopleF, File housesF) throws FileNotFoundException{
+        Map<String,SmartDevice> devices = fileToDevices(devicesF);
+        Map<Integer,Pessoa> people = fileToPeople(peopleF);
+        Map<String,EnergyProvider> providers = fileToProviders(providersF);
+        List<CasaInteligente> houses = new ArrayList<>();
+        Scanner reader = new Scanner(housesF);
         while(reader.hasNext()){
             houses.add(lineToHouse(devices,people,providers,reader.nextLine()));
         }
