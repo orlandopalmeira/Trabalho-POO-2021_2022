@@ -1,7 +1,7 @@
 public class SmartCamera extends SmartDevice{
     private int resX;
     private int resY;
-    private float sizeOfFile;
+    private double sizeOfFile;
 
     public SmartCamera() {
         // initialise instance variables
@@ -27,7 +27,7 @@ public class SmartCamera extends SmartDevice{
         this.sizeOfFile = size;
     }
 
-    public SmartCamera(String id, boolean state, int resX, int resY, float sizeOfFile){
+    public SmartCamera(String id, boolean state, int resX, int resY, double sizeOfFile){
         super(id,state);
         this.resX = resX;
         this.resY = resY;
@@ -58,7 +58,7 @@ public class SmartCamera extends SmartDevice{
     /**
      * Devolve o tamanho do ficheiro gerado por esta câmara.
      */
-    public float getSizeOfFile() {
+    public double getSizeOfFile() {
         return sizeOfFile;
     }
 
@@ -79,7 +79,7 @@ public class SmartCamera extends SmartDevice{
     /**
      * Altera o tamanho do ficheiro gerado por esta câmara.
      */
-    public void setSizeOfFile(float sizeOfFile) {
+    public void setSizeOfFile(double sizeOfFile) {
         this.sizeOfFile = sizeOfFile;
     }
 
@@ -90,7 +90,7 @@ public class SmartCamera extends SmartDevice{
 
     @Override
     public String toLineFile() {
-        // TYPE;ID(string);ON/OFF(bool);resx(int);resy(int);sizeoffile(float)
+        // TYPE;ID(string);ON/OFF(bool);resx(int);resy(int);sizeoffile(double)
         return String.format("SmartCamera;%s;%b;%d;%d;%f\n",this.getID(),this.getOn(),this.resX,this.resY,this.sizeOfFile);
     }
 

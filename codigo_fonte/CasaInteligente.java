@@ -66,8 +66,8 @@ public class CasaInteligente implements Comparable<CasaInteligente>{
         this.locations = ci.getMapLocations();
         this.proprietario = ci.getProprietario();
         this.fornecedor = ci.getFornecedor();
-        this.totalConsumption = 0.0f;
-        this.totalCost = 0.0f;
+        this.totalConsumption = ci.getTotalConsumption();
+        this.totalCost = ci.getTotalCost();
     }
 
     /**
@@ -125,6 +125,13 @@ public class CasaInteligente implements Comparable<CasaInteligente>{
      */
     public Pessoa getProprietario(){
         return this.proprietario.clone();
+    }
+
+    /**
+     * Devolve o nif do proprietario.
+     */
+    public int getOwnerNif(){
+        return this.proprietario.getNif();
     }
 
     /**
@@ -259,14 +266,14 @@ public class CasaInteligente implements Comparable<CasaInteligente>{
      * Retorna o consumo total desta casa.
      */
     public double getTotalConsumption(){
-        return this.totalConsumption;
+        return Math.round(this.totalConsumption*100.0)/100.0;
     }
 
     /**
      * Retorna o custo total associado ao consumo desta casa.
      */
     public double getTotalCost(){
-        return this.totalCost;
+        return Math.round(this.totalCost*100.0)/100.0;
     }
 
     /**

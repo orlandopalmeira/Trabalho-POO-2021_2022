@@ -31,6 +31,22 @@ public class Fatura {
         this.end = f.end;
     }
 
+    public double getMontante(){
+        return this.montante;
+    }
+
+    public Pessoa getCliente(){
+        return this.cliente.clone();
+    }
+
+    public CasaInteligente getCasa(){
+        return this.casa.clone();
+    }
+
+    public String getProviderName(){
+        return this.provider_name;
+    }
+
     /**
      * Imprime a fatura.
      */
@@ -39,7 +55,7 @@ public class Fatura {
         
         sb.append("----------------------------<<Fatura>>---------------------------\n");
         sb.append(String.format("%s\n\n",this.provider_name));
-        sb.append(String.format("Fatura: F%d",this.id));
+        sb.append(String.format("Fatura: F%d\n",this.id));
         sb.append(String.format("Cliente: %s\nNIF: %d\n",this.cliente.getNome(),this.cliente.getNif()));
         sb.append(String.format("Morada: %s\n",this.casa.getMorada()));
         sb.append("Período de faturação: ");
@@ -48,9 +64,9 @@ public class Fatura {
         sb.append("-----------------------Registo de Consumos-----------------------\n");
         sb.append("Tipo de Dispositivo | ID | Consumo\n");
         for(SmartDevice dev: this.casa.getDevices()){
-            sb.append(String.format("%s | %s | %d\n",dev.getClass().getName(),dev.getID(),dev.getTotalConsumption()));
+            sb.append(String.format("%s | %s | %f\n",dev.getClass().getName(),dev.getID(),dev.getTotalConsumption()));
         }
-        sb.append("----------------------------------------------------------------.\n");
+        sb.append("-----------------------------------------------------------------\n");
 
         return sb.toString();
     }

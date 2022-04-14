@@ -2,8 +2,8 @@ import java.time.LocalDate;
 import java.util.Collection;
 public class EnergyProvider implements Comparable<EnergyProvider>{
     private String name;
-    private float price_kwh;
-    private float tax;
+    private double price_kwh;
+    private double tax;
     
 
     public EnergyProvider(){
@@ -18,7 +18,7 @@ public class EnergyProvider implements Comparable<EnergyProvider>{
         this.tax = 0.23f;
     }
 
-    public EnergyProvider(String name, float price_kwh, float tax){
+    public EnergyProvider(String name, double price_kwh, double tax){
         this.name = name;
         this.price_kwh = price_kwh;
         this.tax = tax;
@@ -47,28 +47,28 @@ public class EnergyProvider implements Comparable<EnergyProvider>{
     /**
      * Devolve o preco por kWh deste fornecedor.
      */
-    public float getPrice_kwh() {
+    public double getPrice_kwh() {
         return this.price_kwh;
     }
 
     /**
      * Altera o preco por kWh deste fornecedor.
      */
-    public void setPrice_kwh(float price_kwh) {
+    public void setPrice_kwh(double price_kwh) {
         this.price_kwh = price_kwh;
     }
 
     /**
      * Devolve o imposto aplicado por este fornecedor.
      */
-    public float getTax() {
+    public double getTax() {
         return this.tax;
     }
 
     /**
      * Altera o imposto aplicado por este fornecedor.
      */
-    public void setTax(float tax) {
+    public void setTax(double tax) {
         this.tax = tax;
     }
 
@@ -76,7 +76,7 @@ public class EnergyProvider implements Comparable<EnergyProvider>{
      * Calcula o custo de um dia de utilizacao de um certo dispositivo.
      */
     private double pricePerDayPerDevice(int numDevices, SmartDevice device){
-        return this.price_kwh * device.dailyConsumption() * (1 + this.tax) * (numDevices > 10 ? 0.9f : 0.75f);
+        return (this.price_kwh * device.dailyConsumption() * (1 + this.tax)) * (numDevices > 10 ? 0.9f : 0.75f);
     }
 
     /**

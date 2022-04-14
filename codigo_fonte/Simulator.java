@@ -1,7 +1,6 @@
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
@@ -9,9 +8,10 @@ import java.util.stream.Collectors;
 
 public class Simulator {
     /**
-     * Casas presentes nesta simulação indexadas automaticamente pelo simulador.
+     * Casas presentes nesta simulação indexadas pelo nif do seu proprietario.
      */
     private Map<Integer, CasaInteligente> houses;
+
     /**
      * Fornecedores de energia presentes nesta simulação indexados pelo seu nome,
      */
@@ -33,19 +33,10 @@ public class Simulator {
      */
     private List<CasaInteligente> consumptionOrder; // lista de casas ordenada pelo seu consumo (ordem decrescente)
 
-    /**
-     * Último id atribuído a uma casa.
-     * Apenas para efeitos de inserção de casas.
-     */
-    private int lastHouseID; // último id atribuído a uma casa.
 
     public Simulator(Collection<CasaInteligente> houses, Collection<EnergyProvider> providers) {
         this.houses = new HashMap<>();
-        Iterator<CasaInteligente> ith = houses.iterator();
-        for (int i = 1; ith.hasNext(); i++) {
-            this.houses.put(i,ith.next().clone());
-            this.lastHouseID = i;
-        }
+        houses.forEach(house -> this.houses.put(house.getOwnerNif(), house.clone()));
 
         this.energyProviders = new HashMap<>();
         providers.forEach(provider -> this.energyProviders.put(provider.getName(),provider.clone()));
@@ -95,7 +86,7 @@ public class Simulator {
      * Adiciona uma casa a esta simulacao.
      */
     public void addHouse(CasaInteligente house){
-        this.houses.put(++this.lastHouseID,house.clone());
+        this.houses.put(house.getOwnerNif(),house.clone());
     }
 
     /**

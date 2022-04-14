@@ -1,4 +1,7 @@
 import static org.junit.jupiter.api.Assertions.*;
+
+import java.time.LocalDate;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -123,6 +126,39 @@ public class CasaInteligenteTest {
         assertTrue(casaInte1.roomHasDevice("quarto", "s2"));
     }
 
+    @Test
+    public void testTotalConsumptionAndCost(){
+        CasaInteligente casaInte1 = new CasaInteligente("Street",new Pessoa("Person",111222333),new EnergyProvider("EDP",0.15f,0.23f));
+        LocalDate start = LocalDate.of(2022,4,1), end = LocalDate.of(2022,4,3);
+        int i = 1;
+        for(LocalDate aux = start; aux.compareTo(end) <= 0; aux = aux.plusDays(1),i++){
+            casaInte1.addDevice(new SmartBulb(String.format("b%d", i),true,1,10), "Sala");
+            casaInte1.addDevice(new SmartSpeaker(String.format("s%d", i), true, 10, "RUM", "SAMSUNG"),"Quarto");
+            casaInte1.addDevice(new SmartCamera(String.format("c%d",i),true,1920,1080,100),"Sala");
+        }
+        i = 1;
+        for(LocalDate aux = start; aux.compareTo(end) <= 0; aux = aux.plusDays(1),i++){
+            casaInte1.passTime();
+        }
+        double consumo = casaInte1.getTotalConsumption();
+        double custo = casaInte1.getTotalCost();
+        assertTrue(44789767.00 <= consumo && consumo <= 44789767.99);
+        assertTrue(6197784.00 <=  custo && custo <= 6197784.99);
+        Fatura f = casaInte1.getFornecedor().emitirFatura(casaInte1, start, end);
+        assertEquals(custo,f.getMontante());
+        assertTrue(casaInte1.getProprietario().equals(f.getCliente()));
+        assertTrue(casaInte1.equals(f.getCasa()));
+        assertTrue(f.getProviderName().equals(casaInte1.getFornecedor().getName()));
+
+        casaInte1.resetConsumptionAndCost();
+        consumo = casaInte1.getTotalConsumption();
+        custo = casaInte1.getTotalCost();
+        assertEquals(0.0,consumo);
+        assertEquals(0.0,custo);
+        for(SmartDevice dev: casaInte1.getDevices()){
+            assertEquals(0.0,dev.getTotalConsumption());
+        }
+    }
 
 }
 
