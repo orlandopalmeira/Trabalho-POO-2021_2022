@@ -95,7 +95,7 @@ public class CasaInteligente{
     }
 
     /**
-     * Devolve uma lista com os devices duma determinada sala.
+     * Devolve um conjunto com os devices duma determinada sala.
      */
     public Set<String> getListDevices(String divisao){
         if(this.locations.containsKey(divisao)){ // para evitar erros se a divisão não existir
@@ -134,6 +134,13 @@ public class CasaInteligente{
      */
     public int getOwnerNif(){
         return this.proprietario.getNif();
+    }
+
+    /**
+     * Devolve o nome do proprietario.
+     */
+    public String getOwnerName(){
+        return this.proprietario.getNome();
     }
 
     /**
@@ -239,7 +246,7 @@ public class CasaInteligente{
      * Altera o estado de todos os dispositivos.
      */
     public void setAllinDivisionOn(String room, boolean b){
-        this.locations.get(room).forEach(s -> setOn(s,b));
+        this.locations.get(room).forEach(devID -> setOn(devID,b));
     }
 
     /**
@@ -261,17 +268,17 @@ public class CasaInteligente{
     /**
      * Adiciona um dispositivo numa reparticao.
     */
-    public void addToRoom (String s1, String s2) {
-        if(!this.roomHasDevice(s1, s2)){
-            this.locations.get(s1).add(s2);
+    public void addToRoom (String room, String devID) {
+        if(!this.roomHasDevice(room, devID)){
+            this.locations.get(room).add(devID);
         }
     }
 
     /**
      * Verifica a existencia de um dispositivo numa reparticao.
     */
-    public boolean roomHasDevice (String s1, String s2) {
-        return this.locations.get(s1).contains(s2);
+    public boolean roomHasDevice (String room, String devID) {
+        return this.locations.get(room).contains(devID);
     }
 
     /**

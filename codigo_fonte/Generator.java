@@ -105,7 +105,7 @@ public class Generator {
     }
     //  data[0]         data[1]          data[2]    data[3] 
     //Morada(string);[(Room:[d1.d2.d2])];NIF(int);Fornecedor(string)
-    private static CasaInteligente lineToHouse(Map<String,SmartDevice> allDevices, Map<Integer,Pessoa> allPeople, Map<String,EnergyProvider> allProviders, String line){
+    private static CasaInteligente lineToHouse(Map<String,SmartDevice> allDevices, Map<Integer,Pessoa> allPeople, String line){
         String[] data = line.split(";");
         CasaInteligente result = new CasaInteligente(data[0],allPeople.get(Integer.parseInt(data[2])),data[3]);
         Map<String,List<String>> devsPerRoom = tuplesRoomDevicesToLocations(data[1]);
@@ -117,25 +117,25 @@ public class Generator {
         return result;
     }
     
-    public static List<CasaInteligente> fileToHouses(String devicesF,Map<String,EnergyProvider> providers,String peopleF, String housesF) throws FileNotFoundException{
+    public static List<CasaInteligente> fileToHouses(String devicesF,String peopleF, String housesF) throws FileNotFoundException{
         Map<String,SmartDevice> devices = fileToDevices(devicesF);
         Map<Integer,Pessoa> people = fileToPeople(peopleF);
         List<CasaInteligente> houses = new ArrayList<>();
         Scanner reader = new Scanner(new File(housesF));
         while(reader.hasNext()){
-            houses.add(lineToHouse(devices,people,providers,reader.nextLine()));
+            houses.add(lineToHouse(devices,people,reader.nextLine()));
         }
         reader.close();
         return houses;
     }
 
-    public static List<CasaInteligente> fileToHouses(File devicesF,Map<String,EnergyProvider> providers,File peopleF, File housesF) throws FileNotFoundException{
+    public static List<CasaInteligente> fileToHouses(File devicesF,File peopleF, File housesF) throws FileNotFoundException{
         Map<String,SmartDevice> devices = fileToDevices(devicesF);
         Map<Integer,Pessoa> people = fileToPeople(peopleF);
         List<CasaInteligente> houses = new ArrayList<>();
         Scanner reader = new Scanner(housesF);
         while(reader.hasNext()){
-            houses.add(lineToHouse(devices,people,providers,reader.nextLine()));
+            houses.add(lineToHouse(devices,people,reader.nextLine()));
         }
         reader.close();
         return houses;

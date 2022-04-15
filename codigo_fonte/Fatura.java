@@ -4,7 +4,6 @@ public class Fatura {
     private static int last_id = 0;
 
     private String provider_name;
-    private Pessoa cliente;
     private CasaInteligente casa;
     private LocalDate start;
     private LocalDate end;
@@ -13,7 +12,6 @@ public class Fatura {
 
     public Fatura(String provider_name, CasaInteligente casa, LocalDate start, LocalDate end) {
         this.provider_name = provider_name;
-        this.cliente = casa.getProprietario();
         this.casa = casa.clone();
         this.id = ++Fatura.last_id;
         this.montante = this.casa.getTotalCost();
@@ -23,7 +21,6 @@ public class Fatura {
 
     private Fatura(Fatura f){
         this.provider_name = f.provider_name;
-        this.cliente = f.cliente.clone();
         this.casa = f.casa.clone();
         this.montante = f.montante;
         this.id = f.id;
@@ -36,7 +33,7 @@ public class Fatura {
     }
 
     public Pessoa getCliente(){
-        return this.cliente.clone();
+        return this.casa.getProprietario();
     }
 
     public CasaInteligente getCasa(){
@@ -56,7 +53,7 @@ public class Fatura {
         sb.append("----------------------------<<Fatura>>---------------------------\n");
         sb.append(String.format("%s\n\n",this.provider_name));
         sb.append(String.format("Fatura: F%d\n",this.id));
-        sb.append(String.format("Cliente: %s\nNIF: %d\n",this.cliente.getNome(),this.cliente.getNif()));
+        sb.append(String.format("Cliente: %s\nNIF: %d\n",this.casa.getOwnerName(),this.casa.getOwnerNif()));
         sb.append(String.format("Morada: %s\n",this.casa.getMorada()));
         sb.append("Período de faturação: ");
         sb.append(this.start.toString()); sb.append(" - "); sb.append(this.end.toString()); sb.append("\n");
@@ -85,7 +82,7 @@ public class Fatura {
      */
     public String toString(){
         return String.format("{Fatura: F%d, Provider: %s, Cliente: %s, NIF: %s, Morada: %s, Montante: %f€}",
-                             this.id,this.provider_name,this.cliente.getNome(),this.cliente.getNif(),this.casa.getMorada(),this.montante);
+                             this.id,this.provider_name,this.casa.getOwnerName(),this.casa.getOwnerNif(),this.casa.getMorada(),this.montante);
     }
 
 }

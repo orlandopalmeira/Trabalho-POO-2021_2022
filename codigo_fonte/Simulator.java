@@ -67,13 +67,15 @@ public class Simulator {
 
         for(CasaInteligente house : this.houses.values()){
             EnergyProvider ep = this.energyProviders.get(house.getFornecedor()); // fornecedor da casa.
-            this.profitPerProvider.merge(ep.getName(),house.getTotalCost(),Double::sum); // atualiza o volume de faturaçao do fornecedor desta casa
-            this.billsPerProvider.get(ep.getName()).add(ep.emitirFatura(house,start,end)); // adiciona uma fatura no fornecedor 
+            if(ep != null){
+                this.profitPerProvider.merge(ep.getName(),house.getTotalCost(),Double::sum); // atualiza o volume de faturaçao do fornecedor desta casa
+                this.billsPerProvider.get(ep.getName()).add(ep.emitirFatura(house,start,end)); // adiciona uma fatura no fornecedor 
+            } 
         }
     }
 
     /**
-     * Repoe a simulacao no estado inicial.
+     * Repoe o estado das casas e dos dispositivos no estado inicial, excetuando alterações de preços e de fornecedores.
      */
     public void resetAll(){
         this.houses.values().forEach(house -> house.resetConsumptionAndCost());
@@ -111,12 +113,22 @@ public class Simulator {
     }
 
     /**
+     * Adiciona um fornecedor a esta simulação
+     */
+    public void addProvider(EnergyProvider provider){
+        this.energyProviders.putIfAbsent(provider.getName(),provider.clone());
+    }
+
+    /**
      * Altera o imposto aplicado por um fornecedor dado o seu nome.
      */
     public void changeProviderTax(String providerName, double new_tax){
         this.energyProviders.get(providerName).setTax(new_tax);
     }
 
+    /**
+     * Remove um dispositivo de uma casa da simulação.
+     */
     public void removeDeviceFromHouse(int ownerNIF,String devID){
         if(this.houses.containsKey(ownerNIF)){
             this.houses.get(ownerNIF).removeDevice(devID);
