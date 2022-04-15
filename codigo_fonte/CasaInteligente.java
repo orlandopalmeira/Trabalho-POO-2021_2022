@@ -1,5 +1,7 @@
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Set;
+import java.util.HashSet;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
@@ -15,7 +17,7 @@ public class CasaInteligente{
    
     private String morada;
     private Map<String, SmartDevice> devices; // identificador -> SmartDevice
-    private Map<String, List<String>> locations; // Espaço -> Lista codigo dos devices
+    private Map<String, Set<String>> locations; // Espaço -> Lista codigo dos devices
     private Pessoa proprietario;
     private String fornecedor;
     private double totalConsumption;
@@ -95,9 +97,9 @@ public class CasaInteligente{
     /**
      * Devolve uma lista com os devices duma determinada sala.
      */
-    public List<String> getListDevices(String divisao){
+    public Set<String> getListDevices(String divisao){
         if(this.locations.containsKey(divisao)){ // para evitar erros se a divisão não existir
-            return this.locations.get(divisao).stream().collect(Collectors.toList());
+            return this.locations.get(divisao).stream().collect(Collectors.toSet());
         }
         else return null;
     }
@@ -114,9 +116,9 @@ public class CasaInteligente{
     /**
      * Devolve um map com as locations.
      */
-    private Map<String, List<String>> getMapLocations() {
-        Map<String, List<String>> r = new HashMap<>();
-        this.locations.keySet().forEach(key -> r.put(key,this.locations.get(key).stream().collect(Collectors.toList())));
+    private Map<String, Set<String>> getMapLocations() {
+        Map<String, Set<String>> r = new HashMap<>();
+        this.locations.keySet().forEach(room -> r.put(room,this.locations.get(room).stream().collect(Collectors.toSet())));
         return r;
     }
 
@@ -198,6 +200,16 @@ public class CasaInteligente{
     }
 
     /**
+     * Retira um dispositivo da casa.
+     */
+    public void removeDevice(String devID){
+        if(this.devices.containsKey(devID)){
+            this.locations.values().forEach(devsInRoom -> devsInRoom.remove(devID));
+            this.devices.remove(devID);
+        }
+    }
+
+    /**
      * Devolve o dispositivo solicitado.
      */
     public SmartDevice getDevice(String idDev) {
@@ -235,7 +247,7 @@ public class CasaInteligente{
      */
     public void addRoom(String room) {
         if(!this.hasRoom(room)){
-            this.locations.put(room, new ArrayList<>());
+            this.locations.put(room, new HashSet<>());
         }
     }
 

@@ -90,6 +90,40 @@ public class Simulator {
     }
 
     /**
+     * Altera o preco aplicado por um fornecedor.
+     */
+    public void changeProviderPrice(EnergyProvider provider, double new_price){
+        this.changeProviderPrice(provider.getName(),new_price);
+    }
+
+    /**
+     * Altera o preco aplicado por um fornecedor dado o seu nome.
+     */
+    public void changeProviderPrice(String providerName, double new_price){
+        this.energyProviders.get(providerName).setPrice_kwh(new_price);
+    }
+
+    /**
+     * Altera o imposto aplicado por um fornecedor.
+     */
+    public void changeProviderTax(EnergyProvider provider, double new_tax){
+        this.changeProviderTax(provider.getName(),new_tax);
+    }
+
+    /**
+     * Altera o imposto aplicado por um fornecedor dado o seu nome.
+     */
+    public void changeProviderTax(String providerName, double new_tax){
+        this.energyProviders.get(providerName).setTax(new_tax);
+    }
+
+    public void removeDeviceFromHouse(int ownerNIF,String devID){
+        if(this.houses.containsKey(ownerNIF)){
+            this.houses.get(ownerNIF).removeDevice(devID);
+        }
+    }
+
+    /**
      * Remove uma casa desta simulacao e retorna-a;
      */
     public CasaInteligente removeHouse(int houseID){
