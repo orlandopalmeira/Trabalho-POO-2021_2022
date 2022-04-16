@@ -8,51 +8,48 @@ import java.util.Set;
 
 public class Main {
 
-    private SmartBulb bulbFromInput(Set<String> ids){
+    private SmartBulb bulbFromInput(Set<String> ids, Scanner sc){
         // Variáveis auxiliares
-        Scanner sc = new Scanner(System.in);
-        String s,idBulb,tone; boolean state, flag = true;
+        String isOn,idBulb,tone; boolean state, flag = true;
         double dimension = 1.0;
-        SmartBulb sb;
+        SmartBulb sb = null;
 
         // Criação da lâmpada
         System.out.print("Insira o id desta lâmpada: ");
-        s = sc.nextLine();
-        while(ids.contains(s)){
+        idBulb = sc.nextLine();
+        while(ids.contains(idBulb)){
             System.out.println("O id que pretende atribuir já existe!");
             System.out.print("Insira o id desta lâmpada: ");
-            s = sc.nextLine();
+            idBulb = sc.nextLine();
         }
-        idBulb = s;
-        ids.add(s);
+        ids.add(idBulb);
 
         System.out.print("O dispositivo inicia-se ligado?(s/n): ");
-        s = sc.nextLine();
-        while (s.length() != 1 && !("sSnN".contains(s))) {
-            System.out.println("Opção inválida, escreva 's' ou 'S' para sim e 'n' ou 'N' para não (sem aspas)!");
+        isOn = sc.nextLine();
+        while (isOn.length() != 1 && !("sSnN".contains(isOn))) {
+            System.out.println("Opção inválida, escreva 's' ou 'S' para sim ou 'n' ou 'N' para não (sem aspas)!");
             System.out.print("O dispositivo inicia-se ligado?(s/n): ");
-            s = sc.nextLine();
+            isOn = sc.nextLine();
         }
-        if(s.toLowerCase().equals("s")) state = true;
+        if(isOn.toLowerCase().equals("s")) state = true;
         else state = false;
 
         System.out.print("Insira a tonalidade da lâmpada (WARM/COLD/NEUTRAL): ");
-        s = sc.nextLine().toLowerCase();
-        while(!(s.equals("warm") || s.equals("cold") || s.equals("neutral"))){
+        tone = sc.nextLine().toLowerCase();
+        while(!(tone.equals("warm") || tone.equals("cold") || tone.equals("neutral"))){
             System.out.println("Opção inválida, escreva 'warm','cold' ou 'neutral'");
             System.out.print("Insira a tonalidade da lâmpada (WARM/COLD/NEUTRAL): ");
-            s = sc.nextLine().toLowerCase();
+            tone = sc.nextLine().toLowerCase();
         }
-        tone = s;
+
+        System.out.print("Insira a dimensão desta lâmpada: ");
         while(flag){
             try{
-                s = sc.nextLine().toLowerCase();
-                dimension = Double.parseDouble(s);
+                dimension = Double.parseDouble(sc.nextLine());
                 flag = false;
             } catch (NumberFormatException e){
-                System.out.println("ERRO: Dimensão inválida");
-            } catch (Exception e){
-                System.out.println("Ocorreu um erro desconhecido");
+                System.out.println("A dimensão deve ser um número real!");
+                System.out.print("Insira a dimensão desta lâmpada: ");
             }
         }
         switch (tone) {
@@ -60,19 +57,193 @@ public class Main {
             case "cold":sb = new SmartBulb(idBulb,state,0,dimension);break;
             case "neutral":sb = new SmartBulb(idBulb,state,1,dimension);break;
         }
-        sc.close();
-        return null;
+        return sb;
     }
+
+    private SmartSpeaker speakerFromInput(Set<String> ids, Scanner sc){
+        // Variáveis auxiliares
+        String isOn,idSpeaker,channel,marca; boolean state, flag = true;
+        int volume = 0;
+        SmartSpeaker ss = null;
+
+        // Criação do speaker
+        System.out.print("Insira o id deste speaker : ");
+        idSpeaker = sc.nextLine();
+        while(ids.contains(idSpeaker)){
+            System.out.println("O id que pretende atribuir já existe!");
+            System.out.print("Insira o id deste speaker: ");
+            idSpeaker = sc.nextLine();
+        }
+        ids.add(idSpeaker);
+
+        System.out.print("O dispositivo inicia-se ligado?(s/n): ");
+        isOn = sc.nextLine();
+        while (isOn.length() != 1 && !("sSnN".contains(isOn))) {
+            System.out.println("Opção inválida, escreva 's' ou 'S' para sim ou 'n' ou 'N' para não (sem aspas)!");
+            System.out.print("O dispositivo inicia-se ligado?(s/n): ");
+            isOn = sc.nextLine();
+        }
+        if(isOn.toLowerCase().equals("s")) state = true;
+        else state = false;
+
+        System.out.print("Insira o volume com que o speaker inicia: ");
+        while (flag) {
+            try {
+                volume = Integer.parseInt(sc.nextLine());
+                flag = false;
+            } catch (NumberFormatException e){
+                System.out.println("O volume deve ser um número inteiro!");
+                System.out.print("Insira o volume com que o speaker inicia: ");
+            }
+        }
+
+        System.out.print("Insira o canal com que este speaker inicia: ");
+        channel = sc.nextLine();
+
+        System.out.print("Insira a marca deste speaker: ");
+        marca = sc.nextLine();
+
+        ss = new SmartSpeaker(idSpeaker,state,volume,channel,marca);
+
+        return ss;
+    }
+
+    private SmartCamera cameraFromInput(Set<String> ids, Scanner sc){
+        // Variáveis auxiliares
+        String isOn,idCam; boolean state, flag = true;
+        int resX = 0, resY = 0; double sizeOfFile = 0;
+        SmartCamera sCam = null;
+
+        // Criação da câmara
+        System.out.print("Insira o id desta câmara: ");
+        idCam = sc.nextLine();
+        while(ids.contains(idCam)){
+            System.out.println("O id que pretende atribuir já existe!");
+            System.out.print("Insira o id deste speaker: ");
+            idCam = sc.nextLine();
+        }
+        ids.add(idCam);
+
+        System.out.print("O dispositivo inicia-se ligado?(s/n): ");
+        isOn = sc.nextLine();
+        while (isOn.length() != 1 && !("sSnN".contains(isOn))) {
+            System.out.println("Opção inválida, escreva 's' ou 'S' para sim ou 'n' ou 'N' para não (sem aspas)!");
+            System.out.print("O dispositivo inicia-se ligado?(s/n): ");
+            isOn = sc.nextLine();
+        }
+        if(isOn.toLowerCase().equals("s")) state = true;
+        else state = false;
+
+        System.out.print("Insira a resolução horizontal(X): ");
+        while (flag) {
+            try{
+                resX = Integer.parseInt(sc.nextLine());
+                flag = false;
+            } catch (NumberFormatException e){
+                System.out.println("A resolução horizontal deve ser um número inteiro!");
+                System.out.print("Insira a resolução horizontal(X): ");
+            }
+        }
+        flag = true;
+
+        System.out.print("Insira a resolução vertical(Y): ");
+        while (flag) {
+            try{
+                resY = Integer.parseInt(sc.nextLine());
+                flag = false;
+            } catch (NumberFormatException e){
+                System.out.println("A resolução vertical deve ser um número inteiro!");
+                System.out.print("Insira a resolução vertical(Y): ");
+            }
+        }
+        flag = true;
+
+        System.out.print("Insira o tamanho do ficheiro gerado por esta câmara: ");
+        while (flag) {
+            try{
+                sizeOfFile = Double.parseDouble(sc.nextLine());
+                flag = false;
+            } catch (NumberFormatException e){
+                System.out.println("O tamanho do ficheiro deve ser um número real!");
+                System.out.print("Insira o tamanho do ficheiro gerado por esta câmara: ");
+            }
+        }
+        flag = true;
+
+        sCam = new SmartCamera(idCam,state,resX,resY,sizeOfFile);
+        return sCam;
+    }
+
+    private static Pessoa personFromInput(Set<Integer> nifs, Scanner sc){
+        String name; 
+        int nif = 0;
+        boolean flag = true;
+
+        System.out.print("Insira o nome desta pessoa: ");
+        name = sc.nextLine();
+
+        System.out.print("Insira o nif desta pessoa: ");
+        while(flag){
+            try {
+                nif = Integer.parseInt(sc.nextLine());
+                if(nifs.contains(nif)){
+                    System.out.println("O nif que pretende atribuir já existe!\n");
+                    System.out.print("Insira o nif desta pessoa: ");
+                }else{
+                    flag = false;
+                    nifs.add(nif);
+                }
+            } catch (Exception e) {
+                System.out.println("O nif deve ser um número inteiro!");
+            }
+        }
+        return new Pessoa(name, nif);
+    }
+
+    private static EnergyProvider providerFromInput(Set<String> providersNames, Scanner sc){
+        String name;
+        double price_kwh = 0, tax = 0;
+        boolean flag = true;
+
+        System.out.print("Insira o nome deste fornecedor: ");
+        name = sc.nextLine();
+        while(providersNames.contains(name.toLowerCase())){
+            System.out.printf("O nome: '%s' já existe!\n", name);
+            System.out.print("Insira o nome deste fornecedor: ");
+            name = sc.nextLine();
+        }
+        providersNames.add(name.toLowerCase());
+
+        System.out.println("Insira o preço por kWh deste fornecedor: ");
+        while (flag) {
+            try {
+                price_kwh = Double.parseDouble(sc.nextLine());
+                flag = false;
+            } catch (NumberFormatException e) {
+                System.out.println("O preço por kWh deve ser um número real!");
+            }
+        }
+        flag = true;
+
+        System.out.println("Insira o imposto aplicado por este fornecedor: ");
+        while (flag) {
+            try {
+                tax = Double.parseDouble(sc.nextLine());
+                flag = false;
+            } catch (NumberFormatException e) {
+                System.out.println("O imposto deve ser um número real!");
+            }
+        }
+
+        return new EnergyProvider(name,price_kwh,tax);
+    } 
 
     private static Map<String,EnergyProvider> providersFromFile(String path) throws FileNotFoundException{
         try {
             File providers = new File(path);
             return Generator.fileToProviders(providers);
         } catch (FileNotFoundException e) {
-            System.out.println("ERRO: O ficheiro de fornecedores de energia não existe.");
-            return null;
-        } catch (Exception e) {
-            System.out.println("Ocorreu um erro desconhecido");
+            System.out.printf("ERRO: O ficheiro '%s' de fornecedores de energia não existe.",path);
             return null;
         }
     }
@@ -85,9 +256,6 @@ public class Main {
             } catch (FileNotFoundException e) {
                 System.out.println("ERRO: Algum dos ficheiros de casas, dispositivos ou pessoas não existe.");
                 return null;
-            } catch (Exception e) {
-                System.out.println("Ocorreu um erro desconhecido");
-                return null;
             }
         }else{
             System.out.println("O array com os caminhos dos ficheiros para as casas, pessoas e dispositivos tem tamanho inválido.");
@@ -95,7 +263,8 @@ public class Main {
         }
     }
 
-    public static void main(String[] args){
+    private static int getMainOption(Scanner s){
+        int op = 0; boolean flag = true;
         System.out.println("---------------------------------------------------------------------------");
         System.out.println("| 1 | Carregar informação de ficheiros                                    |");
         System.out.println("---------------------------------------------------------------------------");
@@ -103,37 +272,80 @@ public class Main {
         System.out.println("---------------------------------------------------------------------------");
         System.out.println("| 3 | Guardar estado atual em ficheiros                                   |");
         System.out.println("---------------------------------------------------------------------------");
-        System.out.println("| 4 | Sair                                                                |");
+        System.out.println("| 4 | Instruções de utilização do programa                                |");
         System.out.println("---------------------------------------------------------------------------");
+        System.out.println("| 5 | Sair                                                                |");
+        System.out.println("---------------------------------------------------------------------------");
+        while (flag){
+            try {
+                op = Integer.parseInt(s.nextLine());
+                flag = false;
+            } catch (NumberFormatException e) {
+                System.out.println("A opção deve ser um número inteiro!");
+            }
+        }
+        return op;
+    }
+    public static void main(String[] args){
+        Scanner s = new Scanner(System.in); // este scanner é usado no programa todo
+
         List<CasaInteligente> houses = null;
         Map<String,EnergyProvider> providers = null;
         Set<String> devIDs = new HashSet<String>(); // apenas auxilia a evitar a criação de ids repetidos
-        Scanner scanner = new Scanner(System.in);
-        switch (scanner.nextInt()) {
-            case 1:{
-                break;
-            }
+        Set<Integer> nifs = new HashSet<Integer>();
+        boolean flag = true; int option = 0;
 
-            case 2:{
-                break;
-            }
-
-            case 3:{
-                if(houses != null && providers != null){
-                    // TODO: ⚠️ ESTE IF PRECISA DE SER CONCLUÍDO ⚠️
-                }else{
-                    System.out.println("Não há informação para ser carregada!");
+        option = getMainOption(s);
+        while (flag){
+            switch (option) {
+                case 1:{
+                    // TODO: ⚠️ CARREGAR INFORMAÇÃO DE FICHEIROS ⚠️
+                    option = getMainOption(s);
+                    flag = true;
+                    break;
                 }
-                break;
-            }
-
-            case 4: break;
-        
-            default:{
-                System.out.println("OPÇÃO INVÁLIDA");
-                break;
+    
+                case 2:{
+                    // TODO: ⚠️ CARREGAR INFORMAÇÃO MANUALMENTE ⚠️
+                    System.out.println("Insira as informações pedidas conforme o formato especificado.\n");
+                    
+                    option = getMainOption(s);
+                    flag = true;
+                    break;
+                }
+    
+                case 3:{
+                    if(houses != null && providers != null){
+                        // TODO: ⚠️ CONCLUIR ESTE IF ⚠️
+                    }else{
+                        System.out.println("Não há informação para ser carregada!");
+                    }
+                    option = getMainOption(s);
+                    flag = true;
+                    break;
+                }
+    
+                case 4: {
+                    // TODO: ⚠️ MOSTRAR AS INSTRUÇÕES DE UTILIZAÇÃO DO PROGRAMA ⚠️
+                    option = getMainOption(s);
+                    flag = true;
+                    break;
+                }
+    
+                case 5:{
+                    flag = false;
+                    break;
+                }
+            
+                default:{
+                    System.out.println("OPÇÃO INVÁLIDA");
+                    option = getMainOption(s);
+                    flag = true;
+                    break;
+                }
             }
         }
-        scanner.close();
+        s.close();
+        System.out.println("A sair...");
     }
 }

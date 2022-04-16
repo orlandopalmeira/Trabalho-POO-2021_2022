@@ -82,12 +82,6 @@ public class SmartBulb extends SmartDevice {
     }
 
     @Override
-    public String toLineFile(){
-        //TYPE;ID(string);ON/OFF(bool);TONE(int);DIMENSION(double)
-        return String.format("SmartBulb;%s;%b;%d;%f\n",this.getID(),this.getOn(),this.tone,this.dimension);
-    }
-
-    @Override
     public double dailyConsumption(){
         return this.getOn() ? ((3.0 + (double)this.tone) * 24.0) / 1000.0 : 0.0;
     }

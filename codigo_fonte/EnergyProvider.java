@@ -98,10 +98,6 @@ public class EnergyProvider {
         }else return null;
     }
 
-    public String toLineFile(){
-        return String.format("%s;%f;%f\n",this.name,this.price_kwh,this.tax);
-    }
-
     @Override
     /**
      * Verifica a igualdade entre dois fornecedores.

@@ -45,10 +45,6 @@ public class Pessoa {
         this.nif = nif;
     }
 
-    public String toLineFile(){
-        return String.format("%s;%d\n",this.nome,this.nif);
-    }
-
     @Override
     /**
      * Verifica a igualdade entre duas pessoas

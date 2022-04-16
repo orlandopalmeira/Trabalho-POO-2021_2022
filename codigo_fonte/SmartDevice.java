@@ -99,11 +99,6 @@ public abstract class SmartDevice {
         this.totalConsumption = 0.0;
     }
 
-    /**
-     * Retorna uma string com os dados do dispositivos para ser guardada
-     * em ficheiro.
-     */
-    public abstract String toLineFile();
 
     @Override
     /**

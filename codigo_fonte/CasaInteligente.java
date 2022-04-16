@@ -308,36 +308,13 @@ public class CasaInteligente{
      * Atualiza os contadores de consumo e custo associado a passagem de um dia.
      */
     public void passTime(EnergyProvider fornecedor){
-        if(this.fornecedor.equals(fornecedor.getName())){
+        if(fornecedor != null && this.fornecedor.equals(fornecedor.getName())){
             this.devices.values().forEach(device -> device.updateTotalConsumption());
             this.totalConsumption = this.devices.values().stream()
                                                         .mapToDouble(device -> device.getTotalConsumption())
                                                         .sum();
             this.totalCost += fornecedor.pricePerDay(this.devices.values());
         }
-    }
-
-    public String toLineFile(){
-        StringBuilder sb = new StringBuilder();
-        // Morada
-        sb.append(String.format("%s;",this.morada));
-        // Devices por sala
-        sb.append("[");
-        for(String room : this.locations.keySet()){
-            sb.append(String.format("(%s:[",room));
-            for(String devID: this.locations.get(room)){
-                sb.append(String.format("%s.",devID));
-            }
-            sb.deleteCharAt(sb.length()-1);
-            sb.append("]),");
-        }
-        sb.deleteCharAt(sb.length()-1);
-        sb.append("];");
-        // NIF proprietario 
-        sb.append(String.format("%d;",this.proprietario.getNif()));
-        // Fornecedor
-        sb.append(String.format("%s\n",this.fornecedor));
-        return sb.toString();
     }
 
     @Override

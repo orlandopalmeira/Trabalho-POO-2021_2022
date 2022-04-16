@@ -102,11 +102,6 @@ public class SmartSpeaker extends SmartDevice {
         return this.marca;
     }
 
-    @Override
-    public String toLineFile() {
-        // TYPE;ID(string);ON/OFF(bool);Volume(int);Channel(string);Marca(string)
-        return String.format("SmartSpeaker;%s;%b;%d;%s;%s\n",this.getID(),this.getOn(),this.volume,this.channel,this.marca);
-    }
 
     @Override
     public double dailyConsumption(){

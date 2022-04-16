@@ -89,12 +89,6 @@ public class SmartCamera extends SmartDevice{
     }
 
     @Override
-    public String toLineFile() {
-        // TYPE;ID(string);ON/OFF(bool);resx(int);resy(int);sizeoffile(double)
-        return String.format("SmartCamera;%s;%b;%d;%d;%f\n",this.getID(),this.getOn(),this.resX,this.resY,this.sizeOfFile);
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
