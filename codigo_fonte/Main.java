@@ -1,5 +1,7 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -265,17 +267,19 @@ public class Main {
 
     private static int getMainOption(Scanner s){
         int op = 0; boolean flag = true;
-        System.out.println("---------------------------------------------------------------------------");
-        System.out.println("| 1 | Carregar informação de ficheiros                                    |");
-        System.out.println("---------------------------------------------------------------------------");
-        System.out.println("| 2 | Carregar informação manualmente                                     |");
-        System.out.println("---------------------------------------------------------------------------");
-        System.out.println("| 3 | Guardar estado atual em ficheiros                                   |");
-        System.out.println("---------------------------------------------------------------------------");
-        System.out.println("| 4 | Instruções de utilização do programa                                |");
-        System.out.println("---------------------------------------------------------------------------");
-        System.out.println("| 5 | Sair                                                                |");
-        System.out.println("---------------------------------------------------------------------------");
+        System.out.println("--------------------------------------------------------");
+        System.out.println("| 1 | Carregar informação de ficheiros                 |");
+        System.out.println("--------------------------------------------------------");
+        System.out.println("| 2 | Carregar informação manualmente                  |");
+        System.out.println("--------------------------------------------------------");
+        System.out.println("| 3 | Guardar estado atual em ficheiros                |");
+        System.out.println("--------------------------------------------------------");
+        System.out.println("| 4 | Iniciar simulação                                |");
+        System.out.println("--------------------------------------------------------");
+        System.out.println("| 5 | Instruções de utilização do programa             |");
+        System.out.println("--------------------------------------------------------");
+        System.out.println("| 6 | Sair                                             |");
+        System.out.println("--------------------------------------------------------");
         while (flag){
             try {
                 op = Integer.parseInt(s.nextLine());
@@ -286,13 +290,153 @@ public class Main {
         }
         return op;
     }
+
+    public static int getSimulationTypeOption(Scanner s){
+        int op = 0; boolean flag = true;
+        System.out.println("----------------------------------------------------------------------------------------");
+        System.out.println("| Selecione o tipo de simulação                                                        |");
+        System.out.println("----------------------------------------------------------------------------------------");
+        System.out.println("| 1 | Simulação básica (o estado das entidades não é alterado no decorrer do tempo)    |");
+        System.out.println("----------------------------------------------------------------------------------------");
+        System.out.println("| 2 | Simulação normal (o estado das entidades pode ser alterado no decorrer do tempo) |");
+        System.out.println("----------------------------------------------------------------------------------------");
+        System.out.println("| 3 | Simulação automática (é uma simulação normal (2) em que as alterações ao estado  |");
+        System.out.println("|     das entidades provêm de um ficheiro (*.txt) de comandos)                         |");
+        System.out.println("----------------------------------------------------------------------------------------");
+        System.out.println("| 4 | Voltar ao menu inicial                                                           |");
+        System.out.println("----------------------------------------------------------------------------------------");
+        while (flag) {
+            try {
+                op = Integer.parseInt(s.nextLine());
+                flag = false;
+            } catch (NumberFormatException e) {
+                System.out.println("A seleção deve ser um número inteiro!");
+            }
+        }
+        return op;
+    }
+
+    private static LocalDate getDateFromInput(String message,Scanner s){
+        System.out.print(message);
+        LocalDate date = null;
+        boolean flag = true;
+        while(flag){
+            try {
+                date = LocalDate.parse(s.nextLine());
+                flag = false;
+            } catch (DateTimeParseException e) {
+                System.out.println("A data tem de estar no formato AAAA-MM-DD!");
+            }
+        }
+        return date;
+    }
+
+    private static int getSimulationOption(Scanner s){
+        boolean flag = true;
+        int op = 0;
+        System.out.println("-----------------------------------------------------------");
+        System.out.println("| Selecione uma das seguintes opções                      |");
+        System.out.println("-----------------------------------------------------------");
+        System.out.println("| 1 | Ver as casas                                        |");
+        System.out.println("-----------------------------------------------------------");
+        System.out.println("| 2 | Ver os fornecedores                                 |");
+        System.out.println("-----------------------------------------------------------");
+        System.out.println("| 3 | Ver a casa que mais consumiu                        |");
+        System.out.println("-----------------------------------------------------------");
+        System.out.println("| 4 | Ver o fornecedor com maior volume de faturação      |");
+        System.out.println("-----------------------------------------------------------");
+        System.out.println("| 5 | Ver as faturas emitidas por um certo fornecedor     |");
+        System.out.println("-----------------------------------------------------------");
+        System.out.println("| 6 | Ranking de consumidores de energia                  |");
+        System.out.println("-----------------------------------------------------------");
+        System.out.println("| 7 | Voltar ao menu anterior                             |");
+        System.out.println("-----------------------------------------------------------");
+        while (flag) {
+            try {
+                op = Integer.parseInt(s.nextLine());
+                flag = false;
+            } catch (Exception e) {
+                System.out.println("A opção deve ser um número inteiro!");
+            }
+        }
+        return op;
+    }
+
+    private void watchSimulation(Simulator sim, Scanner s){
+        boolean flag = true;
+        int op = getSimulationOption(s);
+        while(flag){
+            switch (op) {
+                case 1:{
+                    for(CasaInteligente house: sim.getHouses()){
+                        System.out.println("-------------------------------------------------------");
+                        System.out.printf("    Morada: %s\n", house.getMorada());
+                        System.out.printf("    Proprietário [Nome]: %s\n",house.getOwnerName());
+                        System.out.printf("    Proprietário [NIF]: %d\n",house.getOwnerNif());
+                        System.out.printf("    Fornecedor: %s\n", house.getFornecedor());
+                        System.out.printf("    Consumo total: %\nf", house.getTotalConsumption());
+                        System.out.println("    Dispositivos:");
+                        for(SmartDevice dev: house.getDevices()){
+                            System.out.printf("        Tipo: %s, Estado: %s, Consumo total: %f, Consumo diário: %f\n",
+                                              dev.getClass().getName(),dev.getOn() ? "Ligado" : "Desligado",dev.getTotalConsumption(),dev.dailyConsumption());
+                        }
+                        System.out.println("-------------------------------------------------------");
+                    }
+                    System.out.println();
+                    op = getSimulationOption(s);
+                    break;
+                }
+                case 2: {
+                    for(EnergyProvider provider: sim.getProviders()){
+                        System.out.println("-------------------------------------------------------");
+                        System.out.printf("    Nome: %s\n",provider.getName());
+                        System.out.printf("    Preço/kWh: %f\n",provider.getPrice_kwh());
+                        System.out.printf("    Imposto: %f\n",provider.getTax());
+                        System.out.println("-------------------------------------------------------");
+                    }
+                    break;
+                }
+                case 3: {
+                    CasaInteligente house = sim.getBiggestConsumer();
+                    System.out.println("-------------------------------------------------------");
+                    System.out.printf("    Morada: %s\n", house.getMorada());
+                    System.out.printf("    Proprietário [Nome]: %s\n",house.getOwnerName());
+                    System.out.printf("    Proprietário [NIF]: %d\n",house.getOwnerNif());
+                    System.out.printf("    Fornecedor: %s\n", house.getFornecedor());
+                    System.out.printf("    Consumo total: %\nf", house.getTotalConsumption());
+                    System.out.println("    Dispositivos:");
+                    for(SmartDevice dev: house.getDevices()){
+                        System.out.printf("        Tipo: %s, Estado: %s, Consumo total: %f, Consumo diário: %f\n",
+                                            dev.getClass().getName(),dev.getOn() ? "Ligado" : "Desligado",dev.getTotalConsumption(),dev.dailyConsumption());
+                    }
+                    System.out.println("-------------------------------------------------------");
+                    break;
+                }
+                case 4:{
+                    break;
+                }
+                case 5: break;
+                case 6: break;
+                case 7:{
+                    flag = false;
+                    break;
+                }
+                default:{
+                    System.out.println("Opção inválida!");
+                    break;
+                }
+            }
+        }
+    }
+
     public static void main(String[] args){
         Scanner s = new Scanner(System.in); // este scanner é usado no programa todo
 
         List<CasaInteligente> houses = null;
         Map<String,EnergyProvider> providers = null;
         Set<String> devIDs = new HashSet<String>(); // apenas auxilia a evitar a criação de ids repetidos
-        Set<Integer> nifs = new HashSet<Integer>();
+        Set<Integer> nifs = new HashSet<Integer>(); // apenas auxilia a evitar a criação de nifs repetidos
+        Set<String> providersNames = new HashSet<String>(); // apenas auxilia a evitar a criação de fornecedores repetidos
         boolean flag = true; int option = 0;
 
         option = getMainOption(s);
@@ -306,8 +450,8 @@ public class Main {
                 }
     
                 case 2:{
+                    System.out.println("Insira as informações pedidas conforme o formato especificado.");
                     // TODO: ⚠️ CARREGAR INFORMAÇÃO MANUALMENTE ⚠️
-                    System.out.println("Insira as informações pedidas conforme o formato especificado.\n");
                     
                     option = getMainOption(s);
                     flag = true;
@@ -315,7 +459,7 @@ public class Main {
                 }
     
                 case 3:{
-                    if(houses != null && providers != null){
+                    if(houses != null && providers != null && houses.size() > 0 && providers.size() > 0){
                         // TODO: ⚠️ CONCLUIR ESTE IF ⚠️
                     }else{
                         System.out.println("Não há informação para ser carregada!");
@@ -324,15 +468,63 @@ public class Main {
                     flag = true;
                     break;
                 }
+
+                case 4:{
+                    if(houses != null && providers != null && houses.size() > 0 && providers.size() > 0){
+                        Simulator sim = new Simulator(houses,providers.values());
+                        int op = getSimulationTypeOption(s);
+                        flag = true;
+                        while (flag) {
+                            switch (op) {
+                                case 1:{
+                                    LocalDate start = null, end = null;
+                                    start = getDateFromInput("Insira a data de início: ",s);
+                                    end = getDateFromInput("Insira a data de fim: ",s);
+                                    sim.startBasicSimulation(start, end);
+
+                                    op = getSimulationTypeOption(s);
+                                    flag = true;
+                                    break;
+                                }
+                                case 2:{
+                                    op = getSimulationTypeOption(s);
+                                    flag = true;
+                                    break;
+                                }
+                                case 3:{
+                                    op = getSimulationTypeOption(s);
+                                    flag = true;
+                                    break;
+                                }
+                                case 4:{
+                                    flag = false;
+                                    break;
+                                }
+                            
+                                default:{
+                                    System.out.println("OPÇÃO INVÁLIDA!");
+                                    op = getSimulationTypeOption(s);
+                                    flag = true;
+                                    break;
+                                }
+                            }   
+                        }
+                    }else{
+                        System.out.println("Não existe conteúdo para simular!");
+                    }
+                    option = getMainOption(s);
+                    flag = true;
+                    break;
+                }
     
-                case 4: {
+                case 5: {
                     // TODO: ⚠️ MOSTRAR AS INSTRUÇÕES DE UTILIZAÇÃO DO PROGRAMA ⚠️
                     option = getMainOption(s);
                     flag = true;
                     break;
                 }
     
-                case 5:{
+                case 6:{
                     flag = false;
                     break;
                 }

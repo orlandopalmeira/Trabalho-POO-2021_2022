@@ -21,7 +21,7 @@ public class SimulatorTest {
         Map<String, EnergyProvider> providers = Generator.fileToProviders(providers_f);
         List<CasaInteligente> houses = Generator.fileToHouses(devices_f,people_f,houses_f);
         Simulator sim = new Simulator(houses,providers.values().stream().collect(Collectors.toList()));
-        sim.startSimulation(LocalDate.parse("2022-04-14"),LocalDate.parse("2022-04-15"));
+        sim.startBasicSimulation(LocalDate.parse("2022-04-14"),LocalDate.parse("2022-04-15"));
         boolean test = true;
         assertEquals(4, sim.getBillsFromProvider("EDP").size());
         for(Fatura f: sim.getBillsFromProvider("EDP")){
@@ -69,7 +69,7 @@ public class SimulatorTest {
         Map<String, EnergyProvider> providers = Generator.fileToProviders(providers_f);
         List<CasaInteligente> houses = Generator.fileToHouses(devices_f,people_f,houses_f);
         Simulator sim = new Simulator(houses,providers.values().stream().collect(Collectors.toList()));
-        sim.startSimulation(LocalDate.parse("2022-04-14"),LocalDate.parse("2022-04-15"));
+        sim.startBasicSimulation(LocalDate.parse("2022-04-14"),LocalDate.parse("2022-04-15"));
         List<CasaInteligente> consumptionOrder = sim.getConsumptionOrder();
         boolean test = true;
         for (int i = 0; i+1 < consumptionOrder.size(); i++){
@@ -91,7 +91,7 @@ public class SimulatorTest {
         Map<String, EnergyProvider> providers = Generator.fileToProviders(providers_f);
         List<CasaInteligente> houses = Generator.fileToHouses(devices_f,people_f,houses_f);
         Simulator sim = new Simulator(houses,providers.values().stream().collect(Collectors.toList()));
-        sim.startSimulation(LocalDate.parse("2022-04-14"),LocalDate.parse("2022-04-15"));
+        sim.startBasicSimulation(LocalDate.parse("2022-04-14"),LocalDate.parse("2022-04-15"));
         EnergyProvider ep = sim.getBiggestProvider();
         assertTrue(ep.getName().equals("Galp"));
     }

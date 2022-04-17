@@ -52,9 +52,10 @@ public class Simulator {
     }
 
     /**
-     * Inicia a simulacao.
+     * Executa uma simulação básica.
+     * Uma simulação básica consiste em efectuar a passagem do tempo sem alterar o estado de todas as entidades.            
      */
-    public void startSimulation(LocalDate start,LocalDate end){
+    public void startBasicSimulation(LocalDate start,LocalDate end){
         this.resetAll();
         for(LocalDate aux = start; aux.compareTo(end) < 0; aux = aux.plusDays(1)){
             this.houses.values().forEach(house -> house.passTime(this.energyProviders.get(house.getFornecedor())));
@@ -140,6 +141,24 @@ public class Simulator {
      */
     public CasaInteligente removeHouse(int houseID){
         return this.houses.remove(houseID);
+    }
+
+    /**
+     * Devolve uma lista com as casas desta simulação
+     */
+    public List<CasaInteligente> getHouses(){
+        List<CasaInteligente> result = new ArrayList<>();
+        this.houses.values().forEach(house -> result.add(house.clone()));
+        return result;
+    }
+
+    /**
+     * Devolve uma lista com os fornecedores desta simulação
+     */
+    public List<EnergyProvider> getProviders(){
+        List<EnergyProvider> result = new ArrayList<>();
+        this.energyProviders.values().forEach(ep -> result.add(ep.clone()));
+        return result;
     }
 
     /**

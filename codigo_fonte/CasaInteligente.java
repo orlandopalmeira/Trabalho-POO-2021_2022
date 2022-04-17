@@ -17,7 +17,7 @@ public class CasaInteligente{
    
     private String morada;
     private Map<String, SmartDevice> devices; // identificador -> SmartDevice
-    private Map<String, Set<String>> locations; // Espaço -> Lista codigo dos devices
+    private Map<String, Set<String>> locations; // Espaço -> Conjunto codigo dos devices
     private Pessoa proprietario;
     private String fornecedor;
     private double totalConsumption;
