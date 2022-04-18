@@ -362,19 +362,22 @@ public class Main {
         return op;
     }
 
-    private void watchSimulation(Simulator sim, Scanner s){
+    private static void watchBasicSimulation(Simulator sim, Scanner s){
         boolean flag = true;
         int op = getSimulationOption(s);
         while(flag){
             switch (op) {
                 case 1:{
-                    for(CasaInteligente house: sim.getHouses()){
+                    Map<Integer,CasaInteligente> housesMap = sim.getHousesMap();
+                    for(Integer nif: housesMap.keySet()){
+                        CasaInteligente house = housesMap.get(nif);
                         System.out.println("-------------------------------------------------------");
+                        System.out.printf("    ID: %d\n",nif);
                         System.out.printf("    Morada: %s\n", house.getMorada());
                         System.out.printf("    Proprietário [Nome]: %s\n",house.getOwnerName());
                         System.out.printf("    Proprietário [NIF]: %d\n",house.getOwnerNif());
                         System.out.printf("    Fornecedor: %s\n", house.getFornecedor());
-                        System.out.printf("    Consumo total: %\nf", house.getTotalConsumption());
+                        System.out.printf("    Consumo total: %f\n", house.getTotalConsumption());
                         System.out.println("    Dispositivos:");
                         for(SmartDevice dev: house.getDevices()){
                             System.out.printf("        Tipo: %s, Estado: %s, Consumo total: %f, Consumo diário: %f\n",
@@ -382,54 +385,107 @@ public class Main {
                         }
                         System.out.println("-------------------------------------------------------");
                     }
-                    System.out.println();
+                    System.out.println("Pressione ENTER para continuar...");
+                    s.nextLine();
                     op = getSimulationOption(s);
                     break;
                 }
                 case 2: {
-                    for(EnergyProvider provider: sim.getProviders()){
+                    Map<String,EnergyProvider> providersMap = sim.getProvidersMap();
+                    for(String providerName: providersMap.keySet()){
+                        EnergyProvider provider = providersMap.get(providerName);
                         System.out.println("-------------------------------------------------------");
+                        System.out.printf("    ID: %s\n",providerName.toLowerCase());
                         System.out.printf("    Nome: %s\n",provider.getName());
                         System.out.printf("    Preço/kWh: %f\n",provider.getPrice_kwh());
                         System.out.printf("    Imposto: %f\n",provider.getTax());
                         System.out.println("-------------------------------------------------------");
                     }
+                    System.out.println("Pressione ENTER para continuar...");
+                    s.nextLine();
+                    op = getSimulationOption(s);
                     break;
                 }
                 case 3: {
                     CasaInteligente house = sim.getBiggestConsumer();
                     System.out.println("-------------------------------------------------------");
+                    System.out.printf("    ID: %d\n",house.getOwnerNif());
                     System.out.printf("    Morada: %s\n", house.getMorada());
                     System.out.printf("    Proprietário [Nome]: %s\n",house.getOwnerName());
                     System.out.printf("    Proprietário [NIF]: %d\n",house.getOwnerNif());
                     System.out.printf("    Fornecedor: %s\n", house.getFornecedor());
-                    System.out.printf("    Consumo total: %\nf", house.getTotalConsumption());
+                    System.out.printf("    Consumo total: %f\n", house.getTotalConsumption());
                     System.out.println("    Dispositivos:");
                     for(SmartDevice dev: house.getDevices()){
                         System.out.printf("        Tipo: %s, Estado: %s, Consumo total: %f, Consumo diário: %f\n",
                                             dev.getClass().getName(),dev.getOn() ? "Ligado" : "Desligado",dev.getTotalConsumption(),dev.dailyConsumption());
                     }
                     System.out.println("-------------------------------------------------------");
+                    System.out.println("Pressione ENTER para continuar...");
+                    s.nextLine();
+                    op = getSimulationOption(s);
                     break;
                 }
                 case 4:{
+                    EnergyProvider provider = sim.getBiggestProvider();
+                    System.out.println("-------------------------------------------------------");
+                    System.out.printf("    ID: %s\n",provider.getName().toLowerCase());
+                    System.out.printf("    Nome: %s\n",provider.getName());
+                    System.out.printf("    Preço/kWh: %f\n",provider.getPrice_kwh());
+                    System.out.printf("    Imposto: %f\n",provider.getTax());
+                    System.out.println("-------------------------------------------------------");
+                    System.out.println("Pressione ENTER para continuar...");
+                    s.nextLine();
+                    op = getSimulationOption(s);
                     break;
                 }
-                case 5: break;
-                case 6: break;
+                case 5:{
+                    System.out.print("Insira o id(nome) do fornecedor: ");
+                    String idProv = s.nextLine();
+                    if(sim.getProvidersMap().containsKey(idProv.toLowerCase())){
+                        List<Fatura> faturas = sim.getBillsFromProvider(idProv);
+                        for(Fatura fatura : faturas){
+                            System.out.printf("%s\n",fatura.printFatura());
+                        }
+                    }else{
+                        System.out.printf("O fornecedor '%s' não existe\n",idProv);
+                    }
+                    System.out.println("Pressione ENTER para continuar...");
+                    s.nextLine();
+                    op = getSimulationOption(s);
+                    break;
+                }
+                case 6:{
+                    List<CasaInteligente> consumptionRanking = sim.getConsumptionOrder();
+                    for(CasaInteligente house : consumptionRanking){
+                        System.out.println("-------------------------------------------------------");
+                        System.out.printf("    ID: %d\n",house.getOwnerNif());
+                        System.out.printf("    Morada: %s\n", house.getMorada());
+                        System.out.printf("    Proprietário [Nome]: %s\n",house.getOwnerName());
+                        System.out.printf("    Proprietário [NIF]: %d\n",house.getOwnerNif());
+                        System.out.printf("    Fornecedor: %s\n", house.getFornecedor());
+                        System.out.printf("    Consumo total: %f\n", house.getTotalConsumption());
+                        System.out.println("-------------------------------------------------------");
+                    }
+                    System.out.println("Pressione ENTER para continuar...");
+                    s.nextLine();
+                    op = getSimulationOption(s);
+                    break;
+                }
                 case 7:{
                     flag = false;
                     break;
                 }
                 default:{
                     System.out.println("Opção inválida!");
+                    op = getSimulationOption(s);
                     break;
                 }
             }
         }
     }
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
         Scanner s = new Scanner(System.in); // este scanner é usado no programa todo
 
         List<CasaInteligente> houses = null;
@@ -444,6 +500,45 @@ public class Main {
             switch (option) {
                 case 1:{
                     // TODO: ⚠️ CARREGAR INFORMAÇÃO DE FICHEIROS ⚠️
+                    File providers_f = null, houses_f = null, people_f = null, devices_f = null;
+                    Simulator sim;
+                    while(flag){
+                        System.out.print("Insira o caminho para o ficheiro dos dispositivos: ");
+                        devices_f = new File(s.nextLine());
+                        if(!devices_f.exists()){
+                            System.out.println("Esse ficheiro não existe!");
+                        }else flag = false;
+                    }
+                    flag = true;
+                    while(flag){
+                        System.out.print("Insira o caminho para o ficheiro dos proprietários: ");
+                        people_f = new File(s.nextLine());
+                        if(!people_f.exists()){
+                            System.out.println("Esse ficheiro não existe!");
+                        }else flag = false;
+                    }
+                    flag = true;
+                    while(flag){
+                        System.out.print("Insira o caminho para o ficheiro das casas: ");
+                        houses_f = new File(s.nextLine());
+                        if(!houses_f.exists()){
+                            System.out.println("Esse ficheiro não existe!");
+                        }else flag = false;
+                    }
+                    flag = true;
+                    while(flag){
+                        System.out.print("Insira o caminho para o ficheiro dos fornecedores: ");
+                        providers_f = new File(s.nextLine());
+                        if(!providers_f.exists()){
+                            System.out.println("Esse ficheiro não existe!");
+                        }else flag = false;
+                    }
+                    try {
+                        providers = Generator.fileToProviders(providers_f);
+                    } catch (FileNotFoundException e) {}
+                    try {
+                        houses = Generator.fileToHouses(devices_f,people_f,houses_f);
+                    } catch (FileNotFoundException e) {}
                     option = getMainOption(s);
                     flag = true;
                     break;
@@ -473,7 +568,6 @@ public class Main {
                     if(houses != null && providers != null && houses.size() > 0 && providers.size() > 0){
                         Simulator sim = new Simulator(houses,providers.values());
                         int op = getSimulationTypeOption(s);
-                        flag = true;
                         while (flag) {
                             switch (op) {
                                 case 1:{
@@ -481,7 +575,7 @@ public class Main {
                                     start = getDateFromInput("Insira a data de início: ",s);
                                     end = getDateFromInput("Insira a data de fim: ",s);
                                     sim.startBasicSimulation(start, end);
-
+                                    watchBasicSimulation(sim,s);
                                     op = getSimulationTypeOption(s);
                                     flag = true;
                                     break;

@@ -104,7 +104,7 @@ public class SmartBulb extends SmartDevice {
     }
 
     @Override
-    public SmartDevice clone() {
+    public SmartBulb clone() {
         return new SmartBulb(this);
     }
 }

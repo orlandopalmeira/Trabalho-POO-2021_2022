@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 public class Simulator {
     /**
-     * Casas presentes nesta simulação indexadas pelo nif do seu proprietario.
+     * Casas presentes nesta simulação indexadas pelo nif do seu proprietário.
      */
     private Map<Integer, CasaInteligente> houses;
 
@@ -20,18 +20,18 @@ public class Simulator {
     /**
      * Faturas emitidas por cada fornecedor indexadas segundo o nome do fornecedor.
      */
-    private Map<String, List<Fatura>> billsPerProvider; // faturas de cada fornecedores
+    private Map<String, List<Fatura>> billsPerProvider; 
     
     /**
      * Volumes de faturação por fornecedor.
      */
-    private Map<String, Double> profitPerProvider; // volumes de faturação por fornecedor ordenados por ordem decrescente
+    private Map<String, Double> profitPerProvider; 
     
     /**
      * Lista de casas ordenada (de forma decrescente) segundo o consumo total das casas na execução da simulação.
      * Esta lista está vazia no momento da criação do simulador.
      */
-    private List<CasaInteligente> consumptionOrder; // lista de casas ordenada pelo seu consumo (ordem decrescente)
+    private List<CasaInteligente> consumptionOrder;
 
 
     public Simulator(Collection<CasaInteligente> houses, Collection<EnergyProvider> providers) {
@@ -39,17 +39,19 @@ public class Simulator {
         houses.forEach(house -> this.houses.put(house.getOwnerNif(), house.clone()));
 
         this.energyProviders = new HashMap<>();
-        providers.forEach(provider -> this.energyProviders.put(provider.getName(),provider.clone()));
+        providers.forEach(provider -> this.energyProviders.put(provider.getName().toLowerCase(),provider.clone()));
 
         this.billsPerProvider = new HashMap<>();
         this.profitPerProvider = new HashMap<>();
         for(CasaInteligente house : houses){
-            this.billsPerProvider.putIfAbsent(house.getFornecedor(), new ArrayList<Fatura>());
-            this.profitPerProvider.putIfAbsent(house.getFornecedor(),0.0);
+            this.billsPerProvider.putIfAbsent(house.getFornecedor().toLowerCase(), new ArrayList<Fatura>());
+            this.profitPerProvider.putIfAbsent(house.getFornecedor().toLowerCase(),0.0);
         }
 
         this.consumptionOrder = null; // só lhe é atribuído o resultado após terminar a simulação
     }
+
+    // CORRER A SIMULAÇÃO
 
     /**
      * Executa uma simulação básica.
@@ -58,7 +60,7 @@ public class Simulator {
     public void startBasicSimulation(LocalDate start,LocalDate end){
         this.resetAll();
         for(LocalDate aux = start; aux.compareTo(end) < 0; aux = aux.plusDays(1)){
-            this.houses.values().forEach(house -> house.passTime(this.energyProviders.get(house.getFornecedor())));
+            this.houses.values().forEach(house -> house.passTime(this.energyProviders.get(house.getFornecedor().toLowerCase())));
         }
 
         this.consumptionOrder = this.houses.values().stream().sorted((h1,h2) -> {
@@ -67,13 +69,20 @@ public class Simulator {
         }).collect(Collectors.toList());
 
         for(CasaInteligente house : this.houses.values()){
-            EnergyProvider ep = this.energyProviders.get(house.getFornecedor()); // fornecedor da casa.
+            EnergyProvider ep = this.energyProviders.get(house.getFornecedor().toLowerCase()); // fornecedor da casa.
             if(ep != null){
-                this.profitPerProvider.merge(ep.getName(),house.getTotalCost(),Double::sum); // atualiza o volume de faturaçao do fornecedor desta casa
-                this.billsPerProvider.get(ep.getName()).add(ep.emitirFatura(house,start,end)); // adiciona uma fatura no fornecedor 
+                this.profitPerProvider.merge(ep.getName().toLowerCase(),house.getTotalCost(),Double::sum); // atualiza o volume de faturaçao do fornecedor desta casa
+                this.billsPerProvider.get(ep.getName().toLowerCase()).add(ep.emitirFatura(house,start,end)); // adiciona uma fatura no fornecedor 
             } 
         }
     }
+
+    /**
+     * Executa um dia de uma simulação normal.
+     * Uma simulação normal consiste em efectuar a passagem do tempo podendo alterar o estado das entidades
+     */
+
+    // MANIPULAR AS ENTIDADES DA SIMULAÇÃO
 
     /**
      * Repoe o estado das casas e dos dispositivos no estado inicial, excetuando alterações de preços e de fornecedores.
@@ -103,7 +112,9 @@ public class Simulator {
      * Altera o preco aplicado por um fornecedor dado o seu nome.
      */
     public void changeProviderPrice(String providerName, double new_price){
-        this.energyProviders.get(providerName).setPrice_kwh(new_price);
+        if(this.energyProviders.containsKey(providerName.toLowerCase())){
+            this.energyProviders.get(providerName.toLowerCase()).setPrice_kwh(new_price);
+        }
     }
 
     /**
@@ -114,17 +125,19 @@ public class Simulator {
     }
 
     /**
-     * Adiciona um fornecedor a esta simulação
-     */
-    public void addProvider(EnergyProvider provider){
-        this.energyProviders.putIfAbsent(provider.getName(),provider.clone());
-    }
-
-    /**
      * Altera o imposto aplicado por um fornecedor dado o seu nome.
      */
     public void changeProviderTax(String providerName, double new_tax){
-        this.energyProviders.get(providerName).setTax(new_tax);
+        if (this.energyProviders.containsKey(providerName.toLowerCase())) {
+            this.energyProviders.get(providerName.toLowerCase()).setTax(new_tax);
+        }
+    }
+
+    /**
+     * Adiciona um fornecedor a esta simulação
+     */
+    public void addProvider(EnergyProvider provider){
+        this.energyProviders.putIfAbsent(provider.getName().toLowerCase(),provider.clone());
     }
 
     /**
@@ -153,6 +166,15 @@ public class Simulator {
     }
 
     /**
+     * Devolve o mapa que contém as casas
+     */
+    public Map<Integer, CasaInteligente> getHousesMap(){
+        Map<Integer, CasaInteligente> result = new HashMap<>();
+        this.houses.keySet().forEach(nif -> result.put(nif,this.houses.get(nif).clone()));
+        return result;
+    }
+
+    /**
      * Devolve uma lista com os fornecedores desta simulação
      */
     public List<EnergyProvider> getProviders(){
@@ -160,6 +182,19 @@ public class Simulator {
         this.energyProviders.values().forEach(ep -> result.add(ep.clone()));
         return result;
     }
+
+    /**
+     * Devolve o mapa que contém os fornecedores
+     */
+    public Map<String,EnergyProvider> getProvidersMap(){
+        Map<String,EnergyProvider> result = new HashMap<>();
+        this.energyProviders.keySet().forEach(name -> result.put(name,this.energyProviders.get(name).clone()));
+        return result;
+    }
+
+
+
+    // ESTATÍSTICAS DA SIMULAÇÃO
 
     /**
      * Retorna a casa que mais energia consumiu na simulacao.
@@ -175,10 +210,10 @@ public class Simulator {
         String providerName;
         providerName = this.profitPerProvider.keySet().stream()
                                              .max((p1,p2) -> {
-                                                 double aux = this.profitPerProvider.get(p1) - this.profitPerProvider.get(p2);
+                                                 double aux = this.profitPerProvider.get(p1.toLowerCase()) - this.profitPerProvider.get(p2.toLowerCase());
                                                  return aux < 0 ? -1 : aux == 0 ? 0 : 1;
                                              }).orElse(null);
-        return providerName != null ? this.energyProviders.get(providerName).clone() : null;
+        return providerName != null ? this.energyProviders.get(providerName.toLowerCase()).clone() : null;
     }
 
     /**
@@ -193,7 +228,7 @@ public class Simulator {
      */
     public List<Fatura> getBillsFromProvider(String providerName){
         List<Fatura> result = new ArrayList<>();
-        this.billsPerProvider.get(providerName).forEach(fatura -> result.add(fatura.clone()));
+        this.billsPerProvider.get(providerName.toLowerCase()).forEach(fatura -> result.add(fatura.clone()));
         return result;
     }
 

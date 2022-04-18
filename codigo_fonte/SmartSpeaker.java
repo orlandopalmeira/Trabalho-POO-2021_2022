@@ -126,7 +126,7 @@ public class SmartSpeaker extends SmartDevice {
     }
 
     @Override
-    public SmartDevice clone() {
+    public SmartSpeaker clone() {
         return new SmartSpeaker(this);
     }
 

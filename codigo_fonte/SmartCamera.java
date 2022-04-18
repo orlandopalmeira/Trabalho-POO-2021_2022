@@ -103,7 +103,7 @@ public class SmartCamera extends SmartDevice{
     }
 
     @Override
-    public SmartDevice clone() {
+    public SmartCamera clone() {
         return new SmartCamera(this);
     }
 
