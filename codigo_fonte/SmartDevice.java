@@ -1,3 +1,4 @@
+import java.time.LocalDateTime;
 /**
  * A classe SmartDevice é um contactor simples.
  * Permite ligar ou desligar circuitos. 
@@ -10,6 +11,8 @@ public abstract class SmartDevice {
     private String id;
     private boolean on;
     private double totalConsumption;
+    private LocalDateTime last_change;
+
 
     /**
      * Constructor for objects of class SmartDevice
@@ -49,6 +52,20 @@ public abstract class SmartDevice {
      * Desliga o dispositivo.
      */
     public void turnOff() {
+        this.on = false;
+    }
+
+    /**
+     * Liga o dispositivo.
+     */
+    public void turnOn(LocalDateTime change_date) {
+        this.on = true;
+    }
+    
+    /**
+     * Desliga o dispositivo.
+     */
+    public void turnOff(LocalDateTime change_date) {
         this.on = false;
     }
     

@@ -250,17 +250,12 @@ public class Main {
         }
     }
 
-    private static List<CasaInteligente> housesFromFile(String[] paths) throws FileNotFoundException{
-        if(paths.length == 3){
-            try {
-                File devices = new File(paths[0]), people = new File(paths[1]), houses = new File(paths[2]);
-                return Generator.fileToHouses(devices,people,houses);
-            } catch (FileNotFoundException e) {
-                System.out.println("ERRO: Algum dos ficheiros de casas, dispositivos ou pessoas não existe.");
-                return null;
-            }
-        }else{
-            System.out.println("O array com os caminhos dos ficheiros para as casas, pessoas e dispositivos tem tamanho inválido.");
+    private static List<CasaInteligente> housesFromFile(String devices, String people, String houses) throws FileNotFoundException{
+        try {
+            File devices_f = new File(devices), people_f = new File(people), houses_f = new File(houses);
+            return Generator.fileToHouses(devices_f,people_f,houses_f);
+        } catch (FileNotFoundException e) {
+            System.out.println("ERRO: Algum dos ficheiros de casas, dispositivos ou pessoas não existe.");
             return null;
         }
     }
@@ -334,23 +329,43 @@ public class Main {
     private static int getSimulationOption(Scanner s){
         boolean flag = true;
         int op = 0;
-        System.out.println("-----------------------------------------------------------");
-        System.out.println("| Selecione uma das seguintes opções                      |");
-        System.out.println("-----------------------------------------------------------");
-        System.out.println("| 1 | Ver as casas                                        |");
-        System.out.println("-----------------------------------------------------------");
-        System.out.println("| 2 | Ver os fornecedores                                 |");
-        System.out.println("-----------------------------------------------------------");
-        System.out.println("| 3 | Ver a casa que mais consumiu                        |");
-        System.out.println("-----------------------------------------------------------");
-        System.out.println("| 4 | Ver o fornecedor com maior volume de faturação      |");
-        System.out.println("-----------------------------------------------------------");
-        System.out.println("| 5 | Ver as faturas emitidas por um certo fornecedor     |");
-        System.out.println("-----------------------------------------------------------");
-        System.out.println("| 6 | Ranking de consumidores de energia                  |");
-        System.out.println("-----------------------------------------------------------");
-        System.out.println("| 7 | Voltar ao menu anterior                             |");
-        System.out.println("-----------------------------------------------------------");
+        System.out.println("-------------------------------------------------------------");
+        System.out.println("| Selecione uma das seguintes opções                        |");
+        System.out.println("-------------------------------------------------------------");
+        System.out.println("| 1  | Ver as casas                                         |");
+        System.out.println("-------------------------------------------------------------");
+        System.out.println("| 2  | Ver os fornecedores                                  |");
+        System.out.println("-------------------------------------------------------------");
+        System.out.println("| 3  | Ver a casa que mais consumiu                         |");
+        System.out.println("-------------------------------------------------------------");
+        System.out.println("| 4  | Ver o fornecedor com maior volume de faturação       |");
+        System.out.println("-------------------------------------------------------------");
+        System.out.println("| 5  | Ver as faturas emitidas por um certo fornecedor      |");
+        System.out.println("-------------------------------------------------------------");
+        System.out.println("| 6  | Ranking de consumidores de energia                   |");
+        System.out.println("-------------------------------------------------------------");
+        System.out.println("| 7  | Alterar o preço/kWh de um fornecedor                 |");
+        System.out.println("-------------------------------------------------------------");
+        System.out.println("| 8  | Alterar o imposto de um fornecedor                   |");
+        System.out.println("-------------------------------------------------------------");
+        System.out.println("| 9  | Ligar todos os dispositivos de uma casa              |");
+        System.out.println("-------------------------------------------------------------");
+        System.out.println("| 10 | Desligar todos os dispositivos de uma casa           |");
+        System.out.println("-------------------------------------------------------------");
+        System.out.println("| 11 | Ligar um dispositivo numa casa                       |");
+        System.out.println("-------------------------------------------------------------");
+        System.out.println("| 12 | Desligar um dispositivo numa casa                    |");
+        System.out.println("-------------------------------------------------------------");
+        System.out.println("| 13 | Ligar os dispositivos numa reparticao de uma casa    |");
+        System.out.println("-------------------------------------------------------------");
+        System.out.println("| 14 | Desligar os dispositivos numa reparticao de uma casa |");
+        System.out.println("-------------------------------------------------------------");
+        System.out.println("| 15 | Ligar todos os dispositivos de todas as casas        |");
+        System.out.println("-------------------------------------------------------------");
+        System.out.println("| 16 | Mudar o fornecedor de uma casa                       |");
+        System.out.println("-------------------------------------------------------------");
+        System.out.println("| 17 | Voltar ao menu anterior                              |");
+        System.out.println("-------------------------------------------------------------");
         while (flag) {
             try {
                 op = Integer.parseInt(s.nextLine());
@@ -472,7 +487,247 @@ public class Main {
                     op = getSimulationOption(s);
                     break;
                 }
+
                 case 7:{
+                    String provName; double new_price = 0.0;
+                    System.out.print("Insira o id(nome) do fornecedor: ");
+                    provName = s.nextLine();
+                    while(flag){
+                        System.out.print("Insira o novo preço/kWh: ");
+                        try {
+                            new_price = Double.parseDouble(s.nextLine());
+                            flag = false;
+                        } catch (NumberFormatException e) {
+                            System.out.println("O preço tem de ser um número real!");
+                        }
+                    }
+                    flag = true;
+                    if(!sim.changeProviderPrice(provName, new_price)){
+                        System.out.println("Atenção: O fornecedor mencionado não existe. Alteração não efectuada!");
+                        System.out.println("Pressione ENTER para continuar...");
+                        s.nextLine();
+                    }
+                    op = getSimulationOption(s);
+                    break;
+                }
+
+                case 8:{
+                    String provName; double new_price = 0.0;
+                    System.out.print("Insira o id(nome) do fornecedor: ");
+                    provName = s.nextLine();
+                    while(flag){
+                        System.out.print("Insira o novo imposto: ");
+                        try {
+                            new_price = Double.parseDouble(s.nextLine());
+                            flag = false;
+                        } catch (NumberFormatException e) {
+                            System.out.println("O imposto tem de ser um número real!");
+                        }
+                    }
+                    flag = true;
+                    if(!sim.changeProviderTax(provName, new_price)){
+                        System.out.println("Atenção: O fornecedor mencionado não existe. Alteração não efectuada!");
+                        System.out.println("Pressione ENTER para continuar...");
+                        s.nextLine();
+                    }
+                    op = getSimulationOption(s);
+                    break;
+                }
+
+                case 9:{
+                    int houseID = 0;
+                    while(flag){
+                        System.out.print("Insira o id(nif proprietario) da casa: ");
+                        try {
+                            houseID = Integer.parseInt(s.nextLine());
+                            flag = false;
+                        } catch (NumberFormatException e) {
+                            System.out.println("O id da casa tem de ser um número inteiro!");
+                        }
+                    }
+                    flag = true;
+                    if(!sim.setStateAllDevicesHouse(houseID, true)){
+                        System.out.println("Atenção: O id fornecido não existe. Alteração não efectuada!");
+                        System.out.println("Pressione ENTER para continuar...");
+                        s.nextLine();
+                    }
+                    op = getSimulationOption(s);
+                    break;
+                }
+
+                case 10:{
+                    int houseID = 0;
+                    while(flag){
+                        System.out.print("Insira o id(nif proprietario) da casa: ");
+                        try {
+                            houseID = Integer.parseInt(s.nextLine());
+                            flag = false;
+                        } catch (NumberFormatException e) {
+                            System.out.println("O id da casa tem de ser um número inteiro!");
+                        }
+                    }
+                    flag = true;
+                    if(!sim.setStateAllDevicesHouse(houseID, false)){
+                        System.out.println("Atenção: O id fornecido não existe. Alteração não efectuada!");
+                        System.out.println("Pressione ENTER para continuar...");
+                        s.nextLine();
+                    }
+                    op = getSimulationOption(s);
+                    break;
+                }
+
+                case 11:{ 
+                    int houseID = 0; String devID = "null";
+                    while(flag){
+                        System.out.print("Insira o id(nif proprietario) da casa: ");
+                        try {
+                            houseID = Integer.parseInt(s.nextLine());
+                            flag = false;
+                        } catch (NumberFormatException e) {
+                            System.out.println("O id da casa tem de ser um número inteiro!");
+                        }
+                    }
+                    flag = true;
+                    System.out.print("Insira o id do dispositivo: ");
+                    devID = s.nextLine();
+                    switch (sim.setStateInDeviceInHouse(devID, houseID, true)) {
+                        case 1:{
+                            System.out.println("Atenção: O id da casa fornecido não existe. Alteração não efectuada!");
+                            System.out.println("Pressione ENTER para continuar...");
+                            s.nextLine();
+                            break;
+                        }
+
+                        case 2:{
+                            System.out.println("Atenção: O id do dispositivo fornecido não existe. Alteração não efectuada!");
+                            System.out.println("Pressione ENTER para continuar...");
+                            s.nextLine();
+                            break;
+                        }
+                    
+                        default: break;
+                    }
+                    op = getSimulationOption(s);
+                    break;
+                }
+
+                case 12:{
+                    int houseID = 0; String devID = "null";
+                    while(flag){
+                        System.out.print("Insira o id(nif proprietario) da casa: ");
+                        try {
+                            houseID = Integer.parseInt(s.nextLine());
+                            flag = false;
+                        } catch (NumberFormatException e) {
+                            System.out.println("O id da casa tem de ser um número inteiro!");
+                        }
+                    }
+                    flag = true;
+                    System.out.print("Insira o id do dispositivo: ");
+                    devID = s.nextLine();
+                    switch (sim.setStateInDeviceInHouse(devID, houseID, false)) {
+                        case 1:{
+                            System.out.println("Atenção: O id da casa fornecido não existe. Alteração não efectuada!");
+                            System.out.println("Pressione ENTER para continuar...");
+                            s.nextLine();
+                            break;
+                        }
+
+                        case 2:{
+                            System.out.println("Atenção: O id do dispositivo fornecido não existe. Alteração não efectuada!");
+                            System.out.println("Pressione ENTER para continuar...");
+                            s.nextLine();
+                            break;
+                        }
+                    
+                        default: break;
+                    }
+                    op = getSimulationOption(s);
+                    break;
+                }
+
+                case 13:{
+                    int houseID = 0; String room = "null";
+                    while(flag){
+                        System.out.print("Insira o id(nif proprietario) da casa: ");
+                        try {
+                            houseID = Integer.parseInt(s.nextLine());
+                            flag = false;
+                        } catch (NumberFormatException e) {
+                            System.out.println("O id da casa tem de ser um número inteiro!");
+                        }
+                    }
+                    flag = true;
+                    System.out.print("Insira o nome da repartição: ");
+                    room = s.nextLine();
+                    switch (sim.setStateAllDevicesInRoom(houseID, room, true)) {
+                        case 1:{
+                            System.out.println("Atenção: O id da casa fornecido não existe. Alteração não efectuada!");
+                            System.out.println("Pressione ENTER para continuar...");
+                            s.nextLine();
+                            break;
+                        }
+
+                        case 2:{
+                            System.out.println("Atenção: A repartição fornecida não existe. Alteração não efectuada!");
+                            System.out.println("Pressione ENTER para continuar...");
+                            s.nextLine();
+                            break;
+                        }
+                    
+                        default: break;
+                    }
+                    op = getSimulationOption(s);
+                    break;
+                }
+
+                case 14:{
+                    int houseID = 0; String room = "null";
+                    while(flag){
+                        System.out.print("Insira o id(nif proprietario) da casa: ");
+                        try {
+                            houseID = Integer.parseInt(s.nextLine());
+                            flag = false;
+                        } catch (NumberFormatException e) {
+                            System.out.println("O id da casa tem de ser um número inteiro!");
+                        }
+                    }
+                    flag = true;
+                    System.out.print("Insira o nome da repartição: ");
+                    room = s.nextLine();
+                    switch (sim.setStateAllDevicesInRoom(houseID, room, false)) {
+                        case 1:{
+                            System.out.println("Atenção: O id da casa fornecido não existe. Alteração não efectuada!");
+                            System.out.println("Pressione ENTER para continuar...");
+                            s.nextLine();
+                            break;
+                        }
+
+                        case 2:{
+                            System.out.println("Atenção: A repartição fornecida não existe. Alteração não efectuada!");
+                            System.out.println("Pressione ENTER para continuar...");
+                            s.nextLine();
+                            break;
+                        }
+                    
+                        default: break;
+                    }
+                    op = getSimulationOption(s);
+                    break;
+                }
+
+                case 15:{
+                    sim.setStateAllDevicesInAllHouses(true);
+                    op = getSimulationOption(s);
+                    break;
+                }
+
+                case 16:{//Mudar o fornecedor de uma casa
+                    
+                    break;
+                }
+
+                case 17:{
                     flag = false;
                     break;
                 }

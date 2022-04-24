@@ -55,11 +55,12 @@ public class Simulator {
 
     /**
      * Executa uma simulação básica.
-     * Uma simulação básica consiste em efectuar a passagem do tempo sem alterar o estado de todas as entidades.            
+     * Uma simulação básica consiste em efectuar a passagem do tempo sem alterar o estado de todas as entidades.
+     * Todas as alterações das entidades apenas poderão ser efectuadas no fim da simulação.          
      */
     public void startBasicSimulation(LocalDate start,LocalDate end){
         this.resetAll();
-        for(LocalDate aux = start; aux.compareTo(end) < 0; aux = aux.plusDays(1)){
+        for(LocalDate aux = start; aux.compareTo(end) <= 0; aux = aux.plusDays(1)){
             this.houses.values().forEach(house -> house.passTime(this.energyProviders.get(house.getFornecedor().toLowerCase())));
         }
 
@@ -81,6 +82,7 @@ public class Simulator {
      * Executa um dia de uma simulação normal.
      * Uma simulação normal consiste em efectuar a passagem do tempo podendo alterar o estado das entidades
      */
+    // TODO: ⚠️ Implementar a simulação normal ⚠️
 
     // MANIPULAR AS ENTIDADES DA SIMULAÇÃO
 
@@ -103,34 +105,40 @@ public class Simulator {
 
     /**
      * Altera o preco aplicado por um fornecedor.
+     * @return true se a operação foi bem sucedida e false se o fornecedor dado não existe.
      */
-    public void changeProviderPrice(EnergyProvider provider, double new_price){
-        this.changeProviderPrice(provider.getName(),new_price);
+
+    public boolean changeProviderPrice(EnergyProvider provider, double new_price){
+        return this.changeProviderPrice(provider.getName(),new_price);
     }
 
     /**
-     * Altera o preco aplicado por um fornecedor dado o seu nome.
+     * Altera o preco aplicado por um fornecedor.
+     * @return true se a operação foi bem sucedida e false se o fornecedor dado não existe.
      */
-    public void changeProviderPrice(String providerName, double new_price){
+
+    public boolean changeProviderPrice(String providerName, double new_price){
         if(this.energyProviders.containsKey(providerName.toLowerCase())){
             this.energyProviders.get(providerName.toLowerCase()).setPrice_kwh(new_price);
-        }
+            return true;
+        }else return false;
     }
 
     /**
      * Altera o imposto aplicado por um fornecedor.
      */
-    public void changeProviderTax(EnergyProvider provider, double new_tax){
-        this.changeProviderTax(provider.getName(),new_tax);
+    public boolean changeProviderTax(EnergyProvider provider, double new_tax){
+        return this.changeProviderTax(provider.getName(),new_tax);
     }
 
     /**
      * Altera o imposto aplicado por um fornecedor dado o seu nome.
      */
-    public void changeProviderTax(String providerName, double new_tax){
+    public boolean changeProviderTax(String providerName, double new_tax){
         if (this.energyProviders.containsKey(providerName.toLowerCase())) {
             this.energyProviders.get(providerName.toLowerCase()).setTax(new_tax);
-        }
+            return true;
+        } else return false;
     }
 
     /**
@@ -192,7 +200,57 @@ public class Simulator {
         return result;
     }
 
+    /**
+     * Altera o estado(ligado/desligado) de todos os dispositivos de todas as casas.
+     */
+    public void setStateAllDevicesInAllHouses(boolean state){
+        this.houses.values().forEach(house -> house.setAllOn(state));
+    }
 
+    /** 
+     * Altera o estado(ligado/desligado) de todos os dispositivos de uma certa casa.
+     * @return true se a operação foi bem sucedida e false se a casa não existe.
+    */
+    public boolean setStateAllDevicesHouse(int houseID, boolean state){
+        if(this.houses.containsKey(houseID)){
+            this.houses.get(houseID).setAllOn(state);
+            return true;
+        }else return false;
+    }
+
+    /** 
+     * Altera o estado(ligado/desligado) de um dispositivo de uma certa casa.
+     * @return 0 se a operação foi bem sucedida; 1 se a casa não existe; 2 se o dispositivo não existe na casa
+    */
+    public int setStateInDeviceInHouse(String devID, int houseID, boolean state){
+        if(this.houses.containsKey(houseID)){
+            CasaInteligente house = this.houses.get(houseID);
+            if(house.existsDevice(devID)){
+                house.setOn(devID, state);
+                return 0;
+            } else return 2;
+        } else return 1;
+    }
+
+    /**
+     * Altera o estado(ligado/desligado) de todos os dispositivos de uma reparticao de uma certa casa.
+     * @return 0 se a operação foi bem sucedida; 1 se a casa não existe; 2 se a reparticao não existe na casa.
+     */
+    public int setStateAllDevicesInRoom(int houseID, String room, boolean state){
+        if(this.houses.containsKey(houseID)){
+            CasaInteligente house = this.houses.get(houseID);
+            if(house.hasRoom(room)){
+                house.setAllinDivisionOn(room, state);
+                return 0;
+            }else return 2;
+        }else return 1;
+    }
+
+    /**
+     * Altera o fornecedor de uma casa.
+     */
+    
+    
 
     // ESTATÍSTICAS DA SIMULAÇÃO
 
