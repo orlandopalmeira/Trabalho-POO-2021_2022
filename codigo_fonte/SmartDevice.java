@@ -70,10 +70,8 @@ public abstract class SmartDevice {
      */
     public void turnOff(LocalDateTime change_date) {
         if(this.on){
-            double minutes = Math.abs(Duration.between(this.last_change, change_date).getSeconds())/60.0;
-            this.totalConsumption += this.consumptionPerMinute()*minutes;
+            this.updateConsumption(change_date);
             this.on = false;
-            this.last_change = change_date;
         }
     }
 
@@ -129,10 +127,9 @@ public abstract class SmartDevice {
      * Atualiza o consumo de um dispositivo necessitando, obviamente, de saber o momento da atualização para efectuar os devidos cálculos.
      */
     public void updateConsumption(LocalDateTime update_date){
-        if(this.on){
-            this.turnOff(update_date);
-            this.turnOn(update_date);
-        }
+        double minutes = Math.abs(Duration.between(this.last_change, update_date).getSeconds())/60.0;
+        this.totalConsumption += this.consumptionPerMinute()*minutes;
+        this.last_change = update_date;
     }
 
     /**
