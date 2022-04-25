@@ -1,4 +1,4 @@
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 public class EnergyProvider {
     private String name;
@@ -89,12 +89,24 @@ public class EnergyProvider {
     }
 
     /**
+     * Calcula o custo total da utilização de um conjunto de dispositivos de uma casa.
+     */
+    public double cost(Collection<SmartDevice> devices){
+        double consumption = devices.stream()
+                                    .mapToDouble(SmartDevice::getTotalConsumption)
+                                    .sum();
+        
+        return devices.size() > 10 ? this.price_kwh * consumption * (1 + this.tax) * 0.9 : 
+                                     this.price_kwh * consumption * (1 + this.tax) * 0.75;
+    }
+
+    /**
      * Emite a fatura para uma certa casa.
      */
-    public Fatura emitirFatura(CasaInteligente casa, LocalDate start, LocalDate end){
+    public Fatura emitirFatura(CasaInteligente casa, LocalDateTime start, LocalDateTime end){
         String ep = casa.getFornecedor();
         if(this.name.equals(ep)){
-            return new Fatura(ep,casa,start,end);
+            return new Fatura(casa,start,end,this);
         }else return null;
     }
 

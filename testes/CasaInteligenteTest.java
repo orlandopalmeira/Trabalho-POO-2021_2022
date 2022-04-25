@@ -1,6 +1,6 @@
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -76,7 +76,7 @@ public class CasaInteligenteTest {
         SmartBulb smartBul1 = new SmartBulb("b1");
         assertFalse(smartBul1.getOn());
         casaInte1.addDevice(smartBul1);
-        smartBul1.setOn(true);
+        smartBul1.setOn(true,LocalDateTime.of(2022,4,24,12,30));
         assertTrue(smartBul1.getOn());
         assertFalse(casaInte1.getDevice("b1").getOn());
     }
@@ -90,10 +90,10 @@ public class CasaInteligenteTest {
         casaInte1.addDevice(smartSpe1);
         assertFalse(casaInte1.getDevice("b1").getOn());
         assertFalse(casaInte1.getDevice("s1").getOn());
-        casaInte1.setAllOn(true);
+        casaInte1.setAllOn(true,LocalDateTime.of(2022,4,24,12,30));
         assertTrue(casaInte1.getDevice("b1").getOn());
         assertTrue(casaInte1.getDevice("s1").getOn());
-        casaInte1.setAllOn(false);
+        casaInte1.setAllOn(false,LocalDateTime.of(2022,4,24,12,30));
         assertFalse(casaInte1.getDevice("b1").getOn());
         assertFalse(casaInte1.getDevice("s1").getOn());
     }
@@ -130,30 +130,27 @@ public class CasaInteligenteTest {
     public void testTotalConsumptionAndCost(){
         CasaInteligente casaInte1 = new CasaInteligente("Street",new Pessoa("Person",111222333),"EDP");
         EnergyProvider provider = new EnergyProvider("EDP",0.15,0.23);
-        LocalDate start = LocalDate.of(2022,4,1), end = LocalDate.of(2022,4,3);
+        LocalDateTime start = LocalDateTime.of(2022,4,1,10,0), end = LocalDateTime.of(2022,4,3,10,0);
         int i = 1;
-        for(LocalDate aux = start; aux.compareTo(end) <= 0; aux = aux.plusDays(1),i++){
-            casaInte1.addDevice(new SmartBulb(String.format("b%d", i),true,1,10), "Sala");
-            casaInte1.addDevice(new SmartSpeaker(String.format("s%d", i), true, 10, "RUM", "SAMSUNG"),"Quarto");
-            casaInte1.addDevice(new SmartCamera(String.format("c%d",i),true,1920,1080,100),"Sala");
+        for(LocalDateTime aux = start; aux.compareTo(end) <= 0; aux = aux.plusDays(1),i++){
+            casaInte1.addDevice(new SmartBulb(String.format("b%d", i),true,1,10,start), "Sala");
+            casaInte1.addDevice(new SmartSpeaker(String.format("s%d", i), true, 10, "RUM", "SAMSUNG",start),"Quarto");
+            casaInte1.addDevice(new SmartCamera(String.format("c%d",i),true,1920,1080,100,start),"Sala");
         }
-        i = 1;
-        for(LocalDate aux = start; aux.compareTo(end) <= 0; aux = aux.plusDays(1),i++){
-            casaInte1.passTime(provider);
-        }
+        casaInte1.updateConsumptionAllDevices(end);
         double consumo = casaInte1.getTotalConsumption();
-        double custo = casaInte1.getTotalCost();
-        assertTrue(44789767.00 <= consumo && consumo <= 44789767.99);
-        assertTrue(6197784.00 <=  custo && custo <= 6197784.99);
+        double custo = casaInte1.getTotalCost(provider,end);
+        assertTrue(29859844.00 <= consumo && consumo <= 29859844.99);
+        assertTrue(4131856.00 <=  custo && custo <= 4131856.99);
         Fatura f = provider.emitirFatura(casaInte1, start, end);
         assertEquals(custo,f.getMontante());
         assertTrue(casaInte1.getProprietario().equals(f.getCliente()));
         assertTrue(casaInte1.equals(f.getCasa()));
         assertTrue(f.getProviderName().equals(casaInte1.getFornecedor()));
 
-        casaInte1.resetConsumptionAndCost();
+        casaInte1.resetConsumption();
         consumo = casaInte1.getTotalConsumption();
-        custo = casaInte1.getTotalCost();
+        custo = casaInte1.getTotalCost(provider,end);
         assertEquals(0.0,consumo);
         assertEquals(0.0,custo);
         for(SmartDevice dev: casaInte1.getDevices()){

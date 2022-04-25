@@ -1,4 +1,5 @@
 import java.time.LocalDateTime;
+import java.time.Duration;
 /**
  * A classe SmartDevice é um contactor simples.
  * Permite ligar ou desligar circuitos. 
@@ -21,52 +22,66 @@ public abstract class SmartDevice {
         this.id = "";
         this.on = false;
         this.totalConsumption = 0.0;
+        this.last_change = null;
     }
 
     public SmartDevice(String id) {
         this.id = id;
         this.on = false;
         this.totalConsumption = 0.0;
+        this.last_change = null;
     }
 
-    public SmartDevice(String id, boolean b) {
+
+    public SmartDevice(String id, boolean b){
         this.id = id;
         this.on = b;
         this.totalConsumption = 0.0;
+        this.last_change = null;
+    }
+
+    public SmartDevice(String id, boolean b, LocalDateTime last_change){
+        this.id = id;
+        this.on = b;
+        this.totalConsumption = 0.0;
+        this.last_change = last_change;
     }
 
     public SmartDevice(SmartDevice sd) {
         this.id = sd.getID();
         this.on = sd.getOn();
         this.totalConsumption = sd.totalConsumption;
+        this.last_change = sd.last_change;
     }
 
-    /**
-     * Liga o dispositivo.
-     */
-    public void turnOn() {
-        this.on = true;
-    }
-    
-    /**
-     * Desliga o dispositivo.
-     */
-    public void turnOff() {
-        this.on = false;
-    }
 
     /**
-     * Liga o dispositivo.
+     * Liga o dispositivo registando o momento que foi feito.
      */
     public void turnOn(LocalDateTime change_date) {
-        this.on = true;
+        if(!this.on){
+            this.on = true;
+            this.last_change = change_date;
+        }
     }
     
     /**
-     * Desliga o dispositivo.
+     * Desliga o dispositivo registando o momento que foi feito.
      */
     public void turnOff(LocalDateTime change_date) {
-        this.on = false;
+        if(this.on){
+            double minutes = Math.abs(Duration.between(this.last_change, change_date).getSeconds())/60.0;
+            this.totalConsumption += this.consumptionPerMinute()*minutes;
+            this.on = false;
+            this.last_change = change_date;
+        }
+    }
+
+    /**
+     * Devolve a data e hora em que o dispositivo foi ligado ou desligado pela última vez.
+     */
+    public LocalDateTime getLastChange(){
+        return this.last_change;
     }
     
     /**
@@ -79,8 +94,9 @@ public abstract class SmartDevice {
     /**
      * Altera o estado do dispositivo.
      */
-    public void setOn(boolean b) {
-        this.on = b;
+    public void setOn(boolean b, LocalDateTime change_date) {
+        if(b) this.turnOn(change_date);
+        else this.turnOff(change_date);
     }
     
     /**
@@ -96,6 +112,13 @@ public abstract class SmartDevice {
     public abstract double dailyConsumption();
 
     /**
+     * Retorna o consumo de um dispositivo por minuto.
+     */
+    public double consumptionPerMinute(){
+        return this.dailyConsumption()/1440.0;
+    }
+
+    /**
      * Retorna o consumo total de um dispositivo desde o inicio da contagem.
      */
     public double getTotalConsumption(){
@@ -103,10 +126,21 @@ public abstract class SmartDevice {
     }
 
     /**
-     * Atualiza o consumo de um dispositivo.
+     * Atualiza o consumo de um dispositivo necessitando, obviamente, de saber o momento da atualização para efectuar os devidos cálculos.
      */
-    public void updateTotalConsumption(){
-        this.totalConsumption += this.dailyConsumption();
+    public void updateConsumption(LocalDateTime update_date){
+        if(this.on){
+            this.turnOff(update_date);
+            this.turnOn(update_date);
+        }
+    }
+
+    /**
+     * Altera o momento em que o estado do dispositivo foi alterado.
+     * ATENÇÃO: Esta função apenas deve ser usada quando uma simulação se inicia. NUNCA USAR ESTA FUNÇÃO NOUTRO CONTEXTO
+     */
+    public void setLastChangeDate(LocalDateTime change_date){
+        this.last_change = change_date;
     }
 
     /**

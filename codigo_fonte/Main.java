@@ -376,7 +376,7 @@ public class Main {
         }
         return op;
     }
-
+/*
     private static void watchBasicSimulation(Simulator sim, Scanner s){
         boolean flag = true;
         int op = getSimulationOption(s);
@@ -739,7 +739,7 @@ public class Main {
             }
         }
     }
-
+*/
     public static void main(String[] args) {
         Scanner s = new Scanner(System.in); // este scanner é usado no programa todo
 
@@ -756,7 +756,7 @@ public class Main {
                 case 1:{
                     // TODO: ⚠️ CARREGAR INFORMAÇÃO DE FICHEIROS ⚠️
                     File providers_f = null, houses_f = null, people_f = null, devices_f = null;
-                    Simulator sim;
+                    //Simulator sim;
                     while(flag){
                         System.out.print("Insira o caminho para o ficheiro dos dispositivos: ");
                         devices_f = new File(s.nextLine());
@@ -829,8 +829,8 @@ public class Main {
                                     LocalDate start = null, end = null;
                                     start = getDateFromInput("Insira a data de início: ",s);
                                     end = getDateFromInput("Insira a data de fim: ",s);
-                                    sim.startBasicSimulation(start, end);
-                                    watchBasicSimulation(sim,s);
+                                    sim.startSimulation(start, end);
+                                    //watchBasicSimulation(sim,s);
                                     op = getSimulationTypeOption(s);
                                     flag = true;
                                     break;

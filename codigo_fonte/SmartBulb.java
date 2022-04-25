@@ -1,3 +1,5 @@
+import java.time.LocalDateTime;
+
 /**
  * Uma SmartBulb é uma lâmpada inteligente que além de ligar e desligar (já que
  * é subclasse de SmartDevice) também permite escolher a intensidade da iluminação 
@@ -45,9 +47,15 @@ public class SmartBulb extends SmartDevice {
         this.tone = tone;
         this.dimension = dimension;
     }
-    
+
     public SmartBulb(String id, boolean state, int tone, double dimension){
         super(id,state);
+        this.tone = tone;
+        this.dimension = dimension;
+    }
+    
+    public SmartBulb(String id, boolean state, int tone, double dimension, LocalDateTime change_date){
+        super(id,state,change_date);
         this.tone = tone;
         this.dimension = dimension;
     }
@@ -104,8 +112,9 @@ public class SmartBulb extends SmartDevice {
     }
 
     @Override
-    public SmartBulb clone() {
+    public SmartDevice clone() {
         return new SmartBulb(this);
     }
+
 }
 

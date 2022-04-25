@@ -1,3 +1,5 @@
+import java.time.LocalDateTime;
+
 public class SmartCamera extends SmartDevice{
     private int resX;
     private int resY;
@@ -29,6 +31,13 @@ public class SmartCamera extends SmartDevice{
 
     public SmartCamera(String id, boolean state, int resX, int resY, double sizeOfFile){
         super(id,state);
+        this.resX = resX;
+        this.resY = resY;
+        this.sizeOfFile = sizeOfFile;
+    }
+
+    public SmartCamera(String id, boolean state, int resX, int resY, double sizeOfFile, LocalDateTime change_date){
+        super(id,state,change_date);
         this.resX = resX;
         this.resY = resY;
         this.sizeOfFile = sizeOfFile;
@@ -103,7 +112,7 @@ public class SmartCamera extends SmartDevice{
     }
 
     @Override
-    public SmartCamera clone() {
+    public SmartDevice clone() {
         return new SmartCamera(this);
     }
 

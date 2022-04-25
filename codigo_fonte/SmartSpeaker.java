@@ -1,3 +1,5 @@
+import java.time.LocalDateTime;
+
 /**
  * Um SmartSpeaker é um SmartDevice que além de ligar e desligar permite também
  * reproduzir som.
@@ -48,6 +50,13 @@ public class SmartSpeaker extends SmartDevice {
 
     public SmartSpeaker(String id, boolean state, int volume, String channel, String marca){
         super(id,state);
+        this.volume = volume;
+        this.channel = channel;
+        this.marca = marca;
+    }
+
+    public SmartSpeaker(String id, boolean state, int volume, String channel, String marca, LocalDateTime change_date){
+        super(id,state,change_date);
         this.volume = volume;
         this.channel = channel;
         this.marca = marca;
@@ -126,7 +135,7 @@ public class SmartSpeaker extends SmartDevice {
     }
 
     @Override
-    public SmartSpeaker clone() {
+    public SmartDevice clone() {
         return new SmartSpeaker(this);
     }
 

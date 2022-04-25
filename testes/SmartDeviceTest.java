@@ -1,4 +1,7 @@
 import static org.junit.jupiter.api.Assertions.*;
+
+import java.time.LocalDateTime;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -79,21 +82,21 @@ public class SmartDeviceTest {
     public void testSetOn() {
         // SmartBulb
         SmartDevice smartbulb1 = new SmartBulb("b1");
-        smartbulb1.setOn(true);
+        smartbulb1.setOn(true,LocalDateTime.of(2022,4,24,12,30));
         assertTrue(smartbulb1.getOn());
-        smartbulb1.setOn(false);
+        smartbulb1.setOn(false,LocalDateTime.of(2022,4,24,12,30));
         assertFalse(smartbulb1.getOn());
         // SmartSpeaker
         SmartDevice smartspeak1 = new SmartSpeaker("b1");
-        smartspeak1.setOn(true);
+        smartspeak1.setOn(true,LocalDateTime.of(2022,4,24,12,30));
         assertTrue(smartspeak1.getOn());
-        smartspeak1.setOn(false);
+        smartspeak1.setOn(false,LocalDateTime.of(2022,4,24,12,30));
         assertFalse(smartspeak1.getOn());
         // SmartCamera
         SmartDevice smartcam1 = new SmartCamera("b1");
-        smartcam1.setOn(true);
+        smartcam1.setOn(true,LocalDateTime.of(2022,4,24,12,30));
         assertTrue(smartcam1.getOn());
-        smartcam1.setOn(false);
+        smartcam1.setOn(false,LocalDateTime.of(2022,4,24,12,30));
         assertFalse(smartcam1.getOn());
     }
     
@@ -102,23 +105,23 @@ public class SmartDeviceTest {
         // SmartBulb
         SmartBulb smartDev1 = new SmartBulb("b1");
         assertFalse(smartDev1.getOn());
-        smartDev1.setOn(false);
+        smartDev1.setOn(false,LocalDateTime.of(2022,4,24,12,30));
         assertFalse(smartDev1.getOn());
-        smartDev1.setOn(true);
+        smartDev1.setOn(true,LocalDateTime.of(2022,4,24,12,30));
         assertTrue(smartDev1.getOn());
         // SmartSpeaker
         SmartDevice smartspeak1 = new SmartSpeaker("s1");
         assertFalse(smartspeak1.getOn());
-        smartspeak1.setOn(false);
+        smartspeak1.setOn(false,LocalDateTime.of(2022,4,24,12,30));
         assertFalse(smartspeak1.getOn());
-        smartspeak1.setOn(true);
+        smartspeak1.setOn(true,LocalDateTime.of(2022,4,24,12,30));
         assertTrue(smartspeak1.getOn());
         // SmartCamera
         SmartDevice smartCam1 = new SmartCamera("c1");
         assertFalse(smartCam1.getOn());
-        smartCam1.setOn(false);
+        smartCam1.setOn(false,LocalDateTime.of(2022,4,24,12,30));
         assertFalse(smartCam1.getOn());
-        smartCam1.setOn(true);
+        smartCam1.setOn(true,LocalDateTime.of(2022,4,24,12,30));
         assertTrue(smartCam1.getOn());
     }
 
@@ -127,33 +130,20 @@ public class SmartDeviceTest {
         SmartBulb bulb = new SmartBulb("b1", SmartBulb.NEUTRAL, 10);
         SmartSpeaker speaker = new SmartSpeaker("s1", "RUM", 10, "SAMSUNG");
         SmartCamera camera = new SmartCamera("c1", 1920, 1080, 100);
-        // Ligados
-        bulb.turnOn();
-        speaker.turnOn();
-        camera.turnOn();
-        for (int i = 0; i < 100; i++) {
-            bulb.updateTotalConsumption();
-            speaker.updateTotalConsumption();
-            camera.updateTotalConsumption();
-        }
+        
+        bulb.turnOn(LocalDateTime.of(2022,4,24,12,30));
+        speaker.turnOn(LocalDateTime.of(2022,4,24,12,30));
+        camera.turnOn(LocalDateTime.of(2022,4,24,12,30));
+        bulb.turnOff(LocalDateTime.of(2022,4,24,12,30).plusDays(100));
+        speaker.turnOff(LocalDateTime.of(2022,4,24,12,30).plusDays(100));
+        camera.turnOff(LocalDateTime.of(2022,4,24,12,30).plusDays(100));
         assertEquals(9.6,bulb.getTotalConsumption());
         assertEquals(72.7,speaker.getTotalConsumption());
         assertEquals(497664000.0,camera.getTotalConsumption());
-        // Desligados
+        
         bulb.resetTotalConsumption();
         speaker.resetTotalConsumption();
         camera.resetTotalConsumption();
-        bulb.turnOff();
-        speaker.turnOff();
-        camera.turnOff();
-        assertEquals(0.0,bulb.getTotalConsumption());
-        assertEquals(0.0,speaker.getTotalConsumption());
-        assertEquals(0.0,camera.getTotalConsumption());
-        for (int i = 0; i < 100; i++) {
-            bulb.updateTotalConsumption();
-            speaker.updateTotalConsumption();
-            camera.updateTotalConsumption();
-        }
         assertEquals(0.0,bulb.getTotalConsumption());
         assertEquals(0.0,speaker.getTotalConsumption());
         assertEquals(0.0,camera.getTotalConsumption());

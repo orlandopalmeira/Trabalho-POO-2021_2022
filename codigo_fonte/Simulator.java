@@ -1,10 +1,10 @@
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class Simulator {
     /**
@@ -54,35 +54,119 @@ public class Simulator {
     // CORRER A SIMULAÇÃO
 
     /**
-     * Executa uma simulação básica.
-     * Uma simulação básica consiste em efectuar a passagem do tempo sem alterar o estado de todas as entidades.
-     * Todas as alterações das entidades apenas poderão ser efectuadas no fim da simulação.          
+     * Executa um comando nesta simulação.
+     * @return <ul>
+     *         <li> 0 se o comando for executado  </li>
+     *         <li> 1 se o comando apenas pode ser executado no fim da simulação  </li>
+     *         <li> 2 se houver um erro </li>
+     *         </ul>
      */
-    public void startBasicSimulation(LocalDate start,LocalDate end){
-        this.resetAll();
-        for(LocalDate aux = start; aux.compareTo(end) <= 0; aux = aux.plusDays(1)){
-            this.houses.values().forEach(house -> house.passTime(this.energyProviders.get(house.getFornecedor().toLowerCase())));
+    private int exec_command(String[] command){
+        String[] date_time = command[0].split(" ");
+        LocalDateTime date = LocalDateTime.parse(date_time[0] + "T" + date_time[1]);
+        if(command[1].equals("ligaTudoEmTodasAsCasas")){
+            this.houses.values().forEach(house -> house.setAllOn(true, date));
+            return 0;
         }
-
-        this.consumptionOrder = this.houses.values().stream().sorted((h1,h2) -> {
-            double aux = h2.getTotalConsumption() - h1.getTotalConsumption();
-            return aux < 0 ? -1 : aux == 0 ? 0 : 1;
-        }).collect(Collectors.toList());
-
-        for(CasaInteligente house : this.houses.values()){
-            EnergyProvider ep = this.energyProviders.get(house.getFornecedor().toLowerCase()); // fornecedor da casa.
-            if(ep != null){
-                this.profitPerProvider.merge(ep.getName().toLowerCase(),house.getTotalCost(),Double::sum); // atualiza o volume de faturaçao do fornecedor desta casa
-                this.billsPerProvider.get(ep.getName().toLowerCase()).add(ep.emitirFatura(house,start,end)); // adiciona uma fatura no fornecedor 
-            } 
+        String id = command[1];
+        switch (command[2]){
+            case "alteraPreco": return 1;
+            case "alteraImposto": return 1;
+            case "alteraFornecedor": return 1;
+            case "ligaTodos":{
+                this.houses.get(Integer.parseInt(id)).setAllOn(true, date);
+                return 0;
+            }
+            case "desligaTodos":{
+                this.houses.get(Integer.parseInt(id)).setAllOn(false, date);
+                return 0;
+            }
+            case "setOn":{
+                this.houses.get(Integer.parseInt(id)).setDeviceOn(command[3], true, date);
+                return 0;
+            }
+            case "setOff":{
+                this.houses.get(Integer.parseInt(id)).setDeviceOn(command[3], false, date);
+                return 0;
+            }
+            case "ligaTudoEm":{
+                this.houses.get(Integer.parseInt(id)).setAllinDivisionOn(command[3], true, date);
+                return 0;
+            }
+            case "desligaTudoEm":{
+                this.houses.get(Integer.parseInt(id)).setAllinDivisionOn(command[3], false, date);
+                return 0;
+            }
+        
+            default: return 2;
         }
     }
 
     /**
-     * Executa um dia de uma simulação normal.
-     * Uma simulação normal consiste em efectuar a passagem do tempo podendo alterar o estado das entidades
+     * Executa os comandos que apenas podem ser executados no fim da simulação.
+     * @return <ul>
+     *          <li> 0 se todos os comandos foram executados </li>
+     *          <li> 1 se algum comando não foi executado devido à ocorrência de erros </li>
+     *         </ul>
      */
-    // TODO: ⚠️ Implementar a simulação normal ⚠️
+    private int exec_end_commands(List<String[]> commands){
+        int result = 0;
+        for(int i = 0; i < commands.size(); i++){
+            String[] command = commands.get(i);
+            String id = command[1];
+            switch(command[2]){
+                case "alteraPreco":{ 
+                    this.energyProviders.get(id.toLowerCase()).setPrice_kwh(Double.parseDouble(command[3]));
+                }
+                case "alteraImposto":{ 
+                    this.energyProviders.get(id.toLowerCase()).setTax(Double.parseDouble(command[3]));
+                }
+                case "alteraFornecedor": {
+                    this.houses.get(Integer.parseInt(id)).setFornecedor(command[3]);
+                }
+                default: break;
+            }
+        }
+        return result;
+    }
+
+
+    public void startSimulation(LocalDateTime start, LocalDateTime end, String[] commands){
+        // transformação do formato dos comandos num formato conveniente
+        String[][] commands_ = new String[commands.length][];
+        List<String[]> end_commands = new ArrayList<>();
+        for(int i = 0; i < commands.length; i++){
+            commands_[i] = commands[i].split(",");
+        }
+        // execução da simulacao
+        this.houses.values().forEach(house -> house.setLastChangeDateAllDevices(start));
+        for(int i = 0; i < commands_.length; i++){
+            switch (exec_command(commands_[i])) {
+                case 0: break;
+
+                case 1: {
+                    end_commands.add(commands_[i]);
+                    break;
+                }
+            
+                default: break;
+            }
+        }
+        this.houses.values().forEach(house -> house.updateConsumptionAllDevices(end));
+        exec_end_commands(end_commands);
+        // gerar resultados
+        this.consumptionOrder = this.houses.values().stream().sorted((h1,h2) -> {
+            double dif = h2.getTotalConsumption() - h1.getTotalConsumption();
+            return dif < 0 ? -1 : dif == 0 ? 0 : 1;
+        }).collect(Collectors.toList());
+
+        for(CasaInteligente house: this.houses.values()) {
+            String provider_name = house.getFornecedor().toLowerCase();
+            this.billsPerProvider.get(provider_name).add(this.energyProviders.get(provider_name).emitirFatura(house,start,end));
+            this.profitPerProvider.merge(provider_name, house.getTotalCost(this.energyProviders.get(provider_name),end), Double::sum);
+        }
+
+    }
 
     // MANIPULAR AS ENTIDADES DA SIMULAÇÃO
 
@@ -90,7 +174,7 @@ public class Simulator {
      * Repoe o estado das casas e dos dispositivos no estado inicial, excetuando alterações de preços e de fornecedores.
      */
     public void resetAll(){
-        this.houses.values().forEach(house -> house.resetConsumptionAndCost());
+        this.houses.values().forEach(house -> house.resetConsumption());
         this.billsPerProvider.values().forEach(list -> list.clear());
         this.profitPerProvider.keySet().forEach(key -> this.profitPerProvider.put(key,0.0));
         this.consumptionOrder = null;
@@ -203,17 +287,17 @@ public class Simulator {
     /**
      * Altera o estado(ligado/desligado) de todos os dispositivos de todas as casas.
      */
-    public void setStateAllDevicesInAllHouses(boolean state){
-        this.houses.values().forEach(house -> house.setAllOn(state));
+    public void setStateAllDevicesInAllHouses(boolean state, LocalDateTime change_date){
+        this.houses.values().forEach(house -> house.setAllOn(state,change_date));
     }
 
     /** 
      * Altera o estado(ligado/desligado) de todos os dispositivos de uma certa casa.
      * @return true se a operação foi bem sucedida e false se a casa não existe.
     */
-    public boolean setStateAllDevicesHouse(int houseID, boolean state){
+    public boolean setStateAllDevicesHouse(int houseID, boolean state, LocalDateTime change_date){
         if(this.houses.containsKey(houseID)){
-            this.houses.get(houseID).setAllOn(state);
+            this.houses.get(houseID).setAllOn(state,change_date);
             return true;
         }else return false;
     }
@@ -222,11 +306,11 @@ public class Simulator {
      * Altera o estado(ligado/desligado) de um dispositivo de uma certa casa.
      * @return 0 se a operação foi bem sucedida; 1 se a casa não existe; 2 se o dispositivo não existe na casa
     */
-    public int setStateInDeviceInHouse(String devID, int houseID, boolean state){
+    public int setStateInDeviceInHouse(String devID, int houseID, boolean state, LocalDateTime change_date){
         if(this.houses.containsKey(houseID)){
             CasaInteligente house = this.houses.get(houseID);
             if(house.existsDevice(devID)){
-                house.setOn(devID, state);
+                house.setDeviceOn(devID, state, change_date);
                 return 0;
             } else return 2;
         } else return 1;
@@ -236,11 +320,11 @@ public class Simulator {
      * Altera o estado(ligado/desligado) de todos os dispositivos de uma reparticao de uma certa casa.
      * @return 0 se a operação foi bem sucedida; 1 se a casa não existe; 2 se a reparticao não existe na casa.
      */
-    public int setStateAllDevicesInRoom(int houseID, String room, boolean state){
+    public int setStateAllDevicesInRoom(int houseID, String room, boolean state, LocalDateTime change_date){
         if(this.houses.containsKey(houseID)){
             CasaInteligente house = this.houses.get(houseID);
             if(house.hasRoom(room)){
-                house.setAllinDivisionOn(room, state);
+                house.setAllinDivisionOn(room, state, change_date);
                 return 0;
             }else return 2;
         }else return 1;

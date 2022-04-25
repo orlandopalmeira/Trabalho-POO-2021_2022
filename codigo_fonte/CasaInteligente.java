@@ -3,6 +3,7 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.List;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
@@ -20,8 +21,6 @@ public class CasaInteligente{
     private Map<String, Set<String>> locations; // Espaço -> Conjunto codigo dos devices
     private Pessoa proprietario;
     private String fornecedor;
-    private double totalConsumption;
-    private double totalCost;
 
     /**
      * Constructor for objects of class CasaInteligente
@@ -33,8 +32,6 @@ public class CasaInteligente{
         this.locations = new HashMap<>();
         this.proprietario = null;
         this.fornecedor = null;
-        this.totalConsumption = 0.0;
-        this.totalCost = 0.0;
     }
 
     public CasaInteligente(String morada) {
@@ -44,8 +41,6 @@ public class CasaInteligente{
         this.locations = new HashMap<>();
         this.proprietario = null;
         this.fornecedor = null;
-        this.totalConsumption = 0.0;
-        this.totalCost = 0.0;
     }
 
     public CasaInteligente(String morada, Pessoa proprietario, String fornecedor){
@@ -55,8 +50,6 @@ public class CasaInteligente{
         this.locations = new HashMap<>();
         this.proprietario = proprietario.clone();
         this.fornecedor = fornecedor;
-        this.totalConsumption = 0.0;
-        this.totalCost = 0.0;
     }
 
     /**
@@ -68,8 +61,6 @@ public class CasaInteligente{
         this.locations = ci.getMapLocations();
         this.proprietario = ci.getProprietario();
         this.fornecedor = ci.getFornecedor();
-        this.totalConsumption = ci.getTotalConsumption();
-        this.totalCost = ci.getTotalCost();
     }
 
     /**
@@ -164,16 +155,6 @@ public class CasaInteligente{
         this.fornecedor = fornecedor;
     }
 
-
-    /**
-     * Liga um dispositivo.
-     */
-    public void setDeviceOn(String devCode) {
-        if(this.existsDevice(devCode)){
-            this.devices.get(devCode).turnOn();
-        }
-    }
-
     /**
      * Verifica a existencia de um dispositivo.
      */
@@ -227,26 +208,44 @@ public class CasaInteligente{
     }
 
     /**
-     * Altera o estado do dispositivo solicitado.
+     * Liga um dispositivo da casa.
      */
-    public void setOn(String idDev, boolean b) {
-        if(this.devices.containsKey(idDev)){
-            this.devices.get(idDev).setOn(b);
+    public void turnDeviceOn(String devCode, LocalDateTime change_date) {
+        if(this.existsDevice(devCode)){
+            this.devices.get(devCode).turnOn(change_date);
         }
     }
 
     /**
-     * Liga todos os dispositivos.
+     * Desliga um dispositivo da casa.
      */
-    public void setAllOn(boolean b) {
-        this.devices.values().forEach(device -> device.setOn(b));
+    public void turnDeviceOff(String devCode, LocalDateTime change_date){
+        if(this.existsDevice(devCode)){
+            this.devices.get(devCode).turnOff(change_date);
+        }
+    }
+
+    /**
+     * Altera o estado de um dispositivo da casa.
+     */
+    public void setDeviceOn(String devCode, boolean state, LocalDateTime change_date){
+        if(state) this.turnDeviceOn(devCode, change_date);
+        else this.turnDeviceOff(devCode, change_date);
     }
 
     /**
      * Altera o estado de todos os dispositivos.
      */
-    public void setAllinDivisionOn(String room, boolean b){
-        this.locations.get(room).forEach(devID -> setOn(devID,b));
+    public void setAllOn(boolean b, LocalDateTime change_date) {
+        this.devices.values().forEach(device -> device.setOn(b,change_date));
+    }
+
+    /**
+     * Altera o estado de todos os dispositivos de uma repartição.
+     */
+    public void setAllinDivisionOn(String room, boolean b, LocalDateTime change_date){
+        if(b) this.locations.get(room).forEach(devID -> turnDeviceOn(devID,change_date));
+        else this.locations.get(room).forEach(devID -> turnDeviceOff(devID,change_date));
     }
 
     /**
@@ -285,36 +284,41 @@ public class CasaInteligente{
      * Retorna o consumo total desta casa.
      */
     public double getTotalConsumption(){
-        return Math.round(this.totalConsumption*100.0)/100.0;
+        return this.devices.values()
+                           .stream()
+                           .mapToDouble(SmartDevice::getTotalConsumption)
+                           .sum();
     }
 
-    /**
-     * Retorna o custo total associado ao consumo desta casa.
-     */
-    public double getTotalCost(){
-        return Math.round(this.totalCost*100.0)/100.0;
+    public double getTotalCost(EnergyProvider provider, LocalDateTime end){
+        if(this.fornecedor.toLowerCase().equals(provider.getName().toLowerCase())){
+            this.devices.values().forEach(dev -> dev.updateConsumption(end));
+            return provider.cost(this.devices.values());
+        }
+        return 0.0;
     }
 
+    
     /**
      * Reinicia os contadores de consumo e custo desta casa bem como os contadores dos seus dispositivos.
      */
-    public void resetConsumptionAndCost(){
-        this.totalCost = 0.0f;
-        this.totalConsumption = 0.0f;
+    public void resetConsumption(){
         this.devices.values().forEach(device -> device.resetTotalConsumption());
     }
 
     /**
-     * Atualiza os contadores de consumo e custo associado a passagem de um dia.
+     * Altera a data da última alteração de estado de todos os dispositivos.
+     * ATENÇÃO: FUNÇÃO PERIGOSA, USAR APENAS NO INÍCIO DE UMA SIMULAÇÃO
      */
-    public void passTime(EnergyProvider fornecedor){
-        if(fornecedor != null && this.fornecedor.equals(fornecedor.getName())){
-            this.devices.values().forEach(device -> device.updateTotalConsumption());
-            this.totalConsumption = this.devices.values().stream()
-                                                        .mapToDouble(device -> device.getTotalConsumption())
-                                                        .sum();
-            this.totalCost += fornecedor.pricePerDay(this.devices.values());
-        }
+    public void setLastChangeDateAllDevices(LocalDateTime change_date){
+        this.devices.values().forEach(device -> device.setLastChangeDate(change_date));
+    }
+
+    /**
+     * Atualiza o consumo de todos os dispositivos registando a data em que a atualização ocorreu.
+     */
+    public void updateConsumptionAllDevices(LocalDateTime update_date){
+        this.devices.values().forEach(device -> device.updateConsumption(update_date));
     }
 
     @Override
