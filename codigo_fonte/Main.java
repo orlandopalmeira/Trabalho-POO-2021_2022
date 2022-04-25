@@ -325,7 +325,7 @@ public class Main {
         }
         return date;
     }
-
+/*
     private static int getSimulationOption(Scanner s){
         boolean flag = true;
         int op = 0;
