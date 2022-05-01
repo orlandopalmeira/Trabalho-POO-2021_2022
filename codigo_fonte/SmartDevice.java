@@ -1,4 +1,5 @@
 import java.time.LocalDateTime;
+import java.io.Serializable;
 import java.time.Duration;
 /**
  * A classe SmartDevice é um contactor simples.
@@ -7,7 +8,7 @@ import java.time.Duration;
  * @author (your name)
  * @version (a version number or a date)
  */
-public abstract class SmartDevice {
+public abstract class SmartDevice implements Serializable {
 
     private String id;
     private boolean on;

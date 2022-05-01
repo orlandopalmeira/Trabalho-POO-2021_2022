@@ -1,3 +1,8 @@
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -6,7 +11,7 @@ import java.util.stream.Collectors;
 import java.util.HashMap;
 import java.util.List;
 
-public class Simulator {
+public class Simulator implements Serializable{
     /**
      * Casas presentes nesta simulação indexadas pelo nif do seu proprietário.
      */
@@ -111,20 +116,22 @@ public class Simulator {
      */
     private int exec_end_commands(List<String[]> commands){
         int result = 0;
-        for(int i = 0; i < commands.size(); i++){
-            String[] command = commands.get(i);
+        for(String[] command : commands){
             String id = command[1];
             switch(command[2]){
                 case "alteraPreco":{ 
                     this.energyProviders.get(id.toLowerCase()).setPrice_kwh(Double.parseDouble(command[3]));
+                    break;
                 }
                 case "alteraImposto":{ 
                     this.energyProviders.get(id.toLowerCase()).setTax(Double.parseDouble(command[3]));
+                    break;
                 }
                 case "alteraFornecedor": {
                     this.houses.get(Integer.parseInt(id)).setFornecedor(command[3]);
+                    break;
                 }
-                default: break;
+                default: {result = 1; break;}
             }
         }
         return result;
@@ -140,12 +147,12 @@ public class Simulator {
         }
         // execução da simulacao
         this.houses.values().forEach(house -> house.setLastChangeDateAllDevices(start));
-        for(int i = 0; i < commands_.length; i++){
-            switch (exec_command(commands_[i])) {
+        for(String[] cmd: commands_){
+            switch (exec_command(cmd)) {
                 case 0: break;
 
                 case 1: {
-                    end_commands.add(commands_[i]);
+                    end_commands.add(cmd);
                     break;
                 }
             
@@ -153,7 +160,6 @@ public class Simulator {
             }
         }
         this.houses.values().forEach(house -> house.updateConsumptionAllDevices(end));
-        exec_end_commands(end_commands);
         // gerar resultados
         this.consumptionOrder = this.houses.values().stream().sorted((h1,h2) -> {
             double dif = h2.getTotalConsumption() - h1.getTotalConsumption();
@@ -165,7 +171,7 @@ public class Simulator {
             this.billsPerProvider.get(provider_name).add(this.energyProviders.get(provider_name).emitirFatura(house,start,end));
             this.profitPerProvider.merge(provider_name, house.getTotalCost(this.energyProviders.get(provider_name),end), Double::sum);
         }
-
+        exec_end_commands(end_commands);
     }
 
     // MANIPULAR AS ENTIDADES DA SIMULAÇÃO
@@ -381,6 +387,15 @@ public class Simulator {
         List<CasaInteligente> result = new ArrayList<>();
         this.consumptionOrder.forEach(house -> result.add(house.clone()));
         return result;
+    }
+
+    // GUARDAR O ESTADO DESTA SIMULAÇÃO
+    public void saveState(String path) throws FileNotFoundException,IOException{
+        FileOutputStream fos = new FileOutputStream(path);
+        ObjectOutputStream oos = new ObjectOutputStream(fos);
+        oos.writeObject(this);
+        oos.flush();
+        oos.close();
     }
 
 }

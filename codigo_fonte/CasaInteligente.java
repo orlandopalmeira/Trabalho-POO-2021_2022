@@ -3,6 +3,7 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.List;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
@@ -14,7 +15,7 @@ import java.util.stream.Collectors;
  * @author (your name)
  * @version (a version number or a date)
  */
-public class CasaInteligente{
+public class CasaInteligente implements Serializable {
    
     private String morada;
     private Map<String, SmartDevice> devices; // identificador -> SmartDevice

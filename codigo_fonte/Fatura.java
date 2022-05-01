@@ -1,6 +1,7 @@
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class Fatura {
+public class Fatura implements Serializable {
     private static int last_id = 0;
 
     private EnergyProvider provider;

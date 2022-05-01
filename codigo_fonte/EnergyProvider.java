@@ -1,6 +1,7 @@
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Collection;
-public class EnergyProvider {
+public class EnergyProvider implements Serializable {
     private String name;
     private double price_kwh;
     private double tax;
