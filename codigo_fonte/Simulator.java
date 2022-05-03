@@ -139,6 +139,7 @@ public class Simulator implements Serializable{
 
 
     public void startSimulation(LocalDateTime start, LocalDateTime end, String[] commands){
+        this.resetAll();
         // transformação do formato dos comandos num formato conveniente
         String[][] commands_ = new String[commands.length][];
         List<String[]> end_commands = new ArrayList<>();
