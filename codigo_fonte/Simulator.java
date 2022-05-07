@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
@@ -13,7 +14,12 @@ import java.util.List;
 
 public class Simulator implements Serializable{
     /**
-     * Casas presentes nesta simulação indexadas pelo nif do seu proprietário.
+     * Armazena o último id atribuído a uma casa inserida na simulação.
+     */
+    private int last_house_id;
+
+    /**
+     * Casas presentes nesta simulação indexadas por um inteiro atribuído autmaticamente.
      */
     private Map<Integer, CasaInteligente> houses;
 
@@ -38,22 +44,44 @@ public class Simulator implements Serializable{
      */
     private List<CasaInteligente> consumptionOrder;
 
+    // CONSTRUTORES
 
     public Simulator(Collection<CasaInteligente> houses, Collection<EnergyProvider> providers) {
+        this.last_house_id = 0;
         this.houses = new HashMap<>();
-        houses.forEach(house -> this.houses.put(house.getOwnerNif(), house.clone()));
+        houses.forEach(house -> this.addHouse(house));
 
         this.energyProviders = new HashMap<>();
-        providers.forEach(provider -> this.energyProviders.put(provider.getName().toLowerCase(),provider.clone()));
+        providers.forEach(provider -> this.addProvider(provider));
 
         this.billsPerProvider = new HashMap<>();
         this.profitPerProvider = new HashMap<>();
-        for(CasaInteligente house : houses){
-            this.billsPerProvider.putIfAbsent(house.getFornecedor().toLowerCase(), new ArrayList<Fatura>());
-            this.profitPerProvider.putIfAbsent(house.getFornecedor().toLowerCase(),0.0);
+        for(EnergyProvider ep : providers){
+            this.billsPerProvider.putIfAbsent(ep.getName().toLowerCase(), new ArrayList<Fatura>());
+            this.profitPerProvider.putIfAbsent(ep.getName().toLowerCase(),0.0);
         }
 
         this.consumptionOrder = null; // só lhe é atribuído o resultado após terminar a simulação
+    }
+
+    public Simulator(){
+        this.houses = new HashMap<>();
+        this.energyProviders = new HashMap<>();
+        this.billsPerProvider = new HashMap<>();
+        this.profitPerProvider = new HashMap<>();
+        this.consumptionOrder = null; // só lhe é atribuído o resultado após terminar a simulação
+    }
+
+    /**
+     * Método para inserir todos os elementos da simulação.
+     */
+    public void setSimulator(Collection<CasaInteligente> houses, Collection<EnergyProvider> providers){
+        houses.forEach(house -> this.addHouse(house));
+        providers.forEach(provider -> this.addProvider(provider));
+        for(EnergyProvider ep : providers){
+            this.billsPerProvider.putIfAbsent(ep.getName().toLowerCase(), new ArrayList<Fatura>());
+            this.profitPerProvider.putIfAbsent(ep.getName().toLowerCase(),0.0);
+        }
     }
 
     // CORRER A SIMULAÇÃO
@@ -68,7 +96,10 @@ public class Simulator implements Serializable{
      */
     private int exec_command(String[] command){
         String[] date_time = command[0].split(" ");
-        LocalDateTime date = LocalDateTime.parse(date_time[0] + "T" + date_time[1]);
+        LocalDateTime date;
+        try{
+            date = LocalDateTime.parse(date_time[0] + "T" + date_time[1]);
+        } catch(DateTimeParseException e){return 2;}
         if(command[1].equals("ligaTudoEmTodasAsCasas")){
             this.houses.values().forEach(house -> house.setAllOn(true, date));
             return 0;
@@ -79,27 +110,51 @@ public class Simulator implements Serializable{
             case "alteraImposto": return 1;
             case "alteraFornecedor": return 1;
             case "ligaTodos":{
-                this.houses.get(Integer.parseInt(id)).setAllOn(true, date);
+                try{
+                    this.houses.get(Integer.parseInt(id)).setAllOn(true, date);
+                }
+                catch(NumberFormatException e){return 2;}
+                catch(NullPointerException e){return 2;}
                 return 0;
             }
             case "desligaTodos":{
-                this.houses.get(Integer.parseInt(id)).setAllOn(false, date);
+                try{
+                    this.houses.get(Integer.parseInt(id)).setAllOn(false, date);
+                }
+                catch(NumberFormatException e){return 2;}
+                catch(NullPointerException e){return 2;}
                 return 0;
             }
             case "setOn":{
-                this.houses.get(Integer.parseInt(id)).setDeviceOn(command[3], true, date);
+                try{
+                    this.houses.get(Integer.parseInt(id)).setDeviceOn(command[3], true, date);
+                }
+                catch(NumberFormatException e){return 2;}
+                catch(NullPointerException e){return 2;}
                 return 0;
             }
             case "setOff":{
-                this.houses.get(Integer.parseInt(id)).setDeviceOn(command[3], false, date);
+                try{
+                    this.houses.get(Integer.parseInt(id)).setDeviceOn(command[3], false, date);
+                }
+                catch(NumberFormatException e){return 2;}
+                catch(NullPointerException e){return 2;}
                 return 0;
             }
-            case "ligaTudoEm":{
-                this.houses.get(Integer.parseInt(id)).setAllinDivisionOn(command[3], true, date);
+            case "ligaTudoNaDivisao":{
+                try{
+                    this.houses.get(Integer.parseInt(id)).setAllinDivisionOn(command[3], true, date);
+                }
+                catch(NumberFormatException e){return 2;}
+                catch(NullPointerException e){return 2;}
                 return 0;
             }
-            case "desligaTudoEm":{
-                this.houses.get(Integer.parseInt(id)).setAllinDivisionOn(command[3], false, date);
+            case "desligaTudoNaDivisao":{
+                try{
+                    this.houses.get(Integer.parseInt(id)).setAllinDivisionOn(command[3], false, date);
+                }
+                catch(NumberFormatException e){return 2;}
+                catch(NullPointerException e){return 2;}
                 return 0;
             }
         
@@ -119,16 +174,28 @@ public class Simulator implements Serializable{
         for(String[] command : commands){
             String id = command[1];
             switch(command[2]){
-                case "alteraPreco":{ 
-                    this.energyProviders.get(id.toLowerCase()).setPrice_kwh(Double.parseDouble(command[3]));
+                case "alteraPreco":{
+                    try{
+                        this.energyProviders.get(id.toLowerCase()).setPrice_kwh(Double.parseDouble(command[3]));
+                    } 
+                    catch(NumberFormatException e){result = 1;}
+                    catch(NullPointerException e){result = 1;}
                     break;
                 }
                 case "alteraImposto":{ 
-                    this.energyProviders.get(id.toLowerCase()).setTax(Double.parseDouble(command[3]));
+                    try{
+                        this.energyProviders.get(id.toLowerCase()).setTax(Double.parseDouble(command[3]));
+                    }
+                    catch(NumberFormatException e){result = 1;}
+                    catch(NullPointerException e){result = 1;}
                     break;
                 }
                 case "alteraFornecedor": {
-                    this.houses.get(Integer.parseInt(id)).setFornecedor(command[3]);
+                    try{
+                        this.houses.get(Integer.parseInt(id)).setFornecedor(command[3]);
+                    }
+                    catch(NumberFormatException e){result = 1;}
+                    catch(NullPointerException e){result = 1;}
                     break;
                 }
                 default: {result = 1; break;}
@@ -150,10 +217,13 @@ public class Simulator implements Serializable{
         this.houses.values().forEach(house -> house.setLastChangeDateAllDevices(start));
         for(String[] cmd: commands_){
             switch (exec_command(cmd)) {
-                case 0: break;
-
                 case 1: {
-                    end_commands.add(cmd);
+                    end_commands.add(cmd); // os comandos que entram aqui são aqueles que só se executam quando a simulação fechar
+                    break;
+                }
+
+                case 2:{
+                    System.out.println("Erro num comando");
                     break;
                 }
             
@@ -188,10 +258,21 @@ public class Simulator implements Serializable{
     }
 
     /**
+     * Apaga todos os dados desta simulação.
+     */
+    public void clearSimulation(){
+        this.houses = new HashMap<>();
+        this.energyProviders = new HashMap<>();
+        this.billsPerProvider = new HashMap<>();
+        this.profitPerProvider = new HashMap<>();
+        this.consumptionOrder = null;
+    }
+
+    /**
      * Adiciona uma casa a esta simulacao.
      */
     public void addHouse(CasaInteligente house){
-        this.houses.put(house.getOwnerNif(),house.clone());
+        this.houses.put(++this.last_house_id,house.clone());
     }
 
     /**
@@ -242,9 +323,9 @@ public class Simulator implements Serializable{
     /**
      * Remove um dispositivo de uma casa da simulação.
      */
-    public void removeDeviceFromHouse(int ownerNIF,String devID){
-        if(this.houses.containsKey(ownerNIF)){
-            this.houses.get(ownerNIF).removeDevice(devID);
+    public void removeDeviceFromHouse(int houseID,String devID){
+        if(this.houses.containsKey(houseID)){
+            this.houses.get(houseID).removeDevice(devID);
         }
     }
 
@@ -259,9 +340,7 @@ public class Simulator implements Serializable{
      * Devolve uma lista com as casas desta simulação
      */
     public List<CasaInteligente> getHouses(){
-        List<CasaInteligente> result = new ArrayList<>();
-        this.houses.values().forEach(house -> result.add(house.clone()));
-        return result;
+        return this.houses.values().stream().map(CasaInteligente::clone).collect(Collectors.toList());
     }
 
     /**
@@ -269,7 +348,7 @@ public class Simulator implements Serializable{
      */
     public Map<Integer, CasaInteligente> getHousesMap(){
         Map<Integer, CasaInteligente> result = new HashMap<>();
-        this.houses.keySet().forEach(nif -> result.put(nif,this.houses.get(nif).clone()));
+        this.houses.keySet().forEach(id -> result.put(id,this.houses.get(id).clone()));
         return result;
     }
 
@@ -340,9 +419,13 @@ public class Simulator implements Serializable{
     /**
      * Altera o fornecedor de uma casa.
      */
+    public void changeHouseProvider(String providername, Integer houseID){
+        CasaInteligente house = this.houses.get(houseID);
+        if(this.energyProviders.containsKey(providername.toLowerCase())){
+            house.setFornecedor(providername);
+        }
+    } 
     
-    
-
     // ESTATÍSTICAS DA SIMULAÇÃO
 
     /**
@@ -376,21 +459,75 @@ public class Simulator implements Serializable{
      * Devolve as faturas emitidas por um certo fornecedor dado o seu nome.
      */
     public List<Fatura> getBillsFromProvider(String providerName){
-        List<Fatura> result = new ArrayList<>();
-        this.billsPerProvider.get(providerName.toLowerCase()).forEach(fatura -> result.add(fatura.clone()));
-        return result;
+        return this.billsPerProvider.get(providerName.toLowerCase())
+                                    .stream()
+                                    .map(Fatura::clone)
+                                    .collect(Collectors.toList());
     }
 
     /**
      * Devolve uma ordenação dos consumidores pelo consumo total.
      */
     public List<CasaInteligente> getConsumptionOrder(){
-        List<CasaInteligente> result = new ArrayList<>();
-        this.consumptionOrder.forEach(house -> result.add(house.clone()));
+        return this.consumptionOrder.stream()
+                                    .map(CasaInteligente::clone)
+                                    .collect(Collectors.toList());
+    }
+
+    // MÉTODOS AUXILIARES
+
+    /**
+     * Verifica a existência de um dispositivo em todas as casas da simulação.
+     */
+    public boolean existsDevice(String devID){
+        boolean result = false;
+        for(CasaInteligente house: this.houses.values()){
+            if(house.existsDevice(devID)){
+                result = true; break;
+            }
+        }
         return result;
     }
 
+    /**
+     * Verifica a existência de um fornecedor na simulação dado o seu nome.
+     */
+    public boolean existsProvider(String providerName){
+        return this.energyProviders.containsKey(providerName.toLowerCase());
+    }
+
+    /**
+     * Verifica a existência de um fornecedor na simulação.
+     */
+    public boolean existsProvider(EnergyProvider provider){
+        return this.existsProvider(provider.getName());
+    }
+
+    /**
+     * Adiciona um dispositivo a uma casa da simulação
+     */
+    public void addDevice(SmartDevice device, int id_house, String room){
+        this.houses.get(id_house).addDevice(device, room);
+    }
+
+    /**
+     * Remove um dispositivo de uma casa da simulação
+     */
+    public void removeDevice(String devID, int id_house){
+        this.houses.get(id_house).removeDevice(devID);
+    }
+
+    /**
+     * Verifica as condições para se saber se a simulação pode arrancar.
+     */
+    public boolean isReady(){
+        return !(this.houses.isEmpty()) && !(this.energyProviders.isEmpty());
+    }
+
     // GUARDAR O ESTADO DESTA SIMULAÇÃO
+    /**
+     * Guarda esta simulação num ficheiro binário.
+     */
     public void saveState(String path) throws FileNotFoundException,IOException{
         FileOutputStream fos = new FileOutputStream(path);
         ObjectOutputStream oos = new ObjectOutputStream(fos);

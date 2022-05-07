@@ -1,6 +1,7 @@
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.function.Function;
 public class EnergyProvider implements Serializable {
     private String name;
     private double price_kwh;
@@ -74,31 +75,18 @@ public class EnergyProvider implements Serializable {
     }
 
     /**
-     * Calcula o custo de um dia de utilizacao de um certo dispositivo.
-     */
-    private double pricePerDayPerDevice(int numDevices, SmartDevice device){
-        return (this.price_kwh * device.dailyConsumption() * (1 + this.tax)) * (numDevices > 10 ? 0.9f : 0.75f);
-    }
-
-    /**
-     * Calcula o custo total de um dia de utilizacao de um conjunto de dispositivos.
-     */
-    public double pricePerDay(Collection<SmartDevice> devices){
-        return devices.stream()
-                      .mapToDouble(dev -> this.pricePerDayPerDevice(devices.size(), dev))
-                      .sum();
-    }
-
-    /**
-     * Calcula o custo total da utilização de um conjunto de dispositivos de uma casa.
+     * Calcula o custo total da utilização de um conjunto de dispositivos de uma casa de acordo com uma fórmula standard.
      */
     public double cost(Collection<SmartDevice> devices){
-        double consumption = devices.stream()
-                                    .mapToDouble(SmartDevice::getTotalConsumption)
-                                    .sum();
-        
-        return devices.size() > 10 ? this.price_kwh * consumption * (1 + this.tax) * 0.9 : 
-                                     this.price_kwh * consumption * (1 + this.tax) * 0.75;
+        return this.cost(devices,cons -> this.price_kwh*cons* (1 + this.tax));
+    }
+
+    /** 
+     * Calcula o custo total da utilização de um conjunto de dispositivos de uma casa de acordo com uma função personalizada.
+    */
+    public double cost(Collection<SmartDevice> devices, Function<Double,Double> func){
+        double cost_ =  func.apply(devices.stream().mapToDouble(SmartDevice::getTotalConsumption).sum());
+        return devices.size() > 10 ? cost_ * 0.9 : cost_ * 0.75;
     }
 
     /**

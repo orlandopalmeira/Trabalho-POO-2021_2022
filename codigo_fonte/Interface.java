@@ -1,20 +1,21 @@
 import java.io.FileInputStream;
+import java.io.ObjectInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.Set;
 
-import org.junit.platform.commons.function.Try;
+public class Interface {
 
-public class Main2 {
+    private Simulator sim; // este objecto está encarregue de fazer a simulação
 
-    private static Simulator loadState(String path) throws FileNotFoundException, 
+    public Interface(){
+        this.sim = new Simulator(); 
+    }
+
+    private Simulator loadState(String path) throws FileNotFoundException, 
                                                            IOException,
                                                            ClassNotFoundException {
         FileInputStream fis = new FileInputStream(path);
@@ -24,7 +25,7 @@ public class Main2 {
         return sim;                     
     }
 
-    private static LocalDateTime getDateFromInput(String message,Scanner s){
+    private LocalDateTime getDateFromInput(String message,Scanner s){
         LocalDateTime date = null;
         boolean flag = true;
         while(flag){
@@ -41,7 +42,7 @@ public class Main2 {
         return date;
     }
 
-    private static SmartBulb bulbFromInput(Set<String> ids, Scanner sc){
+    private SmartBulb bulbFromInput(Scanner sc){
         // Variáveis auxiliares
         String isOn,idBulb,tone; boolean state, flag = true;
         double dimension = 1.0;
@@ -50,12 +51,12 @@ public class Main2 {
         // Criação da lâmpada
         System.out.print("Insira o id desta lâmpada: ");
         idBulb = sc.nextLine();
-        while(ids.contains(idBulb)){
+        while(this.sim.existsDevice(idBulb)){
             System.out.println("O id que pretende atribuir já existe!");
             System.out.print("Insira o id desta lâmpada: ");
             idBulb = sc.nextLine();
         }
-        ids.add(idBulb);
+        //this.devs_ids.add(idBulb);
 
         System.out.print("O dispositivo inicia-se ligado?(s/n): ");
         isOn = sc.nextLine();
@@ -93,21 +94,20 @@ public class Main2 {
         return sb;
     }
 
-    private static SmartSpeaker speakerFromInput(Set<String> ids, Scanner sc){
+    private SmartSpeaker speakerFromInput(Scanner sc){
         // Variáveis auxiliares
         String isOn,idSpeaker,channel,marca; boolean state, flag = true;
         int volume = 0;
-        SmartSpeaker ss = null;
 
         // Criação do speaker
         System.out.print("Insira o id deste speaker : ");
         idSpeaker = sc.nextLine();
-        while(ids.contains(idSpeaker)){
+        while(this.sim.existsDevice(idSpeaker)){
             System.out.println("O id que pretende atribuir já existe!");
             System.out.print("Insira o id deste speaker: ");
             idSpeaker = sc.nextLine();
         }
-        ids.add(idSpeaker);
+        //this.devs_ids.add(idSpeaker);
 
         System.out.print("O dispositivo inicia-se ligado?(s/n): ");
         isOn = sc.nextLine();
@@ -136,26 +136,23 @@ public class Main2 {
         System.out.print("Insira a marca deste speaker: ");
         marca = sc.nextLine();
 
-        ss = new SmartSpeaker(idSpeaker,state,volume,channel,marca);
-
-        return ss;
+        return new SmartSpeaker(idSpeaker,state,volume,channel,marca);
     }
 
-    private static SmartCamera cameraFromInput(Set<String> ids, Scanner sc){
+    private SmartCamera cameraFromInput(Scanner sc){
         // Variáveis auxiliares
         String isOn,idCam; boolean state, flag = true;
         int resX = 0, resY = 0; double sizeOfFile = 0;
-        SmartCamera sCam = null;
 
         // Criação da câmara
         System.out.print("Insira o id desta câmara: ");
         idCam = sc.nextLine();
-        while(ids.contains(idCam)){
+        while(this.sim.existsDevice(idCam)){
             System.out.println("O id que pretende atribuir já existe!");
             System.out.print("Insira o id deste speaker: ");
             idCam = sc.nextLine();
         }
-        ids.add(idCam);
+        //this.devs_ids.add(idCam);
 
         System.out.print("O dispositivo inicia-se ligado?(s/n): ");
         isOn = sc.nextLine();
@@ -203,11 +200,10 @@ public class Main2 {
         }
         flag = true;
 
-        sCam = new SmartCamera(idCam,state,resX,resY,sizeOfFile);
-        return sCam;
+        return new SmartCamera(idCam,state,resX,resY,sizeOfFile);
     }
 
-    private static SmartDevice deviceFromInput(Set<String> dev_ids, Scanner s){
+    private SmartDevice deviceFromInput(Scanner s){
         int dev_type = 0;
         boolean flag = true;
         SmartDevice device = null;
@@ -234,17 +230,17 @@ public class Main2 {
 
             switch (dev_type) {
                 case 1:{
-                    device = bulbFromInput(dev_ids,s);
+                    device = bulbFromInput(s);
                     break;
                 }
 
                 case 2:{
-                    device = cameraFromInput(dev_ids,s);
+                    device = cameraFromInput(s);
                     break;
                 }
 
                 case 3:{
-                    device = speakerFromInput(dev_ids,s);
+                    device = speakerFromInput(s);
                     break;
                 }
             
@@ -259,7 +255,7 @@ public class Main2 {
         return device;
     }
 
-    private static CasaInteligente houseFromInput(Set<String> dev_ids, Set<String> prov_names, Scanner s){
+    private CasaInteligente houseFromInput(Scanner s){
         boolean flag = true;
         int option = 0;
         CasaInteligente house = new CasaInteligente();
@@ -310,20 +306,25 @@ public class Main2 {
                 case 2:{
                     System.out.println("Insira a repartição onde o dispositivo se irá localizar: ");
                     String room = s.nextLine();
-                    house.addDevice(deviceFromInput(dev_ids, s), room);
+                    house.addDevice(deviceFromInput(s), room);
                     break;
                 }
 
                 case 3:{
                     String prov_name = null;
                     while (flag) {
-                        System.out.print("Insira o nome do fornecedor: ");
+                        System.out.print("Insira o nome do fornecedor (!já existente!): ");
                         prov_name = s.nextLine();
-                        if(prov_names.contains(prov_name.toLowerCase())){
+                        if(this.sim.existsProvider(prov_name)){
                             house.setFornecedor(prov_name);
                             flag = false;
                         }else{
                             System.out.printf("O fornecedor %s não existe\n",prov_name);
+                            System.out.print("Deseja voltar ao menu anterior\npara adicionar o fornecedor pretendido? (s/n): ");
+                            String answer = s.nextLine();
+                            if("sS".contains(answer)){
+                                return null;
+                            }
                         }
                     }
                     flag = true;
@@ -367,7 +368,7 @@ public class Main2 {
         return house;
     }
 
-    private static EnergyProvider providerFromInput(Set<String> prov_names, Scanner s){
+    private EnergyProvider providerFromInput(Scanner s){
         boolean flag = true;
         String name = "";
         double price = 0, tax = 0;
@@ -375,7 +376,7 @@ public class Main2 {
         while(flag){
             System.out.print("Insira o nome deste fornecedor: ");
             name = s.nextLine();
-            if(prov_names.contains(name.toLowerCase())){
+            if(this.sim.existsProvider(name)){
                 System.out.println("Este fornecedor já existe! Tente outro nome\nPressione ENTER para continuar");
                 s.nextLine();
             }else{
@@ -393,6 +394,7 @@ public class Main2 {
                 System.out.println("O preço/kWh deve ser um número real!");
             }
         }
+        flag = true;
 
         while (flag) {
             System.out.print("Insira o imposto deste fornecedor: ");
@@ -407,7 +409,173 @@ public class Main2 {
         return new EnergyProvider(name, price, tax);
     }
 
-    private static int getMainOption(Scanner s){
+    private void stateFromInput(Scanner s) {
+        int option = 0;
+        boolean flag = true;
+
+        while(flag){
+            System.out.println("---------------------------------------------");
+            System.out.println("| Carregamento manual                       |");
+            System.out.println("---------------------------------------------");
+            System.out.println("| 1 | Adicionar um fornecedor               |");
+            System.out.println("---------------------------------------------");
+            System.out.println("| 2 | Ver os ids dos fornecedores           |");
+            System.out.println("---------------------------------------------");
+            System.out.println("| 3 | Adicionar uma casa                    |");
+            System.out.println("---------------------------------------------");
+            System.out.println("| 4 | Ver os ids das casas                  |");
+            System.out.println("---------------------------------------------");
+            System.out.println("| 5 | Adicionar um dispositivo a uma casa   |");
+            System.out.println("---------------------------------------------");
+            System.out.println("| 6 | Remover um dispositivo de uma casa    |");
+            System.out.println("---------------------------------------------");
+            System.out.println("| 7 | Limpar o estado atual                 |");
+            System.out.println("---------------------------------------------");
+            System.out.println("| 8 | Guardar este estado e voltar          |");
+            System.out.println("---------------------------------------------");
+            while(flag){
+                try{
+                    System.out.print("Insira a opção: ");
+                    option = Integer.parseInt(s.nextLine());
+                    flag = false;
+                } catch(NumberFormatException e){
+                    System.out.println("A opção deve ser um número inteiro!");
+                }
+            }
+            flag = true;
+
+            switch(option){
+
+                case 1:{
+                    EnergyProvider provider = providerFromInput(s);
+                    if(!this.sim.existsProvider(provider.getName())){
+                        this.sim.addProvider(provider);
+                    }else{
+                        System.out.printf("O fornecedor %s já existe!\nPressione ENTER para continuar\n",provider.getName());
+                        s.nextLine();
+                    }
+                    break;
+                }
+
+                case 2:{
+                    Map<String, EnergyProvider> aux = this.sim.getProvidersMap();
+                    if(aux.size() <= 0){
+                        System.out.println("Sem fornecedores!");
+                    }else{
+                        System.out.println("ID | Nome | Preço/kWh | Imposto");
+                        for(String key: aux.keySet()){
+                            EnergyProvider provider = aux.get(key);
+                            System.out.printf("%s | %s | %f | %f\n",key,provider.getName(),provider.getPrice_kwh(),provider.getTax());
+                        }
+                    }
+                    break;
+                }
+
+                case 3:{
+                    CasaInteligente house = houseFromInput(s);
+                    if(house != null){
+                        this.sim.addHouse(house);
+                    }
+                    break;
+                }
+
+                case 4:{
+                    Map<Integer,CasaInteligente> aux = this.sim.getHousesMap();
+                    if(aux.size() <= 0){
+                        System.out.println("Sem casas na simulação");
+                    }
+                    else{
+                        System.out.println("ID | Morada | Nome Proprietario | Fornecedor");
+                        for(Integer key: aux.keySet()){
+                            CasaInteligente house = aux.get(key);
+                            System.out.printf("%d | %s | %s | %s\n",key,house.getMorada(),house.getOwnerName(),house.getFornecedor());
+                        }
+                    }
+                    break;
+                }
+
+                case 5:{
+                    int id_house = 0;
+                    while(flag){
+                        try {
+                            System.out.print("Insira o id da casa: ");
+                            id_house = Integer.parseInt(s.nextLine());
+                            if(!(this.sim.getHousesMap().containsKey(id_house))){
+                                System.out.printf("A casa com id %d não existe\n",id_house);
+                            } else flag = false;
+                        } catch (NumberFormatException e) {
+                            System.out.println("O id da casa é um número inteiro!");
+                        }
+                    }
+                    System.out.print("Insira a repartição onde o dispositivo será colocado: ");
+                    String room = s.nextLine();
+                    this.sim.addDevice(deviceFromInput(s), id_house, room);
+                    flag = true;
+                    break;
+                }
+
+                case 6:{
+                    Map<Integer,CasaInteligente> aux = this.sim.getHousesMap();
+                    int house_id = 0;
+                    while (flag) {
+                        try {
+                            System.out.print("Insira o id da casa: ");
+                            house_id = Integer.parseInt(s.nextLine());
+                            if(aux.containsKey(house_id)){
+                                flag = false;
+                            }else{
+                                System.out.printf("A casa com id %d não existe\n",house_id);
+                            }
+                        }catch(NumberFormatException e){
+                            System.out.println("O id da casa é um número inteiro.");
+                        }
+                    }
+                    flag = true;
+                    System.out.println("ID | Tipo");
+                    for(SmartDevice dev: aux.get(house_id).getDevices()){
+                        System.out.printf("%s | %s\n",dev.getID(),dev.getClass().getName());
+                    }
+                    System.out.println("Insira o ID do dispositivo a remover");
+                    String devID = s.nextLine();
+                    this.sim.removeDevice(devID, house_id);
+                    break;
+                }
+
+                case 7:{
+                    System.out.println("Atenção: esta ação vai apagar TODAS as informações de ");
+                    System.out.println("         casas e fornecedores de forma irreversível.");
+                    System.out.print("Pretende prosseguir? (s/n):");
+                    String answer = s.nextLine();
+                    if("Ss".contains(answer)){
+                        this.sim.clearSimulation();
+                        System.out.println("Estado apagado com sucesso!\nPressione ENTER para continuar");
+                        s.nextLine();
+                    }
+                    break;
+                }
+
+                case 8:{
+                    flag = false;
+                    break;
+                }
+
+                default:{
+                    System.out.println("Opção inválida (deve ser um inteiro entre 1 e 3)");
+                    break;
+                }
+                
+            }
+        }
+    }
+
+    public void simulationExecution(Scanner s){
+        boolean flag = true;
+        while(flag){
+            
+        }
+    }
+
+    private int getMainOption(Scanner s){
         int op = 0; boolean flag = true;
         System.out.println("--------------------------------------------------------");
         System.out.println("| 1 | Carregar informação de ficheiro                  |");
@@ -434,13 +602,10 @@ public class Main2 {
         return op;
     }
 
-    public static void main(String[] args) {
+    public void run() {
         Scanner s = new Scanner(System.in);
         boolean flag = true;
         int option;
-        Simulator sim = null; // guarda o estado do programa!
-        Set<String> devs_ids = new HashSet<>(); // guarda os ids de devices criados para evitar a criação de ids repetidos
-        Map<String, EnergyProvider> providers = new HashMap<>(); // guarda os fornecedores de energira para evitar criar fornecedores repetidos
 
         while (flag) {
             option = getMainOption(s);
@@ -464,17 +629,17 @@ public class Main2 {
                     }
                     /*Map<String,EnergyProvider> providers = null;
                     List<CasaInteligente> houses = null;
-                    6try {
+                    try {
                         providers = Generator.fileToProviders("/home/orlando/Desktop/Trabalho-POO-2021_2022/files/providers_test.txt");
                         houses = Generator.fileToHouses("/home/orlando/Desktop/Trabalho-POO-2021_2022/files/devices_test.txt", 
                                                 "/home/orlando/Desktop/Trabalho-POO-2021_2022/files/people_test.txt",
                                                 "/home/orlando/Desktop/Trabalho-POO-2021_2022/files/houses_test.txt");
                     } catch (FileNotFoundException e) {}
-                    sim = new Simulator(houses, providers.values());*/
+                    this.sim = new Simulator(houses, providers.values());*/
                     break;
                 }
                 case 2:{
-                    
+                    this.stateFromInput(s);
                     break;
                 }
                 case 3:{
