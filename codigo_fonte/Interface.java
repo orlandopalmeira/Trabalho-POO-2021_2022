@@ -472,7 +472,7 @@ public class Interface {
                 }
 
                 case 3:{
-                    CasaInteligente house = houseFromInput(s);
+                    CasaInteligente house = this.houseFromInput(s);
                     if(house != null){
                         this.sim.addHouse(house);
                     }
@@ -531,7 +531,7 @@ public class Interface {
                         }
                     }
                     flag = true;
-                    System.out.println("ID | Tipo");
+                    System.out.println("Dispositivos da casa\nID | Tipo");
                     for(SmartDevice dev: aux.get(house_id).getDevices()){
                         System.out.printf("%s | %s\n",dev.getID(),dev.getClass().getName());
                     }
@@ -560,7 +560,7 @@ public class Interface {
                 }
 
                 default:{
-                    System.out.println("Opção inválida (deve ser um inteiro entre 1 e 3)");
+                    System.out.println("Opção inválida (deve ser um inteiro entre 1 e 8)");
                     break;
                 }
                 
@@ -570,8 +570,99 @@ public class Interface {
 
     public void simulationExecution(Scanner s){
         boolean flag = true;
+        int option = 0;
         while(flag){
-            
+            System.out.println("--------------------------------------------------------");
+            System.out.println("| Executar simulação                                   |");
+            System.out.println("--------------------------------------------------------");
+            System.out.println("| 1 | Adicionar um pedido                              |");
+            System.out.println("--------------------------------------------------------");
+            System.out.println("| 2 | Iniciar simulação                                |");
+            System.out.println("--------------------------------------------------------");
+            System.out.println("| 3 | Ver a casa que mais consumiu                     |");
+            System.out.println("--------------------------------------------------------");
+            System.out.println("| 4 | Ver o fornecedor com maior volume de faturação   |");
+            System.out.println("--------------------------------------------------------");
+            System.out.println("| 5 | Ver as faturas emitidas por um fornecedor        |");
+            System.out.println("--------------------------------------------------------");
+            System.out.println("| 6 | Ranking de consumidores de energia               |");
+            System.out.println("--------------------------------------------------------");
+            while(flag){
+                try {
+                    System.out.print("Insira a opção: ");
+                    option = Integer.parseInt(s.nextLine());
+                    flag = false;
+                } catch (NumberFormatException e) {
+                    System.out.println("A opção deve ser um número inteiro!");
+                }
+            }
+            flag = true;
+
+            switch(option){
+
+                case 1: {
+                    break;
+                }
+
+                case 2: {
+                    break;
+                }
+
+                case 3: {
+                    CasaInteligente house = this.sim.getBiggestConsumer();
+                    System.out.println("-------------------------------");
+                    System.out.printf("Morada: %s\n",house.getMorada());
+                    System.out.printf("Nome proprietário: %s\nNIF proprietário: %d\n",house.getOwnerName(),house.getOwnerNif());
+                    System.out.printf("Fornecedor: %s\n",house.getFornecedor());
+                    System.out.println("-------------------------------");
+                    break;
+                }
+
+                case 4: {
+                    EnergyProvider provider = this.sim.getBiggestProvider();
+                    System.out.println("-------------------------------");
+                    System.out.printf("Fornecedor: %s\n",provider.getName());
+                    System.out.printf("Preço kWh: %f\n",provider.getPrice_kwh());
+                    System.out.printf("Imposto: %f\n",provider.getTax());
+                    System.out.println("-------------------------------");
+                    break;
+                }
+
+                case 5: {
+                    String provID = null;
+                    while(flag){
+                        System.out.print("Insira o id do fornecedor: ");
+                        provID = s.nextLine();
+                        if(this.sim.existsProvider(provID)){
+                            flag = false;
+                        }else{
+                            System.out.printf("O fornecedor com id %s não existe!\n",provID);
+                        }
+                    }
+                    flag = true;
+                    for(Fatura fat: this.sim.getBillsFromProvider(provID)){
+                        System.out.println(fat.printFatura());
+                    }
+                    break;
+                }
+
+                case 6: {
+                    for(CasaInteligente house: this.sim.getConsumptionOrder()){
+                        System.out.println("-------------------------------");
+                        System.out.printf("Morada: %s\n",house.getMorada());
+                        System.out.printf("Nome proprietário: %s\nNIF proprietário: %d\n",house.getOwnerName(),house.getOwnerNif());
+                        System.out.printf("Fornecedor: %s\n",house.getFornecedor());
+                        System.out.printf("Consumo: %f kWh\n",house.getTotalConsumption());
+                        System.out.println("-------------------------------");
+                    }
+                    break;
+                }
+
+                default:{
+                    System.out.println("Opção inválida (deve ser um inteiro entre e)");
+                }
+            }
+
         }
     }
 
