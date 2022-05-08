@@ -567,8 +567,224 @@ public class Interface {
             }
         }
     }
+    /**
+     * Comandos que devemos ter na simulação;
+     * 1) alterar o preco de um fornecedor;
+     * 2) alterar o imposto de um fornecedor;
+     * 3) alterar o fornecedor de uma casa;
+     * 4) ligar todos os dispositivos de uma casa;
+     * 5) desligar todos os dispositivos de uma casa;
+     * 6) ligar todos os dispositivos de uma repartição da casa;
+     * 7) desligar todos os dispositivos de uma repartição da casa;
+     * 8) ligar todos os dispositivos de todas as casas;
+     * 9) desligar todos os dispositivos de todas as casas;
+     * 10) ligar um dispositivo de uma casa;
+     * 11) desligar um dispositivo de uma casa;
+     */
+    private Command commandFromInput(Scanner s){
+        boolean flag = true;
+        int option = 0;
+        System.out.println("-----------------------------------------------------------------------");
+        System.out.println("| Registar um pedido                                                  |");
+        System.out.println("-----------------------------------------------------------------------");
+        System.out.println("| 1  | Alterar o preço de um fornecedor                               |");
+        System.out.println("-----------------------------------------------------------------------");
+        System.out.println("| 2  | Alterar o imposto de um fornecedor                             |");
+        System.out.println("-----------------------------------------------------------------------");
+        System.out.println("| 3  | Alterar o fornecedor de uma casa                               |");
+        System.out.println("-----------------------------------------------------------------------");
+        System.out.println("| 4  | Ligar todos os dispositivos de uma casa                        |");
+        System.out.println("-----------------------------------------------------------------------");
+        System.out.println("| 5  | Desligar todos os dispositivos de uma casa                     |");
+        System.out.println("-----------------------------------------------------------------------");
+        System.out.println("| 6  | Ligar todos os dispositivos de uma repartição de uma casa      |");
+        System.out.println("-----------------------------------------------------------------------");
+        System.out.println("| 7  | Desligar todos os dispositivos de uma repartição de uma casa   |");
+        System.out.println("-----------------------------------------------------------------------");
+        System.out.println("| 8  | Ligar todos os dispositivos de todas as casas                  |");
+        System.out.println("-----------------------------------------------------------------------");
+        System.out.println("| 9  | Desligar todos os dispositivos de todas as casas               |");
+        System.out.println("-----------------------------------------------------------------------");
+        System.out.println("| 10 | Ligar um dispositivo de uma casa                               |");
+        System.out.println("-----------------------------------------------------------------------");
+        System.out.println("| 11 | Desligar um dispositivo de uma casa                            |");
+        System.out.println("-----------------------------------------------------------------------");
+        while(flag){
+            try {
+                System.out.print("Insira a opção: ");
+                option = Integer.parseInt(s.nextLine());
+                flag = false;
+            } catch (NumberFormatException e) {
+                System.out.println("A opção deve ser um número inteiro!");
+            }
+        }
+        flag = true;
+        LocalDateTime executionDateTime = null;
+        Command result = null;
+        executionDateTime = getDateFromInput("Insira a data em que se executa: ", s);
 
-    public void simulationExecution(Scanner s){
+        switch (option) {
+            case 1:{
+                Map<String,EnergyProvider> aux = this.sim.getProvidersMap();
+                System.out.println("--------------------------------");
+                for(String key: aux.keySet()){
+                    EnergyProvider p = aux.get(key);
+                    System.out.printf("ID: %s; Nome: %s, Preço/kWh: %f; Imposto: %f\n",key,p.getName(),p.getPrice_kwh(),p.getTax());
+                }
+                System.out.println("--------------------------------");
+
+                String provName = null;
+                while(flag){
+                    System.out.print("Insira o nome do fornecedor: ");
+                    provName = s.nextLine();
+                    if(this.sim.existsProvider(provName)){
+                        flag = false;
+                    }
+                    else{
+                        System.out.printf("O fornecedor %s não existe\n",provName);
+                    }
+                }
+                flag = true;
+                double newPrice = 0;
+                while(flag){
+                    try {
+                        System.out.print("Insira o novo preço: ");
+                        newPrice = Double.parseDouble(s.nextLine());
+                        flag = false;
+                    } catch (NumberFormatException e) {
+                        System.out.println("O novo preço tem de ser um número real!");
+                    }
+                }
+                String auxN = provName; double auxP = newPrice;
+                result = new Command(executionDateTime, this.sim, simul -> simul.changeProviderPrice(auxN, auxP), false);
+                break;
+            }
+
+            case 2:{
+                Map<String,EnergyProvider> aux = this.sim.getProvidersMap();
+                System.out.println("------------------------------------------------------");
+                for(String key: aux.keySet()){
+                    EnergyProvider p = aux.get(key);
+                    System.out.printf("ID: %s; Nome: %s, Preço/kWh: %f; Imposto: %f\n",key,p.getName(),p.getPrice_kwh(),p.getTax());
+                }
+                System.out.println("------------------------------------------------------");
+                
+
+                String provName = null;
+                while(flag){
+                    System.out.print("Insira o nome do fornecedor: ");
+                    provName = s.nextLine();
+                    if(this.sim.existsProvider(provName)){
+                        flag = false;
+                    }
+                    else{
+                        System.out.printf("O fornecedor %s não existe\n",provName);
+                    }
+                }
+                flag = true;
+                double newTax = 0;
+                while(flag){
+                    try {
+                        System.out.print("Insira o novo imposto: ");
+                        newTax = Double.parseDouble(s.nextLine());
+                        flag = false;
+                    } catch (NumberFormatException e) {
+                        System.out.println("O novo imposto tem de ser um número real!");
+                    }
+                }
+                String auxN = provName; double auxT = newTax;
+                result = new Command(executionDateTime, this.sim, simul -> simul.changeProviderTax(auxN, auxT), false);
+                break;
+            }
+
+            case 3:{
+                Map<Integer,CasaInteligente> aux = this.sim.getHousesMap();
+                System.out.println("-------------------------Casas------------------------");
+                for(Integer key: aux.keySet()){
+                    CasaInteligente h = aux.get(key);
+                    System.out.printf("ID: %d; Morada: %s; Proprietário: %s; Fornecedor: %s\n",key,h.getMorada(),h.getOwnerName(),h.getFornecedor());
+                }
+                System.out.println("------------------------------------------------------");
+                System.out.println("----------------------Fornecedores--------------------");
+                Map<String,EnergyProvider> auxP = this.sim.getProvidersMap();
+                for(String key: auxP.keySet()){
+                    EnergyProvider p = auxP.get(key);
+                    System.out.printf("ID: %s; Nome: %s, Preço/kWh: %f; Imposto: %f\n",key,p.getName(),p.getPrice_kwh(),p.getTax());
+                }
+                System.out.println("------------------------------------------------------");
+
+                int house_id = 0;
+                while(flag){
+                    try {
+                        System.out.print("Insira o ID da casa: ");
+                        house_id = Integer.parseInt(s.nextLine());
+                        if(aux.containsKey(house_id)){
+                            flag = false;
+                        }else{
+                            System.out.printf("A casa com id %d não existe\n",house_id);
+                        }
+                        
+                    } catch (NumberFormatException e) {
+                        System.out.println("O id da casa é um número inteiro");
+                    }
+                }
+                flag = true;
+                String provName = null;
+                while(flag){
+                    provName = s.nextLine();
+                    if(this.sim.existsProvider(provName)){
+                        flag = false;
+                    }
+                    else{
+                        System.out.printf("O fornecedor %s não existe\n",provName);
+                    }
+                }
+                String auxN = provName; int auxI = house_id;
+                result = new Command(executionDateTime, this.sim, sim -> sim.changeHouseProvider(auxN, auxI), false);
+                break;
+            }
+
+            case 4:{
+                break;
+            }
+
+            case 5:{
+                break;
+            }
+
+            case 6:{
+                break;
+            }
+
+            case 7:{
+                break;
+            }
+
+            case 8:{
+                break;
+            }
+
+            case 9:{
+                break;
+            }
+
+            case 10:{
+                break;
+            }
+
+            case 11:{
+                break;
+            }
+        
+            default:
+                break;
+        }
+            
+
+        return result;
+    }
+
+    private void simulationExecution(Scanner s){
         boolean flag = true;
         int option = 0;
         while(flag){
@@ -659,7 +875,7 @@ public class Interface {
                 }
 
                 default:{
-                    System.out.println("Opção inválida (deve ser um inteiro entre e)");
+                    System.out.println("Opção inválida (deve ser um inteiro entre 1 e 6)");
                 }
             }
 
