@@ -26,7 +26,7 @@ public class Command{
      * Executa este comando.
      */
     public void execute(){
-        command.accept(simulator);
+        this.command.accept(this.simulator);
     }
 
     public Command(LocalDateTime executionDateTime, Simulator simulator, Consumer<Simulator> command,boolean flag){
@@ -49,5 +49,4 @@ public class Command{
     public boolean getFlag(){
         return this.flag;
     }
-
 }

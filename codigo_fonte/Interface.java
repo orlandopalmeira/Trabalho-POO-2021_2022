@@ -4,8 +4,12 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
 
 public class Interface {
 
@@ -745,48 +749,247 @@ public class Interface {
             }
 
             case 4:{
+                Map<Integer,CasaInteligente> aux = this.sim.getHousesMap();
+                System.out.println("-------------------------Casas------------------------");
+                for(Integer key: aux.keySet()){
+                    CasaInteligente h = aux.get(key);
+                    System.out.printf("ID: %d; Morada: %s; Proprietário: %s; Fornecedor: %s\n",key,h.getMorada(),h.getOwnerName(),h.getFornecedor());
+                }
+                System.out.println("------------------------------------------------------");
+                int house_id = 0; 
+                while(flag){
+                    try {
+                        System.out.print("Insira o ID da casa: ");
+                        house_id = Integer.parseInt(s.nextLine());
+                        if(aux.containsKey(house_id)){
+                            flag = false;
+                        }else{
+                            System.out.printf("A casa com id %d não existe!\n",house_id);
+                        }
+                    } catch (NumberFormatException e) {
+                        System.out.println("O id da casa é um número inteiro.");
+                    }
+                }
+                int auxI = house_id; LocalDateTime auxDT = executionDateTime;
+                result = new Command(executionDateTime, this.sim, sim -> sim.setStateAllDevicesHouse(auxI, true, auxDT) , true);
                 break;
             }
 
             case 5:{
+                Map<Integer,CasaInteligente> aux = this.sim.getHousesMap();
+                System.out.println("-------------------------Casas------------------------");
+                for(Integer key: aux.keySet()){
+                    CasaInteligente h = aux.get(key);
+                    System.out.printf("ID: %d; Morada: %s; Proprietário: %s; Fornecedor: %s\n",key,h.getMorada(),h.getOwnerName(),h.getFornecedor());
+                }
+                System.out.println("------------------------------------------------------");
+                int house_id = 0; 
+                while(flag){
+                    try {
+                        System.out.print("Insira o ID da casa: ");
+                        house_id = Integer.parseInt(s.nextLine());
+                        if(aux.containsKey(house_id)){
+                            flag = false;
+                        }else{
+                            System.out.printf("A casa com id %d não existe!\n",house_id);
+                        }
+                    } catch (NumberFormatException e) {
+                        System.out.println("O id da casa é um número inteiro.");
+                    }
+                }
+                int auxI = house_id; LocalDateTime auxDT = executionDateTime;
+                result = new Command(executionDateTime, this.sim, sim -> sim.setStateAllDevicesHouse(auxI, false, auxDT) , true);
                 break;
             }
 
             case 6:{
+                Map<Integer,CasaInteligente> aux = this.sim.getHousesMap();
+                System.out.println("-------------------------Casas------------------------");
+                for(Integer key: aux.keySet()){
+                    CasaInteligente h = aux.get(key);
+                    System.out.printf("ID: %d; Morada: %s; Proprietário: %s; Fornecedor: %s\n",key,h.getMorada(),h.getOwnerName(),h.getFornecedor());
+                }
+                System.out.println("------------------------------------------------------");
+                
+                int house_id = 0; 
+                while(flag){
+                    try {
+                        System.out.print("Insira o ID da casa: ");
+                        house_id = Integer.parseInt(s.nextLine());
+                        if(aux.containsKey(house_id)){
+                            flag = false;
+                        }else{
+                            System.out.printf("A casa com id %d não existe!\n",house_id);
+                        }
+                    } catch (NumberFormatException e) {
+                        System.out.println("O id da casa é um número inteiro.");
+                    }
+                }
+                CasaInteligente h = this.sim.getHouse(house_id);
+                System.out.println(h.devicesPerRoomInfo());
+                flag = true;
+                String room = null;
+                while(flag){
+                    System.out.print("Insira a repartição: ");
+                    room = s.nextLine();
+                    if(h.hasRoom(room)){
+                        flag = false;
+                    }else{
+                        System.out.printf("A repartição: %s não existe\n",room);
+                    }
+                }
+                String auxR = room; Integer auxI = house_id; LocalDateTime auxDT = executionDateTime;
+                result = new Command(executionDateTime, this.sim, sim -> sim.setStateAllDevicesInRoom(auxI, auxR, true, auxDT), true);
                 break;
             }
 
             case 7:{
+                Map<Integer,CasaInteligente> aux = this.sim.getHousesMap();
+                System.out.println("-------------------------Casas------------------------");
+                for(Integer key: aux.keySet()){
+                    CasaInteligente h = aux.get(key);
+                    System.out.printf("ID: %d; Morada: %s; Proprietário: %s; Fornecedor: %s\n",key,h.getMorada(),h.getOwnerName(),h.getFornecedor());
+                }
+                System.out.println("------------------------------------------------------");
+                
+                int house_id = 0; 
+                while(flag){
+                    try {
+                        System.out.print("Insira o ID da casa: ");
+                        house_id = Integer.parseInt(s.nextLine());
+                        if(aux.containsKey(house_id)){
+                            flag = false;
+                        }else{
+                            System.out.printf("A casa com id %d não existe!\n",house_id);
+                        }
+                    } catch (NumberFormatException e) {
+                        System.out.println("O id da casa é um número inteiro.");
+                    }
+                }
+                CasaInteligente h = this.sim.getHouse(house_id);
+                System.out.println(h.devicesPerRoomInfo());
+                flag = true;
+                String room = null;
+                while(flag){
+                    System.out.print("Insira a repartição: ");
+                    room = s.nextLine();
+                    if(h.hasRoom(room)){
+                        flag = false;
+                    }else{
+                        System.out.printf("A repartição: %s não existe\n",room);
+                    }
+                }
+                String auxR = room; Integer auxI = house_id; LocalDateTime auxDT = executionDateTime;
+                result = new Command(executionDateTime, this.sim, sim -> sim.setStateAllDevicesInRoom(auxI, auxR, false, auxDT), true);
                 break;
             }
 
             case 8:{
+                LocalDateTime auxDT = executionDateTime;
+                result = new Command(executionDateTime, this.sim, sim -> sim.setStateAllDevicesInAllHouses(true, auxDT), true);
                 break;
             }
 
             case 9:{
+                LocalDateTime auxDT = executionDateTime;
+                result = new Command(executionDateTime, this.sim, sim -> sim.setStateAllDevicesInAllHouses(false, auxDT), true);
                 break;
             }
 
-            case 10:{
+            case 10:{// ligar um dispositivo de uma casa;
+                Map<Integer,CasaInteligente> aux = this.sim.getHousesMap();
+                System.out.println("-------------------------Casas------------------------");
+                for(Integer key: aux.keySet()){
+                    CasaInteligente h = aux.get(key);
+                    System.out.printf("ID: %d; Morada: %s; Proprietário: %s; Fornecedor: %s\n",key,h.getMorada(),h.getOwnerName(),h.getFornecedor());
+                }
+                System.out.println("------------------------------------------------------");
+                
+                int house_id = 0; 
+                while(flag){
+                    try {
+                        System.out.print("Insira o ID da casa: ");
+                        house_id = Integer.parseInt(s.nextLine());
+                        if(aux.containsKey(house_id)){
+                            flag = false;
+                        }else{
+                            System.out.printf("A casa com id %d não existe!\n",house_id);
+                        }
+                    } catch (NumberFormatException e) {
+                        System.out.println("O id da casa é um número inteiro.");
+                    }
+                }
+                CasaInteligente h = this.sim.getHouse(house_id);
+                System.out.println(h.devicesPerRoomInfo());
+                flag = true;
+                String devID = null;
+                while(flag){
+                    System.out.print("Insira o id do dispositivo: ");
+                    devID = s.nextLine();
+                    if(h.existsDevice(devID)){
+                        flag = false;
+                    }else{
+                        System.out.printf("O dispositivo com id %s não existe\n",devID);
+                    }
+                }
+                String auxDI = devID; int auxHI = house_id; LocalDateTime auxDT = executionDateTime;
+                result = new Command(executionDateTime, this.sim, sim -> sim.setStateInDeviceInHouse(auxDI, auxHI, true, auxDT), true);
                 break;
             }
 
-            case 11:{
+            case 11:{// desligar um dispositivo de uma casa;
+                Map<Integer,CasaInteligente> aux = this.sim.getHousesMap();
+                System.out.println("-------------------------Casas------------------------");
+                for(Integer key: aux.keySet()){
+                    CasaInteligente h = aux.get(key);
+                    System.out.printf("ID: %d; Morada: %s; Proprietário: %s; Fornecedor: %s\n",key,h.getMorada(),h.getOwnerName(),h.getFornecedor());
+                }
+                System.out.println("------------------------------------------------------");
+                
+                int house_id = 0; 
+                while(flag){
+                    try {
+                        System.out.print("Insira o ID da casa: ");
+                        house_id = Integer.parseInt(s.nextLine());
+                        if(aux.containsKey(house_id)){
+                            flag = false;
+                        }else{
+                            System.out.printf("A casa com id %d não existe!\n",house_id);
+                        }
+                    } catch (NumberFormatException e) {
+                        System.out.println("O id da casa é um número inteiro.");
+                    }
+                }
+                CasaInteligente h = this.sim.getHouse(house_id);
+                System.out.println(h.devicesPerRoomInfo());
+                flag = true;
+                String devID = null;
+                while(flag){
+                    System.out.print("Insira o id do dispositivo: ");
+                    devID = s.nextLine();
+                    if(h.existsDevice(devID)){
+                        flag = false;
+                    }else{
+                        System.out.printf("O dispositivo com id %s não existe\n",devID);
+                    }
+                }
+                String auxDI = devID; int auxHI = house_id; LocalDateTime auxDT = executionDateTime;
+                result = new Command(executionDateTime, this.sim, sim -> sim.setStateInDeviceInHouse(auxDI, auxHI, false, auxDT), true);
                 break;
             }
         
-            default:
+            default:{
+                System.out.println("Opção inválida (deve ser um inteiro entre 1 e 11)");
                 break;
+            }
         }
-            
-
         return result;
     }
 
     private void simulationExecution(Scanner s){
         boolean flag = true;
         int option = 0;
+        List<Command> requests = new ArrayList<Command>();
         while(flag){
             System.out.println("--------------------------------------------------------");
             System.out.println("| Executar simulação                                   |");
@@ -817,6 +1020,8 @@ public class Interface {
             switch(option){
 
                 case 1: {
+                    requests.add(this.commandFromInput(s));
+                    Collections.sort(requests,(c1,c2) -> c1.getExecutionDateTime().compareTo(c2.getExecutionDateTime()));
                     break;
                 }
 
@@ -826,11 +1031,15 @@ public class Interface {
 
                 case 3: {
                     CasaInteligente house = this.sim.getBiggestConsumer();
-                    System.out.println("-------------------------------");
-                    System.out.printf("Morada: %s\n",house.getMorada());
-                    System.out.printf("Nome proprietário: %s\nNIF proprietário: %d\n",house.getOwnerName(),house.getOwnerNif());
-                    System.out.printf("Fornecedor: %s\n",house.getFornecedor());
-                    System.out.println("-------------------------------");
+                    if(house != null){
+                        System.out.println("-------------------------------");
+                        System.out.printf("Morada: %s\n",house.getMorada());
+                        System.out.printf("Nome proprietário: %s\nNIF proprietário: %d\n",house.getOwnerName(),house.getOwnerNif());
+                        System.out.printf("Fornecedor: %s\n",house.getFornecedor());
+                        System.out.println("-------------------------------");
+                    }else{
+                        System.out.println("Sem informação disponível\nProvavelmente a simulação não foi executada.");
+                    }
                     break;
                 }
 

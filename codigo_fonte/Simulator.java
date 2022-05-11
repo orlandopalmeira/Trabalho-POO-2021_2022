@@ -353,6 +353,13 @@ public class Simulator implements Serializable{
     }
 
     /**
+     * Retorna uma casa da simulação.
+     */
+    public CasaInteligente getHouse(Integer houseID){
+        return this.houses.get(houseID).clone();
+    }
+
+    /**
      * Devolve uma lista com os fornecedores desta simulação
      */
     public List<EnergyProvider> getProviders(){

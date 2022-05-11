@@ -108,7 +108,7 @@ public class CasaInteligente implements Serializable {
     /**
      * Devolve um map com as locations.
      */
-    private Map<String, Set<String>> getMapLocations() {
+    public Map<String, Set<String>> getMapLocations() {
         Map<String, Set<String>> r = new HashMap<>();
         this.locations.keySet().forEach(room -> r.put(room,this.locations.get(room).stream().collect(Collectors.toSet())));
         return r;
@@ -320,6 +320,21 @@ public class CasaInteligente implements Serializable {
      */
     public void updateConsumptionAllDevices(LocalDateTime update_date){
         this.devices.values().forEach(device -> device.updateConsumption(update_date));
+    }
+
+    /**
+     * Devolve uma string com informação dos dispositivos por cada repartição.
+     */
+    public String devicesPerRoomInfo(){
+        StringBuilder sb = new StringBuilder();
+        for(String room: this.locations.keySet()){
+            sb.append(String.format("Divisão: %s\n",room));
+            for(String devID: this.locations.get(room)){
+                SmartDevice dev = this.devices.get(devID);
+                sb.append(String.format("    Tipo: %s, ID: %s, Estado: %s\n",dev.getClass().getName(),dev.getID(),dev.getOn() ? "ON" : "OFF"));
+            }
+        }
+        return sb.toString();
     }
 
     @Override
