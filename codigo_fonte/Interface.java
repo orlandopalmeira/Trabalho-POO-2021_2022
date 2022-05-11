@@ -9,7 +9,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.Set;
 
 public class Interface {
 
@@ -571,20 +570,7 @@ public class Interface {
             }
         }
     }
-    /**
-     * Comandos que devemos ter na simulação;
-     * 1) alterar o preco de um fornecedor;
-     * 2) alterar o imposto de um fornecedor;
-     * 3) alterar o fornecedor de uma casa;
-     * 4) ligar todos os dispositivos de uma casa;
-     * 5) desligar todos os dispositivos de uma casa;
-     * 6) ligar todos os dispositivos de uma repartição da casa;
-     * 7) desligar todos os dispositivos de uma repartição da casa;
-     * 8) ligar todos os dispositivos de todas as casas;
-     * 9) desligar todos os dispositivos de todas as casas;
-     * 10) ligar um dispositivo de uma casa;
-     * 11) desligar um dispositivo de uma casa;
-     */
+    
     private Command commandFromInput(Scanner s){
         boolean flag = true;
         int option = 0;
@@ -660,7 +646,7 @@ public class Interface {
                     }
                 }
                 String auxN = provName; double auxP = newPrice;
-                result = new Command(executionDateTime, this.sim, simul -> simul.changeProviderPrice(auxN, auxP), false);
+                result = new Command(executionDateTime, simul -> simul.changeProviderPrice(auxN, auxP), false);
                 break;
             }
 
@@ -697,7 +683,7 @@ public class Interface {
                     }
                 }
                 String auxN = provName; double auxT = newTax;
-                result = new Command(executionDateTime, this.sim, simul -> simul.changeProviderTax(auxN, auxT), false);
+                result = new Command(executionDateTime, simul -> simul.changeProviderTax(auxN, auxT), false);
                 break;
             }
 
@@ -744,7 +730,7 @@ public class Interface {
                     }
                 }
                 String auxN = provName; int auxI = house_id;
-                result = new Command(executionDateTime, this.sim, sim -> sim.changeHouseProvider(auxN, auxI), false);
+                result = new Command(executionDateTime, sim -> sim.changeHouseProvider(auxN, auxI), false);
                 break;
             }
 
@@ -771,7 +757,7 @@ public class Interface {
                     }
                 }
                 int auxI = house_id; LocalDateTime auxDT = executionDateTime;
-                result = new Command(executionDateTime, this.sim, sim -> sim.setStateAllDevicesHouse(auxI, true, auxDT) , true);
+                result = new Command(executionDateTime, sim -> sim.setStateAllDevicesHouse(auxI, true, auxDT) , true);
                 break;
             }
 
@@ -798,7 +784,7 @@ public class Interface {
                     }
                 }
                 int auxI = house_id; LocalDateTime auxDT = executionDateTime;
-                result = new Command(executionDateTime, this.sim, sim -> sim.setStateAllDevicesHouse(auxI, false, auxDT) , true);
+                result = new Command(executionDateTime, sim -> sim.setStateAllDevicesHouse(auxI, false, auxDT) , true);
                 break;
             }
 
@@ -839,7 +825,7 @@ public class Interface {
                     }
                 }
                 String auxR = room; Integer auxI = house_id; LocalDateTime auxDT = executionDateTime;
-                result = new Command(executionDateTime, this.sim, sim -> sim.setStateAllDevicesInRoom(auxI, auxR, true, auxDT), true);
+                result = new Command(executionDateTime, sim -> sim.setStateAllDevicesInRoom(auxI, auxR, true, auxDT), true);
                 break;
             }
 
@@ -880,19 +866,19 @@ public class Interface {
                     }
                 }
                 String auxR = room; Integer auxI = house_id; LocalDateTime auxDT = executionDateTime;
-                result = new Command(executionDateTime, this.sim, sim -> sim.setStateAllDevicesInRoom(auxI, auxR, false, auxDT), true);
+                result = new Command(executionDateTime, sim -> sim.setStateAllDevicesInRoom(auxI, auxR, false, auxDT), true);
                 break;
             }
 
             case 8:{
                 LocalDateTime auxDT = executionDateTime;
-                result = new Command(executionDateTime, this.sim, sim -> sim.setStateAllDevicesInAllHouses(true, auxDT), true);
+                result = new Command(executionDateTime, sim -> sim.setStateAllDevicesInAllHouses(true, auxDT), true);
                 break;
             }
 
             case 9:{
                 LocalDateTime auxDT = executionDateTime;
-                result = new Command(executionDateTime, this.sim, sim -> sim.setStateAllDevicesInAllHouses(false, auxDT), true);
+                result = new Command(executionDateTime, sim -> sim.setStateAllDevicesInAllHouses(false, auxDT), true);
                 break;
             }
 
@@ -933,7 +919,7 @@ public class Interface {
                     }
                 }
                 String auxDI = devID; int auxHI = house_id; LocalDateTime auxDT = executionDateTime;
-                result = new Command(executionDateTime, this.sim, sim -> sim.setStateInDeviceInHouse(auxDI, auxHI, true, auxDT), true);
+                result = new Command(executionDateTime, sim -> sim.setStateInDeviceInHouse(auxDI, auxHI, true, auxDT), true);
                 break;
             }
 
@@ -974,7 +960,7 @@ public class Interface {
                     }
                 }
                 String auxDI = devID; int auxHI = house_id; LocalDateTime auxDT = executionDateTime;
-                result = new Command(executionDateTime, this.sim, sim -> sim.setStateInDeviceInHouse(auxDI, auxHI, false, auxDT), true);
+                result = new Command(executionDateTime, sim -> sim.setStateInDeviceInHouse(auxDI, auxHI, false, auxDT), true);
                 break;
             }
         
@@ -998,13 +984,15 @@ public class Interface {
             System.out.println("--------------------------------------------------------");
             System.out.println("| 2 | Iniciar simulação                                |");
             System.out.println("--------------------------------------------------------");
-            System.out.println("| 3 | Ver a casa que mais consumiu                     |");
+            System.out.println("| 3 | Adicionar pedidos de um ficheiro                 |");
             System.out.println("--------------------------------------------------------");
-            System.out.println("| 4 | Ver o fornecedor com maior volume de faturação   |");
+            System.out.println("| 4 | Ver a casa que mais consumiu                     |");
             System.out.println("--------------------------------------------------------");
-            System.out.println("| 5 | Ver as faturas emitidas por um fornecedor        |");
+            System.out.println("| 5 | Ver o fornecedor com maior volume de faturação   |");
             System.out.println("--------------------------------------------------------");
-            System.out.println("| 6 | Ranking de consumidores de energia               |");
+            System.out.println("| 6 | Ver as faturas emitidas por um fornecedor        |");
+            System.out.println("--------------------------------------------------------");
+            System.out.println("| 7 | Ranking de consumidores de energia               |");
             System.out.println("--------------------------------------------------------");
             while(flag){
                 try {
@@ -1026,10 +1014,16 @@ public class Interface {
                 }
 
                 case 2: {
+                    // TODO: implementar a execução da simulação
                     break;
                 }
 
                 case 3: {
+                    // TODO: implementar a adição de pedidos de um ficheiro
+                    break;
+                }
+
+                case 4: {
                     CasaInteligente house = this.sim.getBiggestConsumer();
                     if(house != null){
                         System.out.println("-------------------------------");
@@ -1043,17 +1037,22 @@ public class Interface {
                     break;
                 }
 
-                case 4: {
+                case 5: {
                     EnergyProvider provider = this.sim.getBiggestProvider();
-                    System.out.println("-------------------------------");
-                    System.out.printf("Fornecedor: %s\n",provider.getName());
-                    System.out.printf("Preço kWh: %f\n",provider.getPrice_kwh());
-                    System.out.printf("Imposto: %f\n",provider.getTax());
-                    System.out.println("-------------------------------");
+                    if(provider != null){
+                        System.out.println("-------------------------------");
+                        System.out.printf("Fornecedor: %s\n",provider.getName());
+                        System.out.printf("Preço kWh: %f\n",provider.getPrice_kwh());
+                        System.out.printf("Imposto: %f\n",provider.getTax());
+                        System.out.println("-------------------------------");
+                    }else{
+                        System.out.println("Sem informação disponível\nProvavelmente a simulação não foi executada.");
+                    }
+                    
                     break;
                 }
 
-                case 5: {
+                case 6: {
                     String provID = null;
                     while(flag){
                         System.out.print("Insira o id do fornecedor: ");
@@ -1071,14 +1070,19 @@ public class Interface {
                     break;
                 }
 
-                case 6: {
-                    for(CasaInteligente house: this.sim.getConsumptionOrder()){
-                        System.out.println("-------------------------------");
-                        System.out.printf("Morada: %s\n",house.getMorada());
-                        System.out.printf("Nome proprietário: %s\nNIF proprietário: %d\n",house.getOwnerName(),house.getOwnerNif());
-                        System.out.printf("Fornecedor: %s\n",house.getFornecedor());
-                        System.out.printf("Consumo: %f kWh\n",house.getTotalConsumption());
-                        System.out.println("-------------------------------");
+                case 7: {
+                    List <CasaInteligente> consOrder = this.sim.getConsumptionOrder();
+                    if(consOrder != null){
+                        for(CasaInteligente house: consOrder){
+                            System.out.println("-------------------------------");
+                            System.out.printf("Morada: %s\n",house.getMorada());
+                            System.out.printf("Nome proprietário: %s\nNIF proprietário: %d\n",house.getOwnerName(),house.getOwnerNif());
+                            System.out.printf("Fornecedor: %s\n",house.getFornecedor());
+                            System.out.printf("Consumo: %f kWh\n",house.getTotalConsumption());
+                            System.out.println("-------------------------------");
+                        }
+                    }else{
+                        System.out.println("Sem informação disponível\nProvavelmente a simulação não foi executada.");
                     }
                     break;
                 }
@@ -1180,14 +1184,17 @@ public class Interface {
                     }
                     break;
                 }
+
                 case 4:{
-                    
+                    this.simulationExecution(s);
                     break;
                 }
+
                 case 5:{
                     flag = false;
                     break;
                 }
+
                 default:{
                     System.out.println("Opção inválida (deve ser um inteiro entre 1 e 5)");
                     System.out.println("Pressione ENTER para continuar");

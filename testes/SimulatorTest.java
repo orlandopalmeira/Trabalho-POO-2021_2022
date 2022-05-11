@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -21,7 +22,7 @@ public class SimulatorTest {
         Map<String, EnergyProvider> providers = Generator.fileToProviders(providers_f);
         List<CasaInteligente> houses = Generator.fileToHouses(devices_f,people_f,houses_f);
         Simulator sim = new Simulator(houses,providers.values().stream().collect(Collectors.toList()));
-        sim.startSimulation(LocalDateTime.parse("2022-04-14T10:00"),LocalDateTime.parse("2022-04-15T10:00"),new String[] {});
+        sim.startSimulation(LocalDateTime.parse("2022-04-14T10:00"),LocalDateTime.parse("2022-04-15T10:00"),new ArrayList<>());
         boolean test = true;
         assertEquals(4, sim.getBillsFromProvider("EDP").size());
         for(Fatura f: sim.getBillsFromProvider("EDP")){
@@ -69,7 +70,7 @@ public class SimulatorTest {
         Map<String, EnergyProvider> providers = Generator.fileToProviders(providers_f);
         List<CasaInteligente> houses = Generator.fileToHouses(devices_f,people_f,houses_f);
         Simulator sim = new Simulator(houses,providers.values().stream().collect(Collectors.toList()));
-        sim.startSimulation(LocalDateTime.parse("2022-04-14T10:00"),LocalDateTime.parse("2022-04-15T10:00"),new String[] {});
+        sim.startSimulation(LocalDateTime.parse("2022-04-14T10:00"),LocalDateTime.parse("2022-04-15T10:00"),new ArrayList<>());
         List<CasaInteligente> consumptionOrder = sim.getConsumptionOrder();
         boolean test = true;
         for (int i = 0; i+1 < consumptionOrder.size(); i++){
@@ -91,7 +92,7 @@ public class SimulatorTest {
         Map<String, EnergyProvider> providers = Generator.fileToProviders(providers_f);
         List<CasaInteligente> houses = Generator.fileToHouses(devices_f,people_f,houses_f);
         Simulator sim = new Simulator(houses,providers.values().stream().collect(Collectors.toList()));
-        sim.startSimulation(LocalDateTime.parse("2022-04-14T10:00"),LocalDateTime.parse("2022-04-15T10:00"),new String[]{});
+        sim.startSimulation(LocalDateTime.parse("2022-04-14T10:00"),LocalDateTime.parse("2022-04-15T10:00"),new ArrayList<>());
         EnergyProvider ep = sim.getBiggestProvider();
         assertTrue(ep.getName().equals("Galp"));
     }

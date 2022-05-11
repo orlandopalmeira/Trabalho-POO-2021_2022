@@ -9,7 +9,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 public class Simulator implements Serializable{
@@ -86,152 +89,27 @@ public class Simulator implements Serializable{
 
     // CORRER A SIMULAÇÃO
 
-    /**
-     * Executa um comando nesta simulação.
-     * @return <ul>
-     *         <li> 0 se o comando for executado  </li>
-     *         <li> 1 se o comando apenas pode ser executado no fim da simulação  </li>
-     *         <li> 2 se houver um erro </li>
-     *         </ul>
-     */
-    private int exec_command(String[] command){
-        String[] date_time = command[0].split(" ");
-        LocalDateTime date;
-        try{
-            date = LocalDateTime.parse(date_time[0] + "T" + date_time[1]);
-        } catch(DateTimeParseException e){return 2;}
-        if(command[1].equals("ligaTudoEmTodasAsCasas")){
-            this.houses.values().forEach(house -> house.setAllOn(true, date));
-            return 0;
-        }
-        String id = command[1];
-        switch (command[2]){
-            case "alteraPreco": return 1;
-            case "alteraImposto": return 1;
-            case "alteraFornecedor": return 1;
-            case "ligaTodos":{
-                try{
-                    this.houses.get(Integer.parseInt(id)).setAllOn(true, date);
-                }
-                catch(NumberFormatException e){return 2;}
-                catch(NullPointerException e){return 2;}
-                return 0;
-            }
-            case "desligaTodos":{
-                try{
-                    this.houses.get(Integer.parseInt(id)).setAllOn(false, date);
-                }
-                catch(NumberFormatException e){return 2;}
-                catch(NullPointerException e){return 2;}
-                return 0;
-            }
-            case "setOn":{
-                try{
-                    this.houses.get(Integer.parseInt(id)).setDeviceOn(command[3], true, date);
-                }
-                catch(NumberFormatException e){return 2;}
-                catch(NullPointerException e){return 2;}
-                return 0;
-            }
-            case "setOff":{
-                try{
-                    this.houses.get(Integer.parseInt(id)).setDeviceOn(command[3], false, date);
-                }
-                catch(NumberFormatException e){return 2;}
-                catch(NullPointerException e){return 2;}
-                return 0;
-            }
-            case "ligaTudoNaDivisao":{
-                try{
-                    this.houses.get(Integer.parseInt(id)).setAllinDivisionOn(command[3], true, date);
-                }
-                catch(NumberFormatException e){return 2;}
-                catch(NullPointerException e){return 2;}
-                return 0;
-            }
-            case "desligaTudoNaDivisao":{
-                try{
-                    this.houses.get(Integer.parseInt(id)).setAllinDivisionOn(command[3], false, date);
-                }
-                catch(NumberFormatException e){return 2;}
-                catch(NullPointerException e){return 2;}
-                return 0;
-            }
-        
-            default: return 2;
-        }
-    }
-
-    /**
-     * Executa os comandos que apenas podem ser executados no fim da simulação.
-     * @return <ul>
-     *          <li> 0 se todos os comandos foram executados </li>
-     *          <li> 1 se algum comando não foi executado devido à ocorrência de erros </li>
-     *         </ul>
-     */
-    private int exec_end_commands(List<String[]> commands){
-        int result = 0;
-        for(String[] command : commands){
-            String id = command[1];
-            switch(command[2]){
-                case "alteraPreco":{
-                    try{
-                        this.energyProviders.get(id.toLowerCase()).setPrice_kwh(Double.parseDouble(command[3]));
-                    } 
-                    catch(NumberFormatException e){result = 1;}
-                    catch(NullPointerException e){result = 1;}
-                    break;
-                }
-                case "alteraImposto":{ 
-                    try{
-                        this.energyProviders.get(id.toLowerCase()).setTax(Double.parseDouble(command[3]));
-                    }
-                    catch(NumberFormatException e){result = 1;}
-                    catch(NullPointerException e){result = 1;}
-                    break;
-                }
-                case "alteraFornecedor": {
-                    try{
-                        this.houses.get(Integer.parseInt(id)).setFornecedor(command[3]);
-                    }
-                    catch(NumberFormatException e){result = 1;}
-                    catch(NullPointerException e){result = 1;}
-                    break;
-                }
-                default: {result = 1; break;}
-            }
-        }
-        return result;
-    }
-
-
-    public void startSimulation(LocalDateTime start, LocalDateTime end, String[] commands){
+    public void startSimulation(LocalDateTime start, LocalDateTime end, List<Command> commands){
         this.resetAll();
-        // transformação do formato dos comandos num formato conveniente
-        String[][] commands_ = new String[commands.length][];
-        List<String[]> end_commands = new ArrayList<>();
-        for(int i = 0; i < commands.length; i++){
-            commands_[i] = commands[i].split(",");
-        }
+        List<Command> end_commands = new ArrayList<Command>(); // armazena os comandos que são executados no fim da simulação
+        
+        // Não se aceitam comandos cuja data e hora estejam fora do intervalo imposto
+        commands.removeIf(cmd -> cmd.getExecutionDateTime().compareTo(start) < 0 ||
+                                 cmd.getExecutionDateTime().compareTo(end) > 0);
+
         // execução da simulacao
         this.houses.values().forEach(house -> house.setLastChangeDateAllDevices(start));
-        for(String[] cmd: commands_){
-            switch (exec_command(cmd)) {
-                case 1: {
-                    end_commands.add(cmd); // os comandos que entram aqui são aqueles que só se executam quando a simulação fechar
-                    break;
-                }
-
-                case 2:{
-                    System.out.println("Erro num comando");
-                    break;
-                }
-            
-                default: break;
+        for(Command cmd: commands){
+            if(cmd.getFlag()){ 
+                cmd.execute(this);
+            }else{
+                end_commands.add(cmd);
             }
         }
         this.houses.values().forEach(house -> house.updateConsumptionAllDevices(end));
-        // gerar resultados
+        // fim da execução da simulação
+
+        // gerar resultados (estatísticas)
         this.consumptionOrder = this.houses.values().stream().sorted((h1,h2) -> {
             double dif = h2.getTotalConsumption() - h1.getTotalConsumption();
             return dif < 0 ? -1 : dif == 0 ? 0 : 1;
@@ -242,7 +120,13 @@ public class Simulator implements Serializable{
             this.billsPerProvider.get(provider_name).add(this.energyProviders.get(provider_name).emitirFatura(house,start,end));
             this.profitPerProvider.merge(provider_name, house.getTotalCost(this.energyProviders.get(provider_name),end), Double::sum);
         }
-        exec_end_commands(end_commands);
+        // fim do cálculo das estatísticas
+
+        // Executar os comandos finais
+        for(Command cmd: end_commands){
+            cmd.execute(this);
+        }
+        // fim da execução dos comandos finais
     }
 
     // MANIPULAR AS ENTIDADES DA SIMULAÇÃO
@@ -476,9 +360,9 @@ public class Simulator implements Serializable{
      * Devolve uma ordenação dos consumidores pelo consumo total.
      */
     public List<CasaInteligente> getConsumptionOrder(){
-        return this.consumptionOrder.stream()
-                                    .map(CasaInteligente::clone)
-                                    .collect(Collectors.toList());
+        return this.consumptionOrder != null ? this.consumptionOrder.stream()
+                                                   .map(CasaInteligente::clone)
+                                                   .collect(Collectors.toList()) : null;
     }
 
     // MÉTODOS AUXILIARES
