@@ -4,15 +4,11 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 public class Simulator implements Serializable{
@@ -52,19 +48,19 @@ public class Simulator implements Serializable{
     public Simulator(Collection<CasaInteligente> houses, Collection<EnergyProvider> providers) {
         this.last_house_id = 0;
         this.houses = new HashMap<>();
-        houses.forEach(house -> this.addHouse(house));
-
         this.energyProviders = new HashMap<>();
-        providers.forEach(provider -> this.addProvider(provider));
-
         this.billsPerProvider = new HashMap<>();
         this.profitPerProvider = new HashMap<>();
+        
+        houses.forEach(house -> this.addHouse(house));
+        providers.forEach(provider -> this.addProvider(provider));
+        
         for(EnergyProvider ep : providers){
             this.billsPerProvider.putIfAbsent(ep.getName().toLowerCase(), new ArrayList<Fatura>());
             this.profitPerProvider.putIfAbsent(ep.getName().toLowerCase(),0.0);
         }
 
-        this.consumptionOrder = null; // só lhe é atribuído o resultado após terminar a simulação
+        this.consumptionOrder = new ArrayList<>();
     }
 
     public Simulator(){
@@ -72,7 +68,7 @@ public class Simulator implements Serializable{
         this.energyProviders = new HashMap<>();
         this.billsPerProvider = new HashMap<>();
         this.profitPerProvider = new HashMap<>();
-        this.consumptionOrder = null; // só lhe é atribuído o resultado após terminar a simulação
+        this.consumptionOrder = new ArrayList<>();
     }
 
     /**
@@ -201,7 +197,11 @@ public class Simulator implements Serializable{
      * Adiciona um fornecedor a esta simulação
      */
     public void addProvider(EnergyProvider provider){
-        this.energyProviders.putIfAbsent(provider.getName().toLowerCase(),provider.clone());
+        if(!(this.energyProviders.containsKey(provider.getName().toLowerCase()))){
+            this.energyProviders.put(provider.getName().toLowerCase(),provider.clone());
+            this.billsPerProvider.put(provider.getName().toLowerCase(),new ArrayList<>());
+            this.profitPerProvider.put(provider.getName().toLowerCase(), 0.0);
+        }
     }
 
     /**
@@ -320,10 +320,10 @@ public class Simulator implements Serializable{
     // ESTATÍSTICAS DA SIMULAÇÃO
 
     /**
-     * Retorna a casa que mais energia consumiu na simulacao.
+     * Retorna a casa que mais energia consumiu na simulacao ou null se a simulação ainda não executou!
      */
     public CasaInteligente getBiggestConsumer(){
-        return this.consumptionOrder.get(0).clone();
+        return this.consumptionOrder != null ? this.consumptionOrder.get(0).clone() : null;
     }
 
     /**
@@ -349,7 +349,7 @@ public class Simulator implements Serializable{
     /**
      * Devolve as faturas emitidas por um certo fornecedor dado o seu nome.
      */
-    public List<Fatura> getBillsFromProvider(String providerName){
+    public List<Fatura> getBillsFromProvider(String providerName){ 
         return this.billsPerProvider.get(providerName.toLowerCase())
                                     .stream()
                                     .map(Fatura::clone)

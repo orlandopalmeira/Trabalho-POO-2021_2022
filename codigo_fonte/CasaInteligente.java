@@ -118,21 +118,21 @@ public class CasaInteligente implements Serializable {
      * Devolve o proprietario da casa.
      */
     public Pessoa getProprietario(){
-        return this.proprietario.clone();
+        return this.proprietario != null ? this.proprietario.clone() : null;
     }
 
     /**
      * Devolve o nif do proprietario.
      */
     public int getOwnerNif(){
-        return this.proprietario.getNif();
+        return this.proprietario != null ? this.proprietario.getNif() : -1;
     }
 
     /**
      * Devolve o nome do proprietario.
      */
     public String getOwnerName(){
-        return this.proprietario.getNome();
+        return this.proprietario != null ? this.proprietario.getNome() : "";
     }
 
     /**

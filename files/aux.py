@@ -26,7 +26,7 @@ for i in range(1,801):
 for i in range(1,161):
     people.write("Person{0};{0}\n".format(i))
 
-providers = ["EDP","Endesa","GoldEnergy","Iberdrola","Galp"]
+providers = ["EDP","Endesa","GoldEnergy","Iberdrola","Galp","Coopernico","Enat","YIce","MEO Energia","Muon","Luzboa","Energia Simples","SU Electricidade","EDA"]
 length_p = len(providers)
 # generate houses
 # Morada(string);[(Room:[d1.d2.d2])];NIF(int);Fornecedor(string)

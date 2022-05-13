@@ -29,24 +29,36 @@ public class Fatura implements Serializable {
         this.end = f.end;
     }
 
+    /**
+     * Devolve o montante constante nesta fatura.
+     */
     public double getMontante(){
         return this.montante;
     }
 
+    /**
+     * Devolve o cliente constante nesta fatura.
+     */
     public Pessoa getCliente(){
         return this.casa.getProprietario();
     }
 
+    /**
+     * Devolve a casa presente nesta fatura.
+     */
     public CasaInteligente getCasa(){
         return this.casa.clone();
     }
 
+    /**
+     * Devolve o nome do fornecedor que emitiu esta fatura.
+     */
     public String getProviderName(){
         return this.provider.getName();
     }
 
     /**
-     * Imprime a fatura.
+     * Imprime a fatura num formato legível.
      */
     public String printFatura(){
         StringBuilder sb = new StringBuilder();

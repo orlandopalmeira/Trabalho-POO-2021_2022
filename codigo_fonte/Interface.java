@@ -3,9 +3,9 @@ import java.io.ObjectInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -35,8 +35,7 @@ public class Interface {
             try {
                 System.out.print(message);
                 String aux = s.nextLine();
-                if(aux.length() == 16) aux = aux.substring(0,10) + "T" + aux.substring(11,16);
-                date = LocalDateTime.parse(aux);
+                date = LocalDateTime.parse(aux, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
                 flag = false;
             } catch (DateTimeParseException e) {
                 System.out.println("A data tem de estar no formato AAAA-MM-DD HH:mm!");
@@ -470,6 +469,8 @@ public class Interface {
                             EnergyProvider provider = aux.get(key);
                             System.out.printf("%s | %s | %f | %f\n",key,provider.getName(),provider.getPrice_kwh(),provider.getTax());
                         }
+                        System.out.println("Pressione ENTER para continuar");
+                        s.nextLine();
                     }
                     break;
                 }
@@ -493,6 +494,8 @@ public class Interface {
                             CasaInteligente house = aux.get(key);
                             System.out.printf("%d | %s | %s | %s\n",key,house.getMorada(),house.getOwnerName(),house.getFornecedor());
                         }
+                        System.err.println("Pressione ENTER para continuar");
+                        s.nextLine();
                     }
                     break;
                 }
@@ -975,25 +978,31 @@ public class Interface {
     private void simulationExecution(Scanner s){
         boolean flag = true;
         int option = 0;
-        List<Command> requests = new ArrayList<Command>();
+        List<Command> requests = new ArrayList<>();
         while(flag){
-            System.out.println("--------------------------------------------------------");
-            System.out.println("| Executar simulação                                   |");
-            System.out.println("--------------------------------------------------------");
-            System.out.println("| 1 | Adicionar um pedido                              |");
-            System.out.println("--------------------------------------------------------");
-            System.out.println("| 2 | Iniciar simulação                                |");
-            System.out.println("--------------------------------------------------------");
-            System.out.println("| 3 | Adicionar pedidos de um ficheiro                 |");
-            System.out.println("--------------------------------------------------------");
-            System.out.println("| 4 | Ver a casa que mais consumiu                     |");
-            System.out.println("--------------------------------------------------------");
-            System.out.println("| 5 | Ver o fornecedor com maior volume de faturação   |");
-            System.out.println("--------------------------------------------------------");
-            System.out.println("| 6 | Ver as faturas emitidas por um fornecedor        |");
-            System.out.println("--------------------------------------------------------");
-            System.out.println("| 7 | Ranking de consumidores de energia               |");
-            System.out.println("--------------------------------------------------------");
+            System.out.println("---------------------------------------------------------");
+            System.out.println("| Executar simulação                                    |");
+            System.out.println("---------------------------------------------------------");
+            System.out.println("| 1  | Adicionar um pedido                              |");
+            System.out.println("---------------------------------------------------------");
+            System.out.println("| 2  | Iniciar simulação                                |");
+            System.out.println("---------------------------------------------------------");
+            System.out.println("| 3  | Adicionar pedidos de um ficheiro                 |");
+            System.out.println("---------------------------------------------------------");
+            System.out.println("| 4  | Ver a casa que mais consumiu                     |");
+            System.out.println("---------------------------------------------------------");
+            System.out.println("| 5  | Ver o fornecedor com maior volume de faturação   |");
+            System.out.println("---------------------------------------------------------");
+            System.out.println("| 6  | Ver as faturas emitidas por um fornecedor        |");
+            System.out.println("---------------------------------------------------------");
+            System.out.println("| 7  | Ranking de consumidores de energia               |");
+            System.out.println("---------------------------------------------------------");
+            System.out.println("| 8  | Ver informações das casas                        |");
+            System.out.println("---------------------------------------------------------");
+            System.out.println("| 9  | Ver informações dos fornecedores de energia      |");
+            System.out.println("---------------------------------------------------------");
+            System.out.println("| 10 | Voltar ao menu anterior                          |");
+            System.out.println("---------------------------------------------------------");
             while(flag){
                 try {
                     System.out.print("Insira a opção: ");
@@ -1009,17 +1018,32 @@ public class Interface {
 
                 case 1: {
                     requests.add(this.commandFromInput(s));
-                    Collections.sort(requests,(c1,c2) -> c1.getExecutionDateTime().compareTo(c2.getExecutionDateTime()));
+                    requests.sort((c1,c2) -> c1.getExecutionDateTime().compareTo(c2.getExecutionDateTime()));
                     break;
                 }
 
                 case 2: {
-                    // TODO: implementar a execução da simulação
+                    if(this.sim.isReady()){
+                        LocalDateTime start, end;
+                        start = getDateFromInput("Insira a data e hora do início da simulação: ",s);
+                        end = getDateFromInput("Insira a data e hora do fim da simulação: ",s);
+                        this.sim.startSimulation(start, end, requests);
+                    }else{
+                        System.out.println("A simulação não está pronta a executar.\nVerifique as informações nela presentes.\nPressione ENTER para continuar");
+                        s.nextLine();
+                    }
                     break;
                 }
 
                 case 3: {
-                    // TODO: implementar a adição de pedidos de um ficheiro
+                    System.out.print("Insira o nome (caminho) do ficheiro: ");
+                    String path = s.nextLine();
+                    try {
+                        requests = Command.commandsFromFile(path);
+                    } catch (IOException e) {
+                        System.out.println("Erro de IO\nPressione ENTER para continuar");
+                        s.nextLine();
+                    }
                     break;
                 }
 
@@ -1030,9 +1054,13 @@ public class Interface {
                         System.out.printf("Morada: %s\n",house.getMorada());
                         System.out.printf("Nome proprietário: %s\nNIF proprietário: %d\n",house.getOwnerName(),house.getOwnerNif());
                         System.out.printf("Fornecedor: %s\n",house.getFornecedor());
+                        System.out.printf("Consumo: %f\n",house.getTotalConsumption());
                         System.out.println("-------------------------------");
+                        System.out.println("Pressione ENTER para continuar\n");
+                        s.nextLine();
                     }else{
-                        System.out.println("Sem informação disponível\nProvavelmente a simulação não foi executada.");
+                        System.out.println("Sem informação disponível\nProvavelmente a simulação não foi executada.\nPressione ENTER para continuar");
+                        s.nextLine();
                     }
                     break;
                 }
@@ -1045,8 +1073,11 @@ public class Interface {
                         System.out.printf("Preço kWh: %f\n",provider.getPrice_kwh());
                         System.out.printf("Imposto: %f\n",provider.getTax());
                         System.out.println("-------------------------------");
+                        System.out.println("Pressione ENTER para continuar\n");
+                        s.nextLine();
                     }else{
-                        System.out.println("Sem informação disponível\nProvavelmente a simulação não foi executada.");
+                        System.out.println("Sem informação disponível\nProvavelmente a simulação não foi executada.\nPressione ENTER para continuar");
+                        s.nextLine();
                     }
                     
                     break;
@@ -1064,26 +1095,70 @@ public class Interface {
                         }
                     }
                     flag = true;
-                    for(Fatura fat: this.sim.getBillsFromProvider(provID)){
-                        System.out.println(fat.printFatura());
+                    List<Fatura> faturas = this.sim.getBillsFromProvider(provID);
+                    if(faturas.size() > 0){
+                        for(Fatura fat: this.sim.getBillsFromProvider(provID)){
+                            System.out.println(fat.printFatura());
+                        }
+                        System.out.println("Pressione ENTER para continuar\n");
+                        s.nextLine();
+                    }else{
+                        System.out.println("Sem informação disponível\nProvavelmente a simulação não foi executada.\nPressione ENTER para continuar");
+                        s.nextLine();
                     }
+                    
                     break;
                 }
 
                 case 7: {
                     List <CasaInteligente> consOrder = this.sim.getConsumptionOrder();
                     if(consOrder != null){
+                        System.out.println("-------------------------------------------------------");
                         for(CasaInteligente house: consOrder){
-                            System.out.println("-------------------------------");
                             System.out.printf("Morada: %s\n",house.getMorada());
                             System.out.printf("Nome proprietário: %s\nNIF proprietário: %d\n",house.getOwnerName(),house.getOwnerNif());
                             System.out.printf("Fornecedor: %s\n",house.getFornecedor());
                             System.out.printf("Consumo: %f kWh\n",house.getTotalConsumption());
-                            System.out.println("-------------------------------");
+                            System.out.println("-------------------------------------------------------");
                         }
+                        System.out.println("Pressione ENTER para continuar\n");
+                        s.nextLine();
                     }else{
-                        System.out.println("Sem informação disponível\nProvavelmente a simulação não foi executada.");
+                        System.out.println("Sem informação disponível\nProvavelmente a simulação não foi executada.\nPressione ENTER para continuar");
+                        s.nextLine();
                     }
+                    break;
+                }
+
+                case 8:{
+                    Map<Integer,CasaInteligente> aux = this.sim.getHousesMap();
+                    System.out.println("-------------------------Casas------------------------");
+                    for(Integer key: aux.keySet()){
+                        CasaInteligente h = aux.get(key);
+                        System.out.printf("ID: %d; Morada: %s; Proprietário: %s; Fornecedor: %s\n",key,h.getMorada(),h.getOwnerName(),h.getFornecedor());
+                        System.out.println(h.devicesPerRoomInfo());
+                    }
+                    System.out.println("------------------------------------------------------");
+                    System.out.println("Pressione ENTER para continuar");
+                    s.nextLine();
+                    break;
+                }
+
+                case 9:{
+                    Map<String,EnergyProvider> aux = this.sim.getProvidersMap();
+                    System.out.println("-------------------------Fornecedores-------------------------");
+                    for(String key: aux.keySet()){
+                        EnergyProvider p = aux.get(key);
+                        System.out.printf("ID: %s; Nome: %s, Preço/kWh: %f; Imposto: %f\n",key,p.getName(),p.getPrice_kwh(),p.getTax());
+                    }
+                    System.out.println("-------------------------------------------------------------");
+                    System.out.println("Pressione ENTER para continuar");
+                    s.nextLine();
+                    break;
+                }
+
+                case 10:{ 
+                    flag = false;
                     break;
                 }
 
@@ -1146,17 +1221,18 @@ public class Interface {
                     } catch (IOException e){
                         System.out.println("Erro de input/output\nPressione ENTER para continuar");
                         s.nextLine();
-                    }
-                    /*Map<String,EnergyProvider> providers = null;
+                    }/*
+                    Map<String,EnergyProvider> providers = null;
                     List<CasaInteligente> houses = null;
                     try {
-                        providers = Generator.fileToProviders("/home/orlando/Desktop/Trabalho-POO-2021_2022/files/providers_test.txt");
-                        houses = Generator.fileToHouses("/home/orlando/Desktop/Trabalho-POO-2021_2022/files/devices_test.txt", 
-                                                "/home/orlando/Desktop/Trabalho-POO-2021_2022/files/people_test.txt",
-                                                "/home/orlando/Desktop/Trabalho-POO-2021_2022/files/houses_test.txt");
+                        providers = Generator.fileToProviders("/home/orlando/Desktop/Trabalho-POO-2021_2022/files/providers.txt");
+                        houses = Generator.fileToHouses("/home/orlando/Desktop/Trabalho-POO-2021_2022/files/devices.txt", 
+                                                "/home/orlando/Desktop/Trabalho-POO-2021_2022/files/people.txt",
+                                                "/home/orlando/Desktop/Trabalho-POO-2021_2022/files/houses.txt");
                     } catch (FileNotFoundException e) {}
                     this.sim = new Simulator(houses, providers.values());*/
                     break;
+
                 }
                 case 2:{
                     this.stateFromInput(s);

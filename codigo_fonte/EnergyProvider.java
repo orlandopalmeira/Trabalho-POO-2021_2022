@@ -94,7 +94,7 @@ public class EnergyProvider implements Serializable {
      */
     public Fatura emitirFatura(CasaInteligente casa, LocalDateTime start, LocalDateTime end){
         String ep = casa.getFornecedor();
-        if(this.name.equals(ep)){
+        if(this.name.toLowerCase().equals(ep.toLowerCase())){
             return new Fatura(casa,start,end,this);
         }else return null;
     }
