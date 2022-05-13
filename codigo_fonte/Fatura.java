@@ -91,6 +91,25 @@ public class Fatura implements Serializable {
 
     @Override
     /**
+     * Verifica a igualdade.
+     */
+    public boolean equals(Object o) {
+        if (o == this)
+            return true;
+        if (o == null || this.getClass() != o.getClass()) {
+            return false;
+        }
+        Fatura f = (Fatura) o;
+        return this.provider.equals(f.provider) && 
+               this.casa.equals(f.casa) && 
+               this.id == f.id && 
+               this.start.equals(f.start) &&
+               this.end.equals(f.end) && 
+               this.montante == f.montante;
+    }
+
+    @Override
+    /**
      * Devolve uma string com informação relevante sobre esta fatura.
      */
     public String toString(){

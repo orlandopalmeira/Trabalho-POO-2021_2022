@@ -351,6 +351,14 @@ public class CasaInteligente implements Serializable {
                this.proprietario.equals(ci.proprietario) &&
                this.fornecedor.equals(ci.fornecedor);
     }
+
+    @Override
+    /**
+     * Devolve uma string com informação revelante sobre a casa.
+     */
+    public String toString() {
+        return String.format("{Morada: %s, Nome proprietario: %s, NIF proprietario: %d, Fornecedor: %s}",this.morada,this.getOwnerName(),this.getOwnerNif(),this.fornecedor);
+    }
     
     @Override
     /**
