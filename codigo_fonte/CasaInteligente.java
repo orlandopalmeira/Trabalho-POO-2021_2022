@@ -87,16 +87,6 @@ public class CasaInteligente implements Serializable {
     }
 
     /**
-     * Devolve um conjunto com os devices duma determinada sala.
-     */
-    public Set<String> getListDevices(String divisao){
-        if(this.locations.containsKey(divisao)){ // para evitar erros se a divisão não existir
-            return this.locations.get(divisao).stream().collect(Collectors.toSet());
-        }
-        else return null;
-    }
-
-    /**
      * Devolve uma lista com os devices.
      */
     public List<SmartDevice> getDevices(){
@@ -291,6 +281,9 @@ public class CasaInteligente implements Serializable {
                            .sum();
     }
 
+    /**
+     * Retorna o custo associado ao consumo desta casa.
+     */
     public double getTotalCost(EnergyProvider provider, LocalDateTime end){
         if(this.fornecedor.toLowerCase().equals(provider.getName().toLowerCase())){
             this.devices.values().forEach(dev -> dev.updateConsumption(end));

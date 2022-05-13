@@ -1,4 +1,7 @@
 import static org.junit.jupiter.api.Assertions.*;
+
+import java.time.LocalDateTime;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -64,12 +67,12 @@ public class SmartSpeakerTest {
     @Test
     public void testSetVolume() {
         SmartSpeaker smartSpe1 = new SmartSpeaker("s1", "RUM", 5,"Brand");
-        smartSpe1.volumeUp();
-        smartSpe1.volumeUp();
+        smartSpe1.volumeUp(LocalDateTime.of(2022,4,24,12,30));
+        smartSpe1.volumeUp(LocalDateTime.of(2022,4,24,12,30));
         assertEquals(7, smartSpe1.getVolume());
-        for (int i=0; i<25; i++) smartSpe1.volumeUp();
+        for (int i=0; i<25; i++) smartSpe1.volumeUp(LocalDateTime.of(2022,4,24,12,30));
         assertEquals(20, smartSpe1.getVolume());
-        for (int i=0; i<30; i++) smartSpe1.volumeDown();
+        for (int i=0; i<30; i++) smartSpe1.volumeDown(LocalDateTime.of(2022,4,24,12,30));
         assertEquals(0, smartSpe1.getVolume());
     }
 

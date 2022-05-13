@@ -72,14 +72,16 @@ public class SmartSpeaker extends SmartDevice {
     /**
      * Aumenta o volume desta coluna.
      */
-    public void volumeUp() {
+    public void volumeUp(LocalDateTime change_date) {
+        this.updateConsumption(change_date);
         if (this.volume < MAX) this.volume++;
     }
 
     /**
      * Diminui o volume desta coluna.
      */
-    public void volumeDown() {
+    public void volumeDown(LocalDateTime change_date) {
+        this.updateConsumption(change_date);
         if (this.volume > 0) this.volume--;
     }
 

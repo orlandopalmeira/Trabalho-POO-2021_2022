@@ -69,7 +69,8 @@ public class SmartBulb extends SmartDevice {
     /**
      * Altera a tonalidade desta lâmpada.
      */
-    public void setTone(int t) {
+    public void setTone(int t, LocalDateTime change_date) {
+        this.updateConsumption(change_date);
         if (t > WARM) this.tone = WARM;
         else if (t < COLD) this.tone = COLD;
         else this.tone = t;
