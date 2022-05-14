@@ -70,7 +70,7 @@ public class Fatura implements Serializable {
         sb.append(String.format("Morada: %s\n",this.casa.getMorada()));
         sb.append("Período de faturação: ");
         sb.append(this.start.toLocalDate().toString()); sb.append(" - "); sb.append(this.end.toLocalDate().toString()); sb.append("\n");
-        sb.append(String.format("Montante: %f€\n", this.casa.getTotalCost(this.provider,this.end)));
+        sb.append(String.format("Montante: %.2f€\n", this.casa.getTotalCost(this.provider,this.end)));
         sb.append("-----------------------Registo de Consumos-----------------------\n");
         sb.append("Tipo de Dispositivo | ID | Consumo\n");
         for(SmartDevice dev: this.casa.getDevices()){

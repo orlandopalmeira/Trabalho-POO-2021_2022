@@ -315,19 +315,55 @@ public class Simulator implements Serializable{
         if(this.energyProviders.containsKey(providername.toLowerCase())){
             house.setFornecedor(providername);
         }
-    } 
+    }
+
+    /**
+     * Altera a tonalidade de uma lâmpada de uma casa.
+     */
+    public void changeBulbToneInHouse(int houseID, String bulbID, int tone, LocalDateTime change_date){
+        if(this.houses.containsKey(houseID)){
+            this.houses.get(houseID).setToneInBulb(bulbID, tone, change_date);
+        }
+    }
+
+    /**
+     * Altera o canal de um speaker de uma casa.
+     */
+    public void changeSpeakerChannelInHouse(int houseID, String speakerID, String channel){
+        if(this.houses.containsKey(houseID)){
+            this.houses.get(houseID).setChannelInSpeaker(speakerID, channel);
+        }
+    }
     
+    /**
+     * Reduz o volume de um speaker de uma casa.
+    */
+    public void volumeDownSpeakerInHouse(int houseID, String speakerID, LocalDateTime change_date){
+        if(this.houses.containsKey(houseID)){
+            this.houses.get(houseID).volumeDownInSpeaker(speakerID, change_date);
+        }
+    }
+
+    /**
+     * Aumenta o volume de um speaker de uma casa.
+    */
+    public void volumeUpSpeakerInHouse(int houseID, String speakerID, LocalDateTime change_date){
+        if(this.houses.containsKey(houseID)){
+            this.houses.get(houseID).volumeUpInSpeaker(speakerID, change_date);
+        }
+    }
+
     // ESTATÍSTICAS DA SIMULAÇÃO
 
     /**
      * Retorna a casa que mais energia consumiu na simulacao ou null se a simulação ainda não executou!
      */
     public CasaInteligente getBiggestConsumer(){
-        return this.consumptionOrder != null ? this.consumptionOrder.get(0).clone() : null;
+        return this.consumptionOrder != null && this.consumptionOrder.size() > 0 ? this.consumptionOrder.get(0).clone() : null;
     }
 
     /**
-     * Retorna o fornecedor com maior volume de faturacao.
+     * Retorna o fornecedor com maior volume de faturacao ou null se a simulação ainda executou.
      */
     public EnergyProvider getBiggestProvider(){
         String providerName;
@@ -354,6 +390,13 @@ public class Simulator implements Serializable{
                                     .stream()
                                     .map(Fatura::clone)
                                     .collect(Collectors.toList());
+    }
+
+    /**
+     * Retorna o volume de facturação de um certo fornecedor.
+     */
+    public double getProfitOfProvider(String providername){
+        return this.profitPerProvider.get(providername.toLowerCase());
     }
 
     /**

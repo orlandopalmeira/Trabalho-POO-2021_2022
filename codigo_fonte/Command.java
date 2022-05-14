@@ -247,6 +247,97 @@ public class Command{
                 break;
             }
 
+            case "alteraTonalidade":{
+                //data,id_casa,alteraTonalidade,id_lampada,tonalidade
+                int house_id = 0, tone = -1;
+                String bulb_id = "", toneS = "";
+                try {
+                    house_id = Integer.parseInt(id);
+                    bulb_id = aux[3];
+                    toneS = aux[4].toLowerCase();
+                } catch (NumberFormatException e) {
+                    throw new InvalidCommandException(String.format("ID da casa com formato inválido no comando '%s'",s));
+                } catch (IndexOutOfBoundsException e) {
+                    throw new InvalidCommandException(String.format("O comando '%s' não tem argumentos suficientes.",s));
+                }
+
+                if(!(toneS.equals("cold") || toneS.equals("warm") || toneS.equals("neutral"))){
+                    throw new InvalidCommandException(String.format("A tonalidade no comando '%s' é inválida",s));
+                }
+                switch(toneS){
+                    case "cold": tone = 0; break;
+                    case "neutral": tone = 1; break;
+                    case "warm": tone = 2; break;
+                }
+
+                int houseID = house_id;
+                int newTone = tone;
+                String bulbID = bulb_id;
+                LocalDateTime dateTime = executionDateTime;
+                result = new Command(executionDateTime, sim -> sim.changeBulbToneInHouse(houseID, bulbID, newTone, dateTime),true);
+                break;
+            }
+
+            case "alteraCanal":{
+                //data,id_casa,alteraCanal,id_speaker,canal
+                int house_id = 0;
+                String speaker_id = "", channel = "";
+                try {
+                    house_id = Integer.parseInt(id);
+                    speaker_id = aux[3];
+                    channel = aux[4];
+                } catch (NumberFormatException e) {
+                    throw new InvalidCommandException(String.format("ID da casa com formato inválido no comando '%s'",s));
+                } catch (IndexOutOfBoundsException e) {
+                    throw new InvalidCommandException(String.format("O comando '%s' não tem argumentos suficientes.",s));
+                }
+
+                int houseID = house_id;
+                String speakerID = speaker_id, canal = channel;
+                result = new Command(executionDateTime, sim -> sim.changeSpeakerChannelInHouse(houseID, speakerID, canal), true);
+                break;
+            }
+
+            case "aumentaVolume":{
+                //data,id_casa,aumentaVolume,id_speaker
+                int house_id = 0;
+                String speaker_id = "";
+                try {
+                    house_id = Integer.parseInt(id);
+                    speaker_id = aux[3];
+                } catch (NumberFormatException e) {
+                    throw new InvalidCommandException(String.format("ID da casa com formato inválido no comando '%s'",s));
+                } catch (IndexOutOfBoundsException e) {
+                    throw new InvalidCommandException(String.format("O comando '%s' não tem argumentos suficientes.",s));
+                }
+
+                int houseID = house_id;
+                String speakerID = speaker_id;
+                LocalDateTime dateTime = executionDateTime;
+                result = new Command(executionDateTime, sim -> sim.volumeUpSpeakerInHouse(houseID, speakerID, dateTime),true);
+                break;
+            }
+
+            case "diminuiVolume":{
+                //data,id_casa,diminuiVolume,id_speaker
+                int house_id = 0;
+                String speaker_id = "";
+                try {
+                    house_id = Integer.parseInt(id);
+                    speaker_id = aux[3];
+                } catch (NumberFormatException e) {
+                    throw new InvalidCommandException(String.format("ID da casa com formato inválido no comando '%s'",s));
+                } catch (IndexOutOfBoundsException e) {
+                    throw new InvalidCommandException(String.format("O comando '%s' não tem argumentos suficientes.",s));
+                }
+
+                int houseID = house_id;
+                String speakerID = speaker_id;
+                LocalDateTime dateTime = executionDateTime;
+                result = new Command(executionDateTime, sim -> sim.volumeDownSpeakerInHouse(houseID, speakerID, dateTime),true);
+                break;
+            }
+
             default:{
                 throw new InvalidCommandException(String.format("O comando '%s' é inválido",s));
             }

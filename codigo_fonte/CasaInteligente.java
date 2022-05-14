@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
+
 /**
  * A CasaInteligente faz a gestão dos SmartDevices que existem e dos 
  * espaços (as salas) que existem na casa.
@@ -80,7 +81,7 @@ public class CasaInteligente implements Serializable {
     /**
      * Devolve um map com os devices.
      */
-    private Map<String, SmartDevice> getMapDevices() {
+    public Map<String, SmartDevice> getMapDevices() {
         Map<String, SmartDevice> r = new HashMap<>();
         this.devices.keySet().forEach(key -> r.put(key,this.devices.get(key).clone()));
         return r;
@@ -313,6 +314,58 @@ public class CasaInteligente implements Serializable {
      */
     public void updateConsumptionAllDevices(LocalDateTime update_date){
         this.devices.values().forEach(device -> device.updateConsumption(update_date));
+    }
+
+    /**
+     * Altera a tonalidade de uma lâmpada desta casa.
+     */
+    public void setToneInBulb(String bulbID, int new_tone, LocalDateTime change_date){
+        if(this.existsDevice(bulbID) && (new_tone == 0 || new_tone == 1 || new_tone == 2)){
+            SmartDevice dev = this.devices.get(bulbID);
+            if(dev instanceof SmartBulb){
+                SmartBulb b = (SmartBulb)dev;
+                b.setTone(new_tone,change_date);
+            }
+        }
+    }
+
+    /**
+     * Altera o canal de um speaker desta casa.
+     */
+    public void setChannelInSpeaker(String speakerID,String channel){
+        if(this.existsDevice(speakerID)){
+            SmartDevice dev = this.devices.get(speakerID);
+            if(dev instanceof SmartSpeaker){
+                SmartSpeaker sp = (SmartSpeaker)dev;
+                sp.setChannel(channel);
+            }
+        }
+    }
+
+    /**
+     * Reduz o volume de um speaker desta casa.
+     */
+    public void volumeDownInSpeaker(String speakerID, LocalDateTime change_date){
+        if(this.existsDevice(speakerID)){
+            SmartDevice dev = this.devices.get(speakerID);
+            if(dev instanceof SmartSpeaker){
+                SmartSpeaker sp = (SmartSpeaker)dev;
+                sp.volumeDown(change_date);
+            }
+        }
+    }
+
+    /**
+     * Aumenta o volume de um speaker desta casa.
+     */
+    public void volumeUpInSpeaker(String speakerID, LocalDateTime change_date){
+        if(this.existsDevice(speakerID)){
+            SmartDevice dev = this.devices.get(speakerID);
+            if(dev instanceof SmartSpeaker){
+                SmartSpeaker sp = (SmartSpeaker)dev;
+                sp.volumeUp(change_date);
+            }
+        }
     }
 
     /**

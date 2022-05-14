@@ -94,7 +94,7 @@ public class SmartCamera extends SmartDevice{
 
     @Override
     public double dailyConsumption(){
-        return this.getOn() ? (this.sizeOfFile*resX*resY*24.0)/1000.0 : 0.0;
+        return this.getOn() ? (0.00000144*this.sizeOfFile*resX*resY*24.0)/1000.0 : 0.0;
     }
 
     @Override

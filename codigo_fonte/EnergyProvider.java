@@ -78,7 +78,7 @@ public class EnergyProvider implements Serializable {
      * Calcula o custo total da utilização de um conjunto de dispositivos de uma casa de acordo com uma fórmula standard.
      */
     public double cost(Collection<SmartDevice> devices){
-        return this.cost(devices,cons -> this.price_kwh*cons* (1 + this.tax));
+        return this.cost(devices,cons -> 0.2*this.price_kwh*cons* (1 + this.tax));
     }
 
     /** 

@@ -116,7 +116,7 @@ public class SmartSpeaker extends SmartDevice {
 
     @Override
     public double dailyConsumption(){
-        return this.getOn() ? (this.marca.length() + ((this.volume * 3.0)*24.0))/1000.0 : 0.0;
+        return this.getOn() ? 10*(this.marca.length() + ((this.volume * 3.0)*24.0))/1000.0 : 0.0;
     }
 
     @Override
