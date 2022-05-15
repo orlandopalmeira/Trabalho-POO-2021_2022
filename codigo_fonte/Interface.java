@@ -12,7 +12,7 @@ import java.util.Scanner;
 
 public class Interface {
 
-    private Simulator sim; // este objecto está encarregue de fazer a simulação
+    private Simulator sim;                  // este objecto está encarregue de fazer a simulação
 
     public Interface(){
         this.sim = new Simulator(); 
