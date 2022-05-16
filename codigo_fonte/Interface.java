@@ -1483,7 +1483,7 @@ public class Interface {
                     break;
                 }
                 case 3:{
-                    if(!(sim.isReady())){ // o isReady indica se a simulação é válida/está pronta
+                    if(!(this.sim.isReady())){ // o isReady indica se a simulação é válida/está pronta
                         System.out.println("Não existem dados para ser guardados!\nPressione ENTER para continuar");
                         s.nextLine();
                     } else{
