@@ -134,7 +134,7 @@ public class Simulator implements Serializable{
         this.houses.values().forEach(house -> house.resetConsumption());
         this.billsPerProvider.values().forEach(list -> list.clear());
         this.profitPerProvider.keySet().forEach(key -> this.profitPerProvider.put(key,0.0));
-        this.consumptionOrder = null;
+        this.consumptionOrder = new ArrayList<>();
     }
 
     /**
@@ -145,7 +145,7 @@ public class Simulator implements Serializable{
         this.energyProviders = new HashMap<>();
         this.billsPerProvider = new HashMap<>();
         this.profitPerProvider = new HashMap<>();
-        this.consumptionOrder = null;
+        this.consumptionOrder = new ArrayList<>();
     }
 
     /**
