@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Interface {
 
@@ -732,6 +734,7 @@ public class Interface {
                 flag = true;
                 String provName = null;
                 while(flag){
+                    System.out.print("Insira o id do fornecedor: ");
                     provName = s.nextLine();
                     if(this.sim.existsProvider(provName)){
                         flag = false;
@@ -1000,14 +1003,10 @@ public class Interface {
                 }
                 flag = true;
                 CasaInteligente h = this.sim.getHouse(house_id);
-                Map<String,SmartDevice> devsMap = h.getMapDevices();
-                for(String key: devsMap.keySet()){
-                    if(!(devsMap.get(key) instanceof SmartBulb)){
-                        devsMap.remove(key);
-                    }
-                }
+                Set<SmartDevice> bulbs = h.getMapDevices().values().stream().filter(dev -> dev.getClass().getName().equals("SmartBulb")).collect(Collectors.toSet());
+                Set<String> bulbsIDs = bulbs.stream().map(SmartDevice::getID).collect(Collectors.toSet());
                 System.out.println("------------------Lâmpadas------------------");
-                for(SmartDevice dev: devsMap.values()){
+                for(SmartDevice dev: bulbs){
                     SmartBulb b = (SmartBulb)dev;
                     String tone = b.getTone() == 0 ? "COLD" : (b.getTone() == 1 ? "NEUTRAL" : (b.getTone() == 2 ? "WARM" : "???"));
                     System.out.printf("SmartBulb ID: %s, TONE: %s\n",b.getID(),tone);
@@ -1017,10 +1016,10 @@ public class Interface {
                 while(flag){
                     System.out.print("Insira o id da lâmpada: ");
                     bID = s.nextLine();
-                    if(devsMap.containsKey(bID)){
+                    if(bulbsIDs.contains(bID)){
                         flag = false;
                     }else{
-                        System.out.printf("A lâmpada com id %d não existe\n",bID);
+                        System.out.printf("A lâmpada com id %s não existe\n",bID);
                     }
                 }
                 flag = true;
@@ -1071,14 +1070,11 @@ public class Interface {
                 }
                 flag = true;
                 CasaInteligente h = this.sim.getHouse(house_id);
-                Map<String,SmartDevice> devsMap = h.getMapDevices();
-                for(String key: devsMap.keySet()){
-                    if(!(devsMap.get(key) instanceof SmartSpeaker)){
-                        devsMap.remove(key);
-                    }
-                }
+                Set<SmartDevice> speakers = h.getMapDevices().values().stream().filter(dev -> dev.getClass().getName().equals("SmartSpeaker")).collect(Collectors.toSet());
+                Set<String> speakersIDs = speakers.stream().map(SmartDevice::getID).collect(Collectors.toSet());
+            
                 System.out.println("------------------Speakers------------------");
-                for(SmartDevice dev: devsMap.values()){
+                for(SmartDevice dev: speakers){
                     SmartSpeaker sp = (SmartSpeaker)dev;
                     System.out.printf("SmartSpeaker ID: %s, Canal: %s\n",sp.getID(),sp.getChannel());
                 }
@@ -1087,10 +1083,10 @@ public class Interface {
                 while(flag){
                     System.out.print("Insira o id do speaker: ");
                     sID = s.nextLine();
-                    if(devsMap.containsKey(sID)){
+                    if(speakersIDs.contains(sID)){
                         flag = false;
                     }else{
-                        System.out.printf("O speaker com id %d não existe\n",sID);
+                        System.out.printf("O speaker com id %s não existe\n",sID);
                     }
                 }
                 System.out.print("Insira o canal: ");
@@ -1126,14 +1122,11 @@ public class Interface {
                 }
                 flag = true;
                 CasaInteligente h = this.sim.getHouse(house_id);
-                Map<String,SmartDevice> devsMap = h.getMapDevices();
-                for(String key: devsMap.keySet()){
-                    if(!(devsMap.get(key) instanceof SmartSpeaker)){
-                        devsMap.remove(key);
-                    }
-                }
+                Set<SmartDevice> speakers = h.getMapDevices().values().stream().filter(dev -> dev.getClass().getName().equals("SmartSpeaker")).collect(Collectors.toSet());
+                Set<String> speakersIDs = speakers.stream().map(SmartDevice::getID).collect(Collectors.toSet());
+                
                 System.out.println("------------------Speakers------------------");
-                for(SmartDevice dev: devsMap.values()){
+                for(SmartDevice dev: speakers){
                     SmartSpeaker sp = (SmartSpeaker)dev;
                     System.out.printf("SmartSpeaker ID: %s, Canal: %s\n",sp.getID(),sp.getChannel());
                 }
@@ -1142,10 +1135,10 @@ public class Interface {
                 while(flag){
                     System.out.print("Insira o id do speaker: ");
                     sID = s.nextLine();
-                    if(devsMap.containsKey(sID)){
+                    if(speakersIDs.contains(sID)){
                         flag = false;
                     }else{
-                        System.out.printf("O speaker com id %d não existe\n",sID);
+                        System.out.printf("O speaker com id %s não existe\n",sID);
                     }
                 }
                 int houseID = house_id;
@@ -1180,14 +1173,11 @@ public class Interface {
                 }
                 flag = true;
                 CasaInteligente h = this.sim.getHouse(house_id);
-                Map<String,SmartDevice> devsMap = h.getMapDevices();
-                for(String key: devsMap.keySet()){
-                    if(!(devsMap.get(key) instanceof SmartSpeaker)){
-                        devsMap.remove(key);
-                    }
-                }
+                Set<SmartDevice> speakers = h.getMapDevices().values().stream().filter(dev -> dev.getClass().getName().equals("SmartSpeaker")).collect(Collectors.toSet());
+                Set<String> speakersIDs = speakers.stream().map(SmartDevice::getID).collect(Collectors.toSet());
+                
                 System.out.println("------------------Speakers------------------");
-                for(SmartDevice dev: devsMap.values()){
+                for(SmartDevice dev: speakers){
                     SmartSpeaker sp = (SmartSpeaker)dev;
                     System.out.printf("SmartSpeaker ID: %s, Canal: %s\n",sp.getID(),sp.getChannel());
                 }
@@ -1196,10 +1186,10 @@ public class Interface {
                 while(flag){
                     System.out.print("Insira o id do speaker: ");
                     sID = s.nextLine();
-                    if(devsMap.containsKey(sID)){
+                    if(speakersIDs.contains(sID)){
                         flag = false;
                     }else{
-                        System.out.printf("O speaker com id %d não existe\n",sID);
+                        System.out.printf("O speaker com id %s não existe\n",sID);
                     }
                 }
                 int houseID = house_id;

@@ -104,7 +104,7 @@ public class SmartBulb extends SmartDevice {
             return false;
         }
         SmartBulb s = (SmartBulb) o;
-        return (super.equals(o) && this.tone == s.getTone() && this.dimension == s.getDimension());
+        return (super.equals(o) && this.getID().equals(s.getID()) && this.tone == s.getTone() && this.dimension == s.getDimension());
     }
 
     @Override
