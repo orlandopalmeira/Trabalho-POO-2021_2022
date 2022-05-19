@@ -62,7 +62,7 @@ public class SmartBulb extends SmartDevice {
 
     public SmartBulb(SmartBulb sb) {
         super(sb);
-        this.tone = NEUTRAL;
+        this.tone = sb.getTone();
         this.dimension = sb.dimension;
     }
 
