@@ -1440,7 +1440,7 @@ public class Interface {
             option = getMainOption(s);
             switch (option){
                 case 1:{
-                    /*System.out.print("Insira o caminho para o ficheiro: ");
+                    System.out.print("Insira o caminho para o ficheiro: ");
                     String path = s.nextLine();
                     try {
                         sim = loadState(path);
@@ -1455,7 +1455,7 @@ public class Interface {
                     } catch (IOException e){
                         System.out.println("Erro de input/output\nPressione ENTER para continuar");
                         s.nextLine();
-                    }*/
+                    }/*
                     Map<String,EnergyProvider> providers = null;
                     List<CasaInteligente> houses = null;
                     try {
@@ -1465,8 +1465,8 @@ public class Interface {
                                                 "/home/orlando/Desktop/Trabalho-POO-2021_2022/files/houses.txt");
                     } catch (FileNotFoundException e) {}
                     this.sim = new Simulator(houses, providers.values());
+                    break;*/
                     break;
-
                 }
                 case 2:{
                     this.stateFromInput(s);
