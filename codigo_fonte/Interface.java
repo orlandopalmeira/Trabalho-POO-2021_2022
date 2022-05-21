@@ -1,5 +1,3 @@
-import java.io.FileInputStream;
-import java.io.ObjectInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -18,16 +16,6 @@ public class Interface {
 
     public Interface(){
         this.sim = new Simulator(); 
-    }
-
-    private Simulator loadState(String path) throws FileNotFoundException, 
-                                                           IOException,
-                                                           ClassNotFoundException {
-        FileInputStream fis = new FileInputStream(path);
-        ObjectInputStream ois = new ObjectInputStream(fis);
-        Simulator sim = (Simulator) ois.readObject();
-        ois.close();
-        return sim;                     
     }
 
     private LocalDateTime getDateFromInput(String message,Scanner s){
@@ -1443,7 +1431,7 @@ public class Interface {
                     System.out.print("Insira o caminho para o ficheiro: ");
                     String path = s.nextLine();
                     try {
-                        sim = loadState(path);
+                        sim = Simulator.loadState(path);
                         System.out.println("Estado carregado com sucesso!\nPressione ENTER para continuar");
                         s.nextLine();
                     } catch (FileNotFoundException e){

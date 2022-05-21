@@ -97,6 +97,17 @@ public class CasaInteligente implements Serializable {
     }
 
     /**
+     * Devolve os dispositivos de uma certa repartição.
+     */
+    public List<SmartDevice> getDevicesInRoom(String room){
+        List<SmartDevice> result = new ArrayList<>();
+        for(String devID: this.locations.get(room)){
+            result.add(this.getDevice(devID).clone());
+        }
+        return result;
+    }
+
+    /**
      * Devolve um map com as locations.
      */
     public Map<String, Set<String>> getMapLocations() {

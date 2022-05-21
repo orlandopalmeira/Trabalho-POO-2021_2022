@@ -137,9 +137,9 @@ public class SmartDeviceTest {
         bulb.turnOff(LocalDateTime.of(2022,4,24,12,30).plusDays(100));
         speaker.turnOff(LocalDateTime.of(2022,4,24,12,30).plusDays(100));
         camera.turnOff(LocalDateTime.of(2022,4,24,12,30).plusDays(100));
-        assertEquals(9.6,bulb.getTotalConsumption());
-        assertEquals(72.7,speaker.getTotalConsumption());
-        assertEquals(497664000.0,camera.getTotalConsumption());
+        assertEquals(960,bulb.getTotalConsumption());
+        assertEquals(727,speaker.getTotalConsumption());
+        assertEquals(716.636,camera.getTotalConsumption());
         
         bulb.resetTotalConsumption();
         speaker.resetTotalConsumption();

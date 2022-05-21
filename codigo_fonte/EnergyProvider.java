@@ -86,7 +86,7 @@ public class EnergyProvider implements Serializable {
     */
     public double cost(Collection<SmartDevice> devices, Function<Double,Double> func){
         double cost_ =  func.apply(devices.stream().mapToDouble(SmartDevice::getTotalConsumption).sum());
-        return devices.size() > 10 ? cost_ * 0.9 : cost_ * 0.75;
+        return Math.round((devices.size() > 10 ? cost_ * 0.9 : cost_ * 0.75)*100.0)/100.0;
     }
 
     /**

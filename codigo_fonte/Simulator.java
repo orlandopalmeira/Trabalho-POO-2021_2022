@@ -1,6 +1,8 @@
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -252,6 +254,7 @@ public class Simulator implements Serializable{
         return result;
     }
 
+
     /**
      * Devolve o mapa que contém os fornecedores
      */
@@ -468,6 +471,19 @@ public class Simulator implements Serializable{
         oos.writeObject(this);
         oos.flush();
         oos.close();
+    }
+
+    /**
+     * Recebe um caminho para um ficheiro de objetos e converte-o numa simulação.
+     */
+    public static Simulator loadState(String path) throws FileNotFoundException, 
+                                                          IOException,
+                                                          ClassNotFoundException {
+        FileInputStream fis = new FileInputStream(path);
+        ObjectInputStream ois = new ObjectInputStream(fis);
+        Simulator sim = (Simulator) ois.readObject();
+        ois.close();
+        return sim;                     
     }
 
 }

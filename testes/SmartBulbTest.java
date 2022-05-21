@@ -65,6 +65,7 @@ public class SmartBulbTest {
     @Test
     public void testSetTone() {
         SmartBulb smartBul1 = new SmartBulb("b1");
+        smartBul1.setLastChangeDate(LocalDateTime.of(2022,4,24,0,0));
         smartBul1.setTone(2,LocalDateTime.of(2022,4,24,12,30));
         assertEquals(SmartBulb.WARM, smartBul1.getTone());
         smartBul1.setTone(10,LocalDateTime.of(2022,4,24,12,30));

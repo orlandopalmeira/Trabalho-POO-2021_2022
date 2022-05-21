@@ -13,3 +13,7 @@
 2022-05-14 13:00,159,desligaDispositivoNaCasa,c792
 2022-05-15 13:59,160,desligaTodosNaCasa
 2022-05-15 14:00,160,ligaDispositivoNaCasa,c797
+2022-05-16 15:30,5,alteraTonalidade,b21,cold
+2022-05-16 16:00,5,alteraCanal,s22,Megahits
+2022-05-16 17:00,5,aumentaVolume,s21
+2022-05-16 17:00,5,diminuiVolume,s23

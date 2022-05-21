@@ -67,6 +67,7 @@ public class SmartSpeakerTest {
     @Test
     public void testSetVolume() {
         SmartSpeaker smartSpe1 = new SmartSpeaker("s1", "RUM", 5,"Brand");
+        smartSpe1.setLastChangeDate(LocalDateTime.of(2022,4,24,0,0));
         smartSpe1.volumeUp(LocalDateTime.of(2022,4,24,12,30));
         smartSpe1.volumeUp(LocalDateTime.of(2022,4,24,12,30));
         assertEquals(7, smartSpe1.getVolume());

@@ -131,8 +131,8 @@ public class CasaInteligenteTest {
         CasaInteligente casaInte1 = new CasaInteligente("Street",new Pessoa("Person",111222333),"EDP");
         EnergyProvider provider = new EnergyProvider("EDP",0.15,0.23);
         LocalDateTime start = LocalDateTime.of(2022,4,1,10,0), end = LocalDateTime.of(2022,4,3,10,0);
-        int i = 1;
-        for(LocalDateTime aux = start; aux.compareTo(end) <= 0; aux = aux.plusDays(1),i++){
+
+        for(int i = 1; i <= 3; i++){
             casaInte1.addDevice(new SmartBulb(String.format("b%d", i),true,1,10,start), "Sala");
             casaInte1.addDevice(new SmartSpeaker(String.format("s%d", i), true, 10, "RUM", "SAMSUNG",start),"Quarto");
             casaInte1.addDevice(new SmartCamera(String.format("c%d",i),true,1920,1080,100,start),"Sala");
@@ -140,8 +140,8 @@ public class CasaInteligenteTest {
         casaInte1.updateConsumptionAllDevices(end);
         double consumo = casaInte1.getTotalConsumption();
         double custo = casaInte1.getTotalCost(provider,end);
-        assertTrue(29859844.00 <= consumo && consumo <= 29859844.99);
-        assertTrue(4131856.00 <=  custo && custo <= 4131856.99);
+        assertEquals(144.219,consumo);
+        assertEquals(3.99,custo);
         Fatura f = provider.emitirFatura(casaInte1, start, end);
         assertEquals(custo,f.getMontante());
         assertTrue(casaInte1.getProprietario().equals(f.getCliente()));
