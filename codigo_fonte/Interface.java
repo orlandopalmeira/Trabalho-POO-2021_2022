@@ -9,7 +9,10 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.stream.Collectors;
-
+/**
+ * Esta classe serve para comunicar com o utilizador através de menus.
+ * @author Miguel Silva, Orlando Palmeira e Pedro Martins
+ */
 public class Interface {
 
     private Simulator sim;                  // este objecto está encarregue de fazer a simulação

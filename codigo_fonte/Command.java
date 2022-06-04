@@ -9,6 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+/**
+ * Um comando armazena uma ação (Consumer<Simulator>) a ser executada numa simulação.
+ * @author Miguel Silva, Orlando Palmeira e Pedro Martins
+ */
 public class Command{
 
     /**

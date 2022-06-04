@@ -2,6 +2,10 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.function.Function;
+/**
+ * O EnergyProvider armazena informações sobre um fornecedor de energia.
+ * @author Miguel Silva, Orlando Palmeira e Pedro Martins
+ */
 public class EnergyProvider implements Serializable {
     private String name;
     private double price_kwh;

@@ -1,12 +1,10 @@
 import java.time.LocalDateTime;
 import java.io.Serializable;
 import java.time.Duration;
+
 /**
- * A classe SmartDevice é um contactor simples.
- * Permite ligar ou desligar circuitos. 
- *
- * @author (your name)
- * @version (a version number or a date)
+ * Esta classe representa o comportamento genérico de um dispositivo.
+ * @author Miguel Silva, Orlando Palmeira e Pedro Martins
  */
 public abstract class SmartDevice implements Serializable {
 

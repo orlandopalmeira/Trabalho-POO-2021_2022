@@ -6,6 +6,11 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.HashMap;
 
+/**
+ * Esta classe tem métodos para transformar ficheiros de texto num estado do programa.
+ * Apenas foi utilizada para o primeiro carregamento de dados.
+ * @author Miguel Silva, Orlando Palmeira e Pedro Martins
+ */
 public class Generator {
     
     private static SmartDevice lineToDevice(String line){

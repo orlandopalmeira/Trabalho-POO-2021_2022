@@ -8,13 +8,10 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
-
 /**
- * A CasaInteligente faz a gestão dos SmartDevices que existem e dos 
- * espaços (as salas) que existem na casa.
- *
- * @author (your name)
- * @version (a version number or a date)
+ * A casa inteligente armazena os seus dispositivos (SmartDevices) bem como a repartição onde se encontram.
+ * Armazena também a informação do seu proprietário e do seu fornecedor de energia.
+ * @author Miguel Silva, Orlando Palmeira e Pedro Martins
  */
 public class CasaInteligente implements Serializable {
    

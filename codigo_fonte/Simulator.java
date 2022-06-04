@@ -13,6 +13,10 @@ import java.util.stream.Collectors;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * Esta classe é o cérebro do programa e efetua todos os cálculos/operações da simulação.
+ * @author Miguel Silva, Orlando Palmeira e Pedro Martins
+ */
 public class Simulator implements Serializable{
     /**
      * Armazena o último id atribuído a uma casa inserida na simulação.

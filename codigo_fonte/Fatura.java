@@ -1,6 +1,10 @@
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+/**
+ * Uma fatura tem informações sobre o custo do consumo de uma casa na simulação.
+ * @author Miguel Silva, Orlando Palmeira e Pedro Martins
+ */
 public class Fatura implements Serializable {
     private static int last_id = 0;
 

@@ -1,5 +1,9 @@
 import java.io.Serializable;
 
+/**
+ * Esta classe representa uma pessoa que será um proprietário de uma casa.
+ * @author Miguel Silva, Orlando Palmeira e Pedro Martins
+ */
 public class Pessoa implements Serializable {
     private String nome;
     private int nif;

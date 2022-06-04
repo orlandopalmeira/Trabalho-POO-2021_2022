@@ -1,12 +1,8 @@
 import java.time.LocalDateTime;
 
 /**
- * Um SmartSpeaker é um SmartDevice que além de ligar e desligar permite também
- * reproduzir som.
- * Consegue ligar-se a um canal (por simplificação uma rádio online) e permite
- * a regulação do seu nível de volume.
- * @author (your name)
- * @version (a version number or a date)
+ * Esta classe representa um speaker inteligente.
+ * @author Miguel Silva, Orlando Palmeira e Pedro Martins
  */
 public class SmartSpeaker extends SmartDevice {
     public static final int MAX = 20;

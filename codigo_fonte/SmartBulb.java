@@ -1,12 +1,8 @@
 import java.time.LocalDateTime;
 
 /**
- * Uma SmartBulb é uma lâmpada inteligente que além de ligar e desligar (já que
- * é subclasse de SmartDevice) também permite escolher a intensidade da iluminação 
- * (a cor da mesma).
- *
- * @author (your name)
- * @version (a version number or a date)
+ * Esta classe representa uma lâmpada inteligente.
+ * @author Miguel Silva, Orlando Palmeira e Pedro Martins
  */
 public class SmartBulb extends SmartDevice {
     public static final int WARM = 2;

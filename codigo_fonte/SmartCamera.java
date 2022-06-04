@@ -1,5 +1,9 @@
 import java.time.LocalDateTime;
 
+/**
+ * Esta classe representa uma câmara inteligente.
+ * @author Miguel Silva, Orlando Palmeira e Pedro Martins
+ */
 public class SmartCamera extends SmartDevice{
     private int resX;
     private int resY;
