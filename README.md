@@ -15,5 +15,7 @@
 
 </div>
 
+### Nota: 17/20
+
 <h3><i>Keywords</i></h3>
 POO, Programação Orientada aos Objetos, programacao orientada aos objetos, universidade do minho, uminho, miei, lei, lcc, engenharia informatica
